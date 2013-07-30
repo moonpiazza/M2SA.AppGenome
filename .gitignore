@@ -1,0 +1,10 @@
+*.pdb
+*.suo
+*.user
+*.log
+
+obj
+bin
+/lib
+
+/src/packages

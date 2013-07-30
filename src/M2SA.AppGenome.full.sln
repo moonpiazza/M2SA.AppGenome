@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4EA3398E-036E-4392-9E9B-5216A115E34E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Tests", "AppGenome\M2SA.AppGenome.Tests\M2SA.AppGenome.Tests.csproj", "{68523D89-0E59-4D24-BA30-4D9EB900027F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome", "AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj", "{682BEB8B-8F34-446D-B264-D26378E86014}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68523D89-0E59-4D24-BA30-4D9EB900027F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68523D89-0E59-4D24-BA30-4D9EB900027F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68523D89-0E59-4D24-BA30-4D9EB900027F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68523D89-0E59-4D24-BA30-4D9EB900027F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68523D89-0E59-4D24-BA30-4D9EB900027F} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
+	EndGlobalSection
+EndGlobal

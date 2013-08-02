@@ -24,7 +24,7 @@ namespace M2SA.AppGenome.Configuration
 
         static Type instanceType = typeof(TType);
 
-
+        private string defaultCategory = null;
         private IDictionary<string, TType> objectMap = new Dictionary<string, TType>(4);
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace M2SA.AppGenome.Configuration
             
             if (implementType.CanCreated())
             {
-                obj = (TType)Activator.CreateInstance(implementType, false);
+                obj = (TType)Activator.CreateInstance(implementType, true);
             }
             else
                 throw new NotImplementedException(string.Format("{0} cannot be created !", implementType));
@@ -158,14 +158,19 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         protected virtual string GetDefaultCategory()
         {
-            var result = string.Empty;
+            if (null != this.defaultCategory)
+                return this.defaultCategory;
+
+            var categoryName = string.Empty;
             var configNode = AppInstance.GetConfigNode(this.ModuleKey, null);
             if (null != configNode)
-                result = configNode.GetProperty<string>(AppConfig.DefaultKey);
+                categoryName = configNode.GetProperty<string>(AppConfig.DefaultKey);
 
-            if (string.IsNullOrEmpty(result))
-                result = AppConfig.DefaultKey;
-            return result; 
+            if (string.IsNullOrEmpty(categoryName))
+                categoryName = AppConfig.DefaultKey;
+            this.defaultCategory = categoryName;
+
+            return this.defaultCategory; 
         }
     }
 }

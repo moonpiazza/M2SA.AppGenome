@@ -90,8 +90,7 @@ namespace M2SA.AppGenome.Web
         /// <param name="cookie"></param>
         public HttpCookieInfo(HttpCookie cookie)
         {
-            if (null == cookie)
-                throw new ArgumentNullException("cookie");
+            ArgumentAssertion.IsNotNull(cookie, "cookie");
 
             this.Name = cookie.Name;
             this.Domain = cookie.Domain;

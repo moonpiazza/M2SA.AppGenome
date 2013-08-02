@@ -54,7 +54,7 @@ namespace M2SA.AppGenome.Configuration
 
             try
             {
-                var obj = Activator.CreateInstance(objType);
+                var obj = Activator.CreateInstance(objType, true);
 
                 return obj;
             }
@@ -77,8 +77,7 @@ namespace M2SA.AppGenome.Configuration
 
         private static object BuildObject(Type targetType, IConfigNode configNode)
         {
-            if (null == configNode)
-                throw new ArgumentNullException("configNode");
+            ArgumentAssertion.IsNotNull(configNode, "configNode");
 
             var objTypeDefine = configNode.MetaType;
             var obj = BuildObject(targetType, objTypeDefine);

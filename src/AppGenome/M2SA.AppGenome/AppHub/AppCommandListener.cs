@@ -123,8 +123,7 @@ namespace M2SA.AppGenome.AppHub
 
         void IExtensionApplication.OnInit(ExtensibleApplication onwer, CommandArguments args)
         {
-            if (null == onwer)
-                throw new ArgumentNullException("onwer");
+            ArgumentAssertion.IsNotNull(onwer, "onwer");
             onwer.Exit += new EventHandler(ExtensibleApplication_Exit);
         }
 

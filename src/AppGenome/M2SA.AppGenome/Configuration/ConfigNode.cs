@@ -26,8 +26,7 @@ namespace M2SA.AppGenome.Configuration
         /// <param name="configNode"></param>        
         public ConfigNode(XmlNode configNode)
         {
-            if (null == configNode)
-                throw new ArgumentNullException("configNode");
+            ArgumentAssertion.IsNotNull(configNode, "configNode");
 
             this.Name = configNode.Name.ToLower();
 
@@ -48,8 +47,7 @@ namespace M2SA.AppGenome.Configuration
         /// <param name="node"></param>        
         protected void ResolveObject(XmlNode node)
         {
-            if (null == node)
-                throw new ArgumentNullException("node");
+            ArgumentAssertion.IsNotNull(node, "node");
 
             this.propertyMap = new Dictionary<string, object>(node.Attributes.Count + 4);
 
@@ -111,6 +109,9 @@ namespace M2SA.AppGenome.Configuration
 
         #region IConfigNode 成员
 
+        private string metaType;
+        private bool enableSingleton;
+
         /// <summary>
         /// 
         /// </summary>
@@ -125,8 +126,12 @@ namespace M2SA.AppGenome.Configuration
         /// </summary>
         public string MetaType
         {
-            get;
-            set;
+            get { return this.metaType; }
+            set 
+            {
+                this.metaType = value;
+                this.SetProperty<string>(MetaTypeName, value);
+            }
         }
 
         /// <summary>
@@ -134,8 +139,12 @@ namespace M2SA.AppGenome.Configuration
         /// </summary>
         public bool EnableSingleton
         {
-            get;
-            set;
+            get { return this.enableSingleton; }
+            set
+            {
+                this.enableSingleton = value;
+                this.SetProperty<bool>(EnableSingletonName, value);
+            }
         }
 
         /// <summary>
@@ -154,8 +163,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>        
         public bool ContainsProperty(string propertyName)
         {
-            if (null == propertyName)
-                throw new ArgumentNullException("propertyName");
+            ArgumentAssertion.IsNotNull(propertyName, "propertyName");
             return this.propertyMap.ContainsKey(propertyName.ToLower());
         }
 
@@ -166,8 +174,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public object GetProperty(string propertyName)
         {
-            if (null == propertyName)
-                throw new ArgumentNullException("propertyName");
+            ArgumentAssertion.IsNotNull(propertyName, "propertyName");
             object result = null;
             if (this.propertyMap.ContainsKey(propertyName.ToLower()))
             {
@@ -184,8 +191,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public object GetProperty(string propertyName, object defaultValue)
         {
-            if (null == propertyName)
-                throw new ArgumentNullException("propertyName");
+            ArgumentAssertion.IsNotNull(propertyName, "propertyName");
 
             var result = GetProperty(propertyName.ToLower());
             if (null == result)
@@ -215,8 +221,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public T GetProperty<T>(string propertyName, T defaultValue)
         {
-            if (null == propertyName)
-                throw new ArgumentNullException("propertyName");
+            ArgumentAssertion.IsNotNull(propertyName, "propertyName");
 
             T result = defaultValue;
             if (this.propertyMap.ContainsKey(propertyName.ToLower()))
@@ -236,8 +241,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public void SetProperty<T>(string propertyName, T value)
         {
-            if (null == propertyName)
-                throw new ArgumentNullException("propertyName");
+            ArgumentAssertion.IsNotNull(propertyName, "propertyName");
             this.propertyMap[propertyName.ToLower()] = value;
         }
 
@@ -248,8 +252,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public IList<IConfigNode> GetNodeList(string nodeName)
         {
-            if (null == nodeName)
-                throw new ArgumentNullException("nodeName");
+            ArgumentAssertion.IsNotNull(nodeName, "nodeName");
             var propValue = this.propertyMap[nodeName.ToLower()];
             return propValue as IList<IConfigNode>;
         }
@@ -261,8 +264,7 @@ namespace M2SA.AppGenome.Configuration
         /// <returns></returns>
         public IDictionary<string, IConfigNode> GetNodeMap(string nodeName)
         {
-            if (null == nodeName)
-                throw new ArgumentNullException("nodeName");
+            ArgumentAssertion.IsNotNull(nodeName, "nodeName");
             var nodeMap = new Dictionary<string, IConfigNode>();
             var propValue = this.propertyMap[nodeName.ToLower()];
 

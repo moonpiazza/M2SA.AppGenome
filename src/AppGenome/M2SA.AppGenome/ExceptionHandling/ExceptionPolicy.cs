@@ -63,7 +63,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         /// <returns></returns>
         public bool HandleException(Exception originalException, IDictionary bizInfo)
         {
-            if (originalException == null) throw new ArgumentNullException("originalException");
+            ArgumentAssertion.IsNotNull(originalException, "originalException");
 
             ExceptionPolicyEntry entry = GetPolicyEntry(originalException);
 

@@ -36,8 +36,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         /// <returns></returns>
         public Exception HandleException(Exception exception, Guid handlingInstanceId, IDictionary bizInfo)
         {
-            if (null == exception)
-                throw new ArgumentNullException("exception");
+            ArgumentAssertion.IsNotNull(exception, "exception");
 
             var context = HttpContext.Current;
             if (context == null)

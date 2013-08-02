@@ -32,8 +32,7 @@ namespace M2SA.AppGenome.Web
         /// <param name="context"></param>
         public void Init(HttpApplication context)
         {
-            if (null == context)
-                throw new ArgumentNullException("context");
+            ArgumentAssertion.IsNotNull(context, "context");
             this.httpApplication = context;
             this.httpApplication.Error += new EventHandler(context_Error);
             this.httpApplication.BeginRequest += new EventHandler(httpApplication_BeginRequest);

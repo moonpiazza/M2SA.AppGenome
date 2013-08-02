@@ -36,8 +36,7 @@ namespace M2SA.AppGenome.AppHub
         /// <param name="args"></param>
         public CommandArguments(string[] args)
         {
-            if (null == args)
-                throw new ArgumentNullException("args");
+            ArgumentAssertion.IsNotNull(args, "args");
 
             this.argumentMap = new Dictionary<string, string>(args.Length);
             foreach (var arg in args)
@@ -71,8 +70,7 @@ namespace M2SA.AppGenome.AppHub
         /// <returns></returns>
         public string GetCommandArgument(string argName)
         {
-            if (null == argName)
-                throw new ArgumentNullException("argName");
+            ArgumentAssertion.IsNotNull(argName, "argName");
 
             string value = null;
             argName = argName.ToLower();
@@ -91,8 +89,7 @@ namespace M2SA.AppGenome.AppHub
         /// <returns></returns>
         public bool ContainsArgument(string argName)
         {
-            if (null == argName)
-                throw new ArgumentNullException("argName");
+            ArgumentAssertion.IsNotNull(argName, "argName");
 
             argName = argName.ToLower();
             return this.argumentMap.ContainsKey(argName);

@@ -20,8 +20,7 @@ namespace M2SA.AppGenome
         /// <param name="actions"></param>
         public void Work(params Action[] actions)
         {
-            if (null == actions)
-                throw new ArgumentNullException("actions");
+            ArgumentAssertion.IsNotNull(actions, "actions");
 
             lock (locker)
             {

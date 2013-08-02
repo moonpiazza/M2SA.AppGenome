@@ -45,8 +45,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns>Property value.</returns>
         public object GetValue(object target, string propertyName)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             try
             {
                 var accessor = this.GetPropertyAccessor(propertyName);
@@ -76,8 +75,7 @@ namespace M2SA.AppGenome.Reflection
         /// <param name="value">Property value.</param>
         public void SetValue(object target, string propertyName, object value)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             try
             {
                 var accessor = this.GetPropertyAccessor(propertyName);

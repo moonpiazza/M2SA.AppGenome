@@ -22,8 +22,7 @@ namespace M2SA.AppGenome
         /// <returns></returns>
         public static string GetFullPath(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
-                throw new ArgumentNullException("filePath");
+            ArgumentAssertion.IsNotNull(filePath, "filePath");
 
             if (filePath.IndexOf(@":\\") != -1)
             {
@@ -62,7 +61,7 @@ namespace M2SA.AppGenome
                     try
                     {
                         WriteContent(filePath, content);
-                        times = tryTimes;
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -92,19 +91,8 @@ namespace M2SA.AppGenome
             var fullPath = GetFullPath(filePath);
             CreateDirectoryForFile(fullPath);
 
-            FileStream fs = null;
-            if (File.Exists(fullPath))
+            using (var sw = new StreamWriter(fullPath, true, Encoding.UTF8))
             {
-                fs = new FileStream(fullPath, FileMode.Append);
-            }
-            else
-            {
-                fs = new FileStream(fullPath, FileMode.Create);
-            }
-
-            using (fs)
-            {
-                var sw = new StreamWriter(fs, Encoding.Default);
                 sw.Write(content);
             }
         }

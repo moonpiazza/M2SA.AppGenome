@@ -85,8 +85,7 @@ namespace M2SA.AppGenome.Reflection
         /// <param name="property">Property name.</param>
         public ReflectionPropertyAccessor(Type targetType, string property)
         {
-            if (null == targetType)
-                throw new ArgumentNullException("targetType");
+            ArgumentAssertion.IsNotNull(targetType, "targetType");
 
             this.mTargetType = targetType;
 

@@ -18,8 +18,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static bool IsPrimitiveType(this Type target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             return ((target.IsValueType && Type.GetTypeCode(target) != TypeCode.Object) || target.Equals(typeof(string))|| target.Equals(typeof(TimeSpan)));
         }
 
@@ -30,8 +29,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static bool IsListType(this Type target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             var result = false;
             if (target.Equals(typeof(IList)) || target.GetInterface("System.Collections.IList") != null)
             {
@@ -59,8 +57,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static bool IsDictionaryType(this Type target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
 
             var result = false;
             if (target.Equals(typeof(IDictionary)) || target.GetInterface("System.Collections.IDictionary") != null)
@@ -89,8 +86,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static Type GetMapType(this Type target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
 
             Type result = null;
             var aliasKeys = new string[] { target.Name, target.FullName };
@@ -172,8 +168,8 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static string GetSimpleQualifiedName(this Type type)
         {
-            if (null == type)
-                throw new ArgumentNullException("type");
+            ArgumentAssertion.IsNotNull(type, "type");
+
             var assemblyInfo = type.Assembly.FullName.Split(',');
             var assemblyName = assemblyInfo[0];
             if (assemblyName.StartsWith("mscorlib"))
@@ -220,8 +216,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static bool CanCreated(this Type type)
         {
-            if (null == type)
-                throw new ArgumentNullException("type");
+            ArgumentAssertion.IsNotNull(type, "type");
             return (type.IsAbstract == false && type.IsInterface == false);
         }
 

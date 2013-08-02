@@ -55,8 +55,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         /// <returns></returns>
         public bool Handle(Exception originalException, IDictionary bizInfo)
         {
-            if (originalException == null)
-                throw new ArgumentNullException("originalException");
+            ArgumentAssertion.IsNotNull(originalException, "originalException");
 
             Guid handlingInstanceID = Guid.NewGuid();
             Exception chainException = ExecuteHandlerChain(originalException, handlingInstanceID, bizInfo);

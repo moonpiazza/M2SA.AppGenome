@@ -193,8 +193,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static XmlDocument ToXml(this object val)
         {
-            if (null == val)
-                throw new ArgumentNullException("val");
+            ArgumentAssertion.IsNotNull(val, "val"); ;
 
             var targetType = val.GetType();
 
@@ -379,8 +378,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static IDictionary<string, object> GetPropertyValues(this object target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
 
             var targetType = target.GetType();
             var accessor = ClassAccessorRepository.GetClassAccessor(targetType);
@@ -407,10 +405,8 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static IDictionary<string, object> GetPropertyValues(this object target, IList<string> propertyNames)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
-            if (null == propertyNames)
-                throw new ArgumentNullException("propertyNames");
+            ArgumentAssertion.IsNotNull(target, "target");
+            ArgumentAssertion.IsNotNull(propertyNames, "propertyNames");
 
             var targetType = target.GetType();
             var accessor = ClassAccessorRepository.GetClassAccessor(targetType);
@@ -436,8 +432,7 @@ namespace M2SA.AppGenome.Reflection
         /// <param name="propertyValues"></param>
         public static void SetPropertyValues(this object target, IDictionary<string, object> propertyValues)
         {
-            if (null == propertyValues)
-                throw new ArgumentNullException("propertyValues");
+            ArgumentAssertion.IsNotNull(propertyValues, "propertyValues");
 
             var accessor = ClassAccessorRepository.GetClassAccessor(target);
 
@@ -448,6 +443,8 @@ namespace M2SA.AppGenome.Reflection
         }
 
         #endregion
+
+        #region Convert
 
         /// <summary>
         /// 
@@ -470,10 +467,8 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static object Convert(this object value, Type targetType)
         {
-            if (null == value)
-                throw new ArgumentNullException("value");
-            if (null == targetType)
-                throw new ArgumentNullException("targetType");
+            ArgumentAssertion.IsNotNull(value, "value");
+            ArgumentAssertion.IsNotNull(targetType, "targetType");
 
             object target = null;
             if (targetType.IsEnum)
@@ -542,5 +537,7 @@ namespace M2SA.AppGenome.Reflection
 
             return target;
         }
+
+        #endregion
     }
 }

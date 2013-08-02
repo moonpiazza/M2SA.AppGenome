@@ -25,8 +25,7 @@ namespace M2SA.AppGenome.Web
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool IsCrawlerRequest(HttpRequest request)
         {
-            if (null == request)
-                throw new ArgumentNullException("request");
+            ArgumentAssertion.IsNotNull(request, "request");
 
             var isCrawler = false;
             try
@@ -76,8 +75,7 @@ namespace M2SA.AppGenome.Web
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool ExceededMaximumRequestLength(HttpRequest request)
         {
-            if (null == request)
-                throw new ArgumentNullException("request");
+            ArgumentAssertion.IsNotNull(request, "request");
 
             var exceeded = false;
             try

@@ -163,8 +163,7 @@ namespace M2SA.AppGenome
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool Handle(this Action action, string policyName, IDictionary bizInfo)
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
+            ArgumentAssertion.IsNotNull(action, "action");
 
             try
             {
@@ -280,8 +279,7 @@ namespace M2SA.AppGenome
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool HandleException(this Exception source, string policyName, IDictionary bizInfo, out Exception exceptionToThrow)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
+            ArgumentAssertion.IsNotNull(source, "source");
 
             try
             {

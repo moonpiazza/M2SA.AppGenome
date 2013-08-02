@@ -20,8 +20,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static IClassAccessor GetClassAccessor(object target)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             var type = target.GetType();
             return GetClassAccessor(type);
         }
@@ -34,8 +33,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static IClassAccessor GetClassAccessor(object target, AccessorType accessorType)
         {
-            if (null == target)
-                throw new ArgumentNullException("target");
+            ArgumentAssertion.IsNotNull(target, "target");
             var type = target.GetType();
             return GetClassAccessor(type, accessorType);
         }
@@ -58,8 +56,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static IClassAccessor GetClassAccessor(Type targetType, AccessorType accessorType)
         {
-            if (null == targetType)
-                throw new ArgumentNullException("targetType");
+            ArgumentAssertion.IsNotNull(targetType, "targetType");
 
             IClassAccessor accessor = null;
             var typeKey = string.Format("{0}.{1}", accessorType, targetType.FullName);

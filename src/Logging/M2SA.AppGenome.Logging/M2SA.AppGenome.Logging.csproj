@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{73510913-961E-45E7-8AAA-2DBA89DF24BF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>M2SA.AppGenome.Logging</RootNamespace>
+    <AssemblyName>M2SA.AppGenome.Logging</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\bin\debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\bin\debug\M2SA.AppGenome.Logging.xml</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\bin\release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\bin\release\M2SA.AppGenome.Logging.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EffectiveFileLogger.cs" />
+    <Compile Include="FilePattern.cs" />
+    <Compile Include="Formatters\FormatterBase.cs" />
+    <Compile Include="Formatters\FormatterUtility.cs" />
+    <Compile Include="Formatters\ILogEntryFormatter.cs" />
+    <Compile Include="Formatters\TextFormatter.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="ISessionEntry.cs" />
+    <Compile Include="ISessionLog.cs" />
+    <Compile Include="LevelConstraint.cs" />
+    <Compile Include="Listeners\ConsoleListener.cs" />
+    <Compile Include="Listeners\FileListener.cs" />
+    <Compile Include="Listeners\IListener.cs" />
+    <Compile Include="Listeners\ListenerBase.cs" />
+    <Compile Include="Listeners\ListenerProxy.cs" />
+    <Compile Include="Listeners\ListenerFactory.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LogFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionEntry.cs" />
+    <Compile Include="SessionLogger.cs" />
+    <Compile Include="SessionLoggerProxy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj">
+      <Project>{682beb8b-8f34-446d-b264-d26378e86014}</Project>
+      <Name>M2SA.AppGenome</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

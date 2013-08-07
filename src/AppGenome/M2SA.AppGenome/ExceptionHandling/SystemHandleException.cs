@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using M2SA.AppGenome.Configuration;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.ExceptionHandling
 {

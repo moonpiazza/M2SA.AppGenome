@@ -10,6 +10,7 @@ using System.Configuration;
 using M2SA.AppGenome.AppHub;
 using M2SA.AppGenome.Configuration;
 using M2SA.AppGenome.ExceptionHandling;
+using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Threading;
 using M2SA.AppGenome.Reflection;
 using M2SA.AppGenome.Web;

@@ -7,6 +7,7 @@ using System.Xml.XPath;
 using System.Xml.Xsl;
 using System.Threading;
 using System.Diagnostics;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Threading
 {

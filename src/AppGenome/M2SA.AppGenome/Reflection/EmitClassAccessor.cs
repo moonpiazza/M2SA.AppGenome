@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Diagnostics;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Reflection
 {

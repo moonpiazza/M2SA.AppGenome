@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using M2SA.AppGenome.AppHub;
+using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Threading;
 using M2SA.AppGenome.Reflection;
 

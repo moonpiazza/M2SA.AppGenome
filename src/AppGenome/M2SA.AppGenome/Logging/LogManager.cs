@@ -5,7 +5,7 @@ using System.Text;
 using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Reflection;
 
-namespace M2SA.AppGenome
+namespace M2SA.AppGenome.Logging
 {
     /// <summary>
     /// 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Collections;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Web
 {

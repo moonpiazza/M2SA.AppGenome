@@ -24,6 +24,10 @@ namespace M2SA.AppGenome.Logging.Tests
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
+            var now = DateTime.Now;
+            Console.WriteLine(now.ToString("bdvvss"));
+
+
             var groupName = "FileTestA";
             var source = new string[] { "a1", "b1", "c1" };
 
@@ -43,8 +47,7 @@ namespace M2SA.AppGenome.Logging.Tests
             var m = new Random().Next(3, 6);
             for (var i = 0; i < m; i++)
             {
-                var t = new Thread(new ThreadStart(TestLogInfo));
-                t.Start();
+                AppInstance.GetThreadPool().QueueWorkItem<string>((x) => TestExInfo(), string.Empty);
             }
 
             Thread.Sleep(10000);

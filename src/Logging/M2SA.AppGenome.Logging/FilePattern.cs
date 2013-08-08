@@ -61,6 +61,6 @@ namespace M2SA.AppGenome.Logging
             }
 
             return filePath;
-        } 
+        }
     }
 }

@@ -52,7 +52,10 @@ namespace M2SA.AppGenome.Logging.Tests
         [Test]
         public void LogInfoTest()
         {
-            var sessionLogName = "SessionTestA";
+             var sessionLogName = "SessionTestA";
+             ObjectIOCFactory.GetSingleton<MemoryLogSource>().Clear(sessionLogName);
+
+           
             var sourceA = new string[] { "a123456789", "b123456789", "c123456789" };
             var sourceB = new string[] { "X987654321", "Y987654321", "Z987654321" };
             var idA= Guid.NewGuid().ToString();

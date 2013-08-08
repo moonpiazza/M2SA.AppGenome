@@ -16,22 +16,22 @@ namespace M2SA.AppGenome.Logging.Tests.TestObjects
             this.LogSource = new Dictionary<string, IList<object>>(10);
         }
 
-        public void Store(string guoupName, object entry)
+        public void Store(string groupName, object entry)
         {
-            if (this.LogSource.ContainsKey(guoupName) == false)
+            if (this.LogSource.ContainsKey(groupName) == false)
             {
                 lock (syncObject)
                 {
-                    if (this.LogSource.ContainsKey(guoupName) == false)
+                    if (this.LogSource.ContainsKey(groupName) == false)
                     {
-                        this.LogSource[guoupName] = new List<object>(100);
+                        this.LogSource[groupName] = new List<object>(100);
                     }
                 }
             }
 
             lock (syncObject)
             {
-                this.LogSource[guoupName].Add(entry);
+                this.LogSource[groupName].Add(entry);
             }
         }
 

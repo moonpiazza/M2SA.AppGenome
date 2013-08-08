@@ -17,7 +17,7 @@ namespace M2SA.AppGenome.Logging.Tests
         public virtual void Start()
         {
             stopwatch = Stopwatch.StartNew();
-            ExtensibleApplication.GetInstance().Start();
+            ExtensibleApplication.GetInstance().Start();            
         }
 
         [TestFixtureTearDown]

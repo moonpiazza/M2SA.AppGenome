@@ -60,9 +60,9 @@ namespace M2SA.AppGenome.Cache
         /// <summary>
         /// 保存数据
         /// </summary>
-        /// <param name="oKey"></param>
+        /// <param name="key"></param>
         /// <param name="data"></param>
-        void Set(object oKey, object data);
+        void Set(object key, object data);
 
         /// <summary>
         /// 移除数据

@@ -14,7 +14,7 @@ namespace M2SA.AppGenome.Cache
     /// </summary>
     public class ActiveCacheNotify : ICacheNotify
     {
-        ICache cache = null;
+        ICache targetCache = null;
         string taskGroupName = null;
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace M2SA.AppGenome.Cache
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="instance"></param>
-        public void SetCache(ICache instance)
+        /// <param name="cache"></param>
+        public void SetCache(ICache cache)
         {
-            this.cache = instance;
+            this.targetCache = cache;
             if (this.RefreshInterval <= TimeSpan.Zero)
             {
-                var interval = this.cache.ExpiryTime.TotalSeconds * 0.9;
+                var interval = this.targetCache.ExpiryTime.TotalSeconds * 0.9;
                 if (interval < int.MaxValue && interval > int.MinValue)
                 {
                     var intervalSpan = TimeSpan.FromSeconds(interval);
@@ -82,7 +82,7 @@ namespace M2SA.AppGenome.Cache
 
             if (Enable())
             {
-                this.taskGroupName = string.Format("{0}.{1}", AppConfig.CachedKey, this.cache.Name);
+                this.taskGroupName = string.Format("{0}.{1}", AppConfig.CachedKey, this.targetCache.Name);
                 AppInstance.GetTaskProcessor().RegisterAction<string>(this.taskGroupName, this.ResetCacheItem, this.RefreshInterval, true);
             }
         }
@@ -146,8 +146,8 @@ namespace M2SA.AppGenome.Cache
 
         void ResetCacheItem(string key)
         {
-            var data = this.cache.LoadDataHandler.LoadData(key);
-            cache.Set(key, data);
+            var data = this.targetCache.LoadDataHandler.LoadData(key);
+            targetCache.Set(key, data);
         }
     }
 }

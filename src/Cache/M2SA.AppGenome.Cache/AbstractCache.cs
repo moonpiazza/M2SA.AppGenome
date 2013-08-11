@@ -88,12 +88,13 @@ namespace M2SA.AppGenome.Cache
         /// 获取数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="oKey"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public T Get<T>(object oKey)
+        public T Get<T>(object key)
         {
-            var key = oKey.ToString();
-            var val = this.Get(key);
+            ArgumentAssertion.IsNotNull(key, "oKey");
+            var cacheKey = key.ToString();
+            var val = this.Get(cacheKey);
             if (val == null)
                 return default(T);
             else
@@ -122,12 +123,13 @@ namespace M2SA.AppGenome.Cache
         /// <summary>
         /// 保存数据
         /// </summary>
-        /// <param name="oKey"></param>
+        /// <param name="key"></param>
         /// <param name="data"></param>
-        public void Set(object oKey, object data)
+        public void Set(object key, object data)
         {
-            var key = oKey.ToString();
-            this.Set(key, data);
+            ArgumentAssertion.IsNotNull(key, "key");
+            var cacheKey = key.ToString();
+            this.Set(cacheKey, data);
         }
 
         /// <summary>

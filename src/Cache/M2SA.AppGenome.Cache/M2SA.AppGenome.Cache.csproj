@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\bin\debug\M2SA.AppGenome.Cache.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>E:\Works\Sources\FlightPool\design\CodeDesign_Rules_For_FlightPool.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AbstractCache.cs" />
     <Compile Include="ActiveCacheNotify.cs" />
+    <Compile Include="ArgumentAssertion.cs" />
     <Compile Include="CacheFactory.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="MemCached\MemCache.cs" />

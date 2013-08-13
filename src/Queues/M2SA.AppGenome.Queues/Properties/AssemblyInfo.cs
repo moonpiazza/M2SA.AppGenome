@@ -1,15 +1,16 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("M2SA.AppGenome.Tests")]
+[assembly: AssemblyTitle("M2SA.AppGenome.Queues")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("M2sa Studio")]
-[assembly: AssemblyProduct("M2SA.AppGenome.Tests")]
+[assembly: AssemblyProduct("M2SA.AppGenome.Queues")]
 [assembly: AssemblyCopyright("Copyright © M2sa.net 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -18,9 +19,10 @@ using System.Runtime.InteropServices;
 // 对 COM 组件不可见。如果需要从 COM 访问此程序集中的类型，
 // 则将该类型上的 ComVisible 特性设置为 true。
 [assembly: ComVisible(false)]
+[assembly: CLSCompliant(true)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("26114fff-c7b8-4726-a899-1b6eff98a753")]
+[assembly: Guid("031726b0-384a-4a36-8f04-ef6126b7f07c")]
 
 // 程序集的版本信息由下面四个值组成:
 //

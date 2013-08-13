@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{611E4612-0333-46C4-A2E3-29648F9D1E60}</ProjectGuid>
+    <ProjectGuid>{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>M2SA.AppGenome.Logging.Tests</RootNamespace>
-    <AssemblyName>M2SA.AppGenome.Logging.Tests</AssemblyName>
+    <RootNamespace>M2SA.AppGenome.Queues.Tests</RootNamespace>
+    <AssemblyName>M2SA.AppGenome.Queues.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\bin\test\logging\</OutputPath>
+    <OutputPath>..\..\..\bin\test\queues\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\bin\test\logging\</OutputPath>
+    <OutputPath>..\..\..\bin\test\queues\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,35 +40,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultLogTest.cs" />
-    <Compile Include="ExceptionPolicyTest.cs" />
-    <Compile Include="FileLogTest.cs" />
-    <Compile Include="FormatterUtilityTest.cs" />
-    <Compile Include="MemoryLogTest.cs" />
-    <Compile Include="TestHelper.cs" />
-    <Compile Include="TestObjects\MemoryListener.cs" />
-    <Compile Include="TestObjects\MemoryLogSource.cs" />
-    <Compile Include="TestObjects\SimpleTextFormatter.cs" />
+    <Compile Include="MultiNodeClusterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionLogTest.cs" />
+    <Compile Include="SingleNodeClusterTest.cs" />
+    <Compile Include="SingleQueueTest.cs" />
     <Compile Include="TestBase.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="TestObjects\TestMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\M2SA.AppGenome.Queues\M2SA.AppGenome.Queues.csproj">
+      <Project>{FD23879B-0B35-4307-A3E1-5418B126EE96}</Project>
+      <Name>M2SA.AppGenome.Queues</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj">
+      <Project>{682BEB8B-8F34-446D-B264-D26378E86014}</Project>
+      <Name>M2SA.AppGenome</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="appgenome.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj">
-      <Project>{682beb8b-8f34-446d-b264-d26378e86014}</Project>
-      <Name>M2SA.AppGenome</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\M2SA.AppGenome.Logging\M2SA.AppGenome.Logging.csproj">
-      <Project>{73510913-961e-45e7-8aaa-2dba89df24bf}</Project>
-      <Name>M2SA.AppGenome.Logging</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

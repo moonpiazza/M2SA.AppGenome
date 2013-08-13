@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("M2SA.AppGenome.Cache")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Monster Chinahr")]
+[assembly: AssemblyCompany("M2sa Studio")]
 [assembly: AssemblyProduct("M2SA.AppGenome.Cache")]
-[assembly: AssemblyCopyright("Copyright © Monster Chinahr 2011")]
+[assembly: AssemblyCopyright("Copyright © M2sa.net 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

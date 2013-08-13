@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("M2SA.AppGenome.Cache.UnitTest")]
+[assembly: AssemblyTitle("M2SA.AppGenome.Cache.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Monster Chinahr")]
-[assembly: AssemblyProduct("M2SA.AppGenome.Cache.UnitTest")]
-[assembly: AssemblyCopyright("Copyright © Monster Chinahr 2011")]
+[assembly: AssemblyCompany("M2sa Studio")]
+[assembly: AssemblyProduct("M2SA.AppGenome.Cache.Tests")]
+[assembly: AssemblyCopyright("Copyright © M2sa.net 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

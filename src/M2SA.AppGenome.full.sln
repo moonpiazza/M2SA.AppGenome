@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4EA3398E-036E-4392-9E9B-5216A115E34E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Tests", "AppGenome\M2SA.AppGenome.Tests\M2SA.AppGenome.Tests.csproj", "{68523D89-0E59-4D24-BA30-4D9EB900027F}"
@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Cache", "Cache\M2SA.AppGenome.Cache\M2SA.AppGenome.Cache.csproj", "{4AFF80F3-C42D-4DB7-BC7A-ED2EAD367776}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Cache.Tests", "Cache\M2SA.AppGenome.Cache.Tests\M2SA.AppGenome.Cache.Tests.csproj", "{6D2EBC08-5E38-4D1B-966E-82BA038D51CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues", "Queues\M2SA.AppGenome.Queues\M2SA.AppGenome.Queues.csproj", "{FD23879B-0B35-4307-A3E1-5418B126EE96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues.Tests", "Queues\M2SA.AppGenome.Queues.Tests\M2SA.AppGenome.Queues.Tests.csproj", "{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{6D2EBC08-5E38-4D1B-966E-82BA038D51CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D2EBC08-5E38-4D1B-966E-82BA038D51CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D2EBC08-5E38-4D1B-966E-82BA038D51CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +65,6 @@ Global
 		{68523D89-0E59-4D24-BA30-4D9EB900027F} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 		{611E4612-0333-46C4-A2E3-29648F9D1E60} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 		{6D2EBC08-5E38-4D1B-966E-82BA038D51CC} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 	EndGlobalSection
 EndGlobal

@@ -209,7 +209,7 @@ namespace M2SA.AppGenome
             AppInstance.RegisterModule(AppConfig.AppBaseKey, "M2SA.AppGenome");
             AppInstance.RegisterModule(AppConfig.ExceptionHandlingKey, "M2SA.AppGenome.ExceptionHandling");
             AppInstance.RegisterModule(AppConfig.LoggingKey, "M2SA.AppGenome.Logging");
-            AppInstance.RegisterModule(AppConfig.QueuesKey, "M2SA.AppGenome.MessageQueues");
+            AppInstance.RegisterModule(AppConfig.QueuesKey, "M2SA.AppGenome.Queues");
             AppInstance.RegisterModule(AppConfig.CachedKey, "M2SA.AppGenome.Cache");
             AppInstance.RegisterModule(AppConfig.AppHostKey, "M2SA.AppGenome.AppHub");
         }

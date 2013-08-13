@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues", "M2SA.AppGenome.Queues\M2SA.AppGenome.Queues.csproj", "{FD23879B-0B35-4307-A3E1-5418B126EE96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome", "..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj", "{682BEB8B-8F34-446D-B264-D26378E86014}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues.Tests", "M2SA.AppGenome.Queues.Tests\M2SA.AppGenome.Queues.Tests.csproj", "{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD23879B-0B35-4307-A3E1-5418B126EE96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{682BEB8B-8F34-446D-B264-D26378E86014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -41,16 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RepositoryTest.cs" />
+    <Compile Include="MySqlRepositoryTest.cs" />
     <Compile Include="Mocks\RepositoryFactory.cs" />
     <Compile Include="Mocks\TestEntity.cs" />
     <Compile Include="Mocks\TestRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="RepositoryTestBase.cs" />
+    <Compile Include="SqlServerRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="appgenome.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

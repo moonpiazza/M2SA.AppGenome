@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Data;
 using System.Data.Common;
 using M2SA.AppGenome.Data.SqlMap;
-using M2SA.AppGenome.Data.MySql;
 
 namespace M2SA.AppGenome.Data
 {
@@ -20,8 +19,8 @@ namespace M2SA.AppGenome.Data
     {
         static SqlHelper()
         {
-            AppInstance.RegisterTypeAlias<MySqlProvider>(typeof(MySqlProvider).Name);
-            SqlMapping.Initialize();            
+            AppInstance.RegisterTypeAlias<MySql.MySqlProvider>(typeof(MySql.MySqlProvider).Name);
+            AppInstance.RegisterTypeAlias<SqlServer.SqlServerProvider>(typeof(SqlServer.SqlServerProvider).Name);                  
         }
 
         /// <summary>
@@ -116,7 +115,7 @@ namespace M2SA.AppGenome.Data
         }
 
         /// <summary>
-        /// 通过指定SQL对象，执行后返回查询数据
+        /// 通过指定SqlWrap，执行后返回查询数据
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
@@ -127,7 +126,7 @@ namespace M2SA.AppGenome.Data
         }
 
         /// <summary>
-        /// 通过指定SQL对象，执行后返回查询数据
+        /// 通过指定SqlWrap，执行后返回查询数据
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
@@ -171,7 +170,7 @@ namespace M2SA.AppGenome.Data
         }
 
         /// <summary>
-        /// 通过指定SQL对象，执行后返回单值
+        /// 通过指定SqlWrap，执行后返回单值
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
@@ -182,7 +181,7 @@ namespace M2SA.AppGenome.Data
         }
 
         /// <summary>
-        /// 通过指定SQL对象，执行后返回单值
+        /// 通过指定SqlWrap，执行后返回单值
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
@@ -194,6 +193,63 @@ namespace M2SA.AppGenome.Data
 
             var result = dbProvider.ExecuteScalar(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
             return result;
+        }
+
+        #endregion        
+
+        #region ExecuteReader Methods
+
+
+        /// <summary>
+        /// 通过指定SQL名称执行SQL语句，获得DbDataReader后，使用委托Action[DbDataReader]处理数据流
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="action"></param>
+        public static void ExecuteReader(string sqlName, IDictionary<string, object> parameterValues, Action<DbDataReader> action)
+        {
+            ExecuteReader(sqlName, parameterValues, null, action);
+        }
+
+        /// <summary>
+        /// 通过指定SQL名称执行SQL语句，获得DbDataReader后，使用委托Action[DbDataReader]处理数据流
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="partitionValues"></param>
+        /// <param name="action"></param>
+        public static void ExecuteReader(string sqlName, IDictionary<string, object> parameterValues, string partitionValues, Action<DbDataReader> action)
+        {
+            var sqlWrap = SqlMapping.GetSqlWrap(sqlName);
+            ExecuteReader(sqlWrap, parameterValues, partitionValues, action);
+        }
+
+        /// <summary>
+        /// 通过指定SQL名称执行SQL语句，获得DbDataReader后，使用委托Action[DbDataReader]处理数据流
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="action"></param>
+        public static void ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues, Action<DbDataReader> action)
+        {
+            ExecuteReader(sql, parameterValues, null, action);
+        }
+
+        /// <summary>
+        /// 通过指定SQL名称执行SQL语句，获得DbDataReader后，使用委托Action[DbDataReader]处理数据流
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="partitionValues"></param>
+        /// <param name="action"></param>
+        public static void ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues, Action<DbDataReader> action)
+        {
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+
+            using (var dbReader = dbProvider.ExecuteReader(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout))
+            {
+                action(dbReader);
+            }
         }
 
         #endregion        

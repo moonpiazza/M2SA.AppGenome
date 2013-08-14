@@ -49,7 +49,7 @@ namespace M2SA.AppGenome.Data
         /// <summary>
         /// 
         /// </summary>
-        internal DatabaseConfig()
+        public DatabaseConfig()
         {
         }
     }

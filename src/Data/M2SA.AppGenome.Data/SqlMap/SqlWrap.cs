@@ -58,7 +58,7 @@ namespace M2SA.AppGenome.Data.SqlMap
         public SqlWrap()
         {
             this.CommandTimeout = 30;
-            this.SupportDBType = DatabaseType.MySQL;
+            this.SupportDBType = DatabaseType.MySql;
             this.CommandType = CommandType.Text;
         }
     }

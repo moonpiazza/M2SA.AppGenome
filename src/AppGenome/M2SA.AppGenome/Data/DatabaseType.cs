@@ -14,12 +14,12 @@ namespace M2SA.AppGenome.Data
         /// <summary>
         /// 
         /// </summary>
-        MySQL = 1,
+        MySql = 1,
 
         /// <summary>
         /// 
         /// </summary>
-        MSSQL = 2,        
+        SqlServer = 2,        
 
     }
 }

@@ -15,7 +15,7 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 默认的数据库类型
         /// </summary>
-        public static readonly DatabaseType DefaultDbType = DatabaseType.MySQL;
+        public static readonly DatabaseType DefaultDbType = DatabaseType.MySql;
 
         /// <summary>
         /// 存储数据库的映射字典（数据库级别）
@@ -31,6 +31,11 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// 存储Sql语句的映射字典（具体的Sql语句级别）
         /// </summary>
         private static IDictionary<string, SqlWrap> SqlMap { get; set; }
+
+        static SqlMapping()
+        {
+            Initialize();
+        }
 
         /// <summary>
         /// 

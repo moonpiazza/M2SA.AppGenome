@@ -56,6 +56,8 @@
     <Compile Include="SqlMap\SqlMapping.cs" />
     <Compile Include="SqlMap\SqlWrap.cs" />
     <Compile Include="SqlMap\SqlMappingLoader.cs" />
+    <Compile Include="SqlServer\SqlServerProvider.cs" />
+    <Compile Include="SqlServer\SqlServerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj">
@@ -63,6 +65,7 @@
       <Name>M2SA.AppGenome</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

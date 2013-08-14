@@ -4,8 +4,7 @@ using M2SA.AppGenome.Data.Tests.Mocks;
 
 namespace M2SA.AppGenome.Data.Tests
 {
-	[TestFixture]
-	public class RepositoryTest : TestBase
+    public abstract class RepositoryTestBase : TestBase
 	{
 		[Test]
 		public void InsertTest()

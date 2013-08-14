@@ -142,6 +142,8 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <returns></returns>
         public static bool ExistDatabase(string dbName)
         {
+            ArgumentAssertion.IsNotNull(dbName, "dbName");
+
             var dbKey = dbName.ToLower();
             return DBMap.ContainsKey(dbKey);
         }
@@ -153,6 +155,8 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <returns></returns>
         public static DatabaseConfig GetDatabase(string dbName)
         {
+            ArgumentAssertion.IsNotNull(dbName, "dbName");
+
             var dbKey = dbName.ToLower();
             if (DBMap.ContainsKey(dbKey) == false)
                 throw new ArgumentOutOfRangeException("dbName", dbName, string.Format("没有定义数据库 - {0}", dbName));
@@ -167,6 +171,8 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <returns></returns>
         public static string GetDbNameByModule(string moduleName)
         {
+            ArgumentAssertion.IsNotNull(moduleName, "moduleName");
+
             var moduleKey = moduleName.ToLower();
             if (ModuleMap.ContainsKey(moduleKey) == false)
                 throw new ArgumentOutOfRangeException("moduleName", moduleName, string.Format("没有定义模块 - {0}", moduleName));
@@ -183,6 +189,7 @@ namespace M2SA.AppGenome.Data.SqlMap
         {
             Initialize();
 
+            ArgumentAssertion.IsNotNull(sqlName, "sqlName");
             var sqlKey = sqlName.ToLower();
             if (SqlMap.ContainsKey(sqlKey) == false)
                 throw new ArgumentOutOfRangeException("sqlName", sqlName, string.Format("没有定义SqlWrap - {0}", sqlName));

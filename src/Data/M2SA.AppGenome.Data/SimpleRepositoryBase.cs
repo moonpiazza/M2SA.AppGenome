@@ -53,6 +53,8 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         protected virtual IList<T> Convert(DataTable dataTable)
         {
+            ArgumentAssertion.IsNotNull(dataTable, "dataTable");
+
             IList<T> list = null;
             var itemCount = dataTable.Rows.Count;
             if (itemCount > 0)
@@ -139,33 +141,33 @@ namespace M2SA.AppGenome.Data
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public virtual bool Save(T entity)
+        public virtual bool Save(T model)
         {
             var result = false;
 
-            if (entity.PersistentState == PersistentState.Transient)
+            if (model.PersistentState == PersistentState.Transient)
             {
                 var sqlName = this.FormatSqlName("Insert");
-                var pValues = this.Convert(entity);
+                var pValues = this.Convert(model);
                 var value = SqlHelper.ExecuteScalar(sqlName, pValues);
-                if (value != null && default(TId).Equals(entity.Id))
+                if (value != null && default(TId).Equals(model.Id))
                 {
-                    entity.Id = value.Convert<TId>();
+                    model.Id = value.Convert<TId>();
                 }
-                result = default(TId).Equals(entity.Id) == false;
+                result = default(TId).Equals(model.Id) == false;
             }
             else
             {
                 var sqlName = this.FormatSqlName("Update");
-                var pValues = this.Convert(entity);
+                var pValues = this.Convert(model);
                 var rowsAffected = SqlHelper.ExecuteNonQuery(sqlName, pValues);
                 result = rowsAffected > 0;
             }
             if (result == true)
             {
-                entity.PersistentState = PersistentState.Persistent;
+                model.PersistentState = PersistentState.Persistent;
             }
 
             return result;
@@ -174,16 +176,16 @@ namespace M2SA.AppGenome.Data
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public virtual bool Remove(T entity)
+        public virtual bool Remove(T model)
         {
             var sqlName = this.FormatSqlName("DeleteById");
             var pValues = new Dictionary<string, object>(1);
-            pValues.Add("Id", entity.Id);
+            pValues.Add("Id", model.Id);
 
             var rowsAffected = SqlHelper.ExecuteNonQuery(sqlName, pValues);
-            entity.PersistentState = PersistentState.Deleted;
+            model.PersistentState = PersistentState.Deleted;
 
             var result = rowsAffected > 0;
             return result;

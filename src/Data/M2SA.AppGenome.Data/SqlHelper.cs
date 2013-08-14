@@ -75,8 +75,9 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         public static int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues)
         {
-            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            ArgumentAssertion.IsNotNull(sql, "sql");
 
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
             var rowCount = dbProvider.ExecuteNonQuery(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
             return rowCount;
         }
@@ -134,8 +135,9 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         public static DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues)
         {
-            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            ArgumentAssertion.IsNotNull(sql, "sql");
 
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
             var dataset = dbProvider.ExecuteDataSet(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
             return dataset;
         }
@@ -189,8 +191,9 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         public static object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues)
         {
-            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            ArgumentAssertion.IsNotNull(sql, "sql");
 
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
             var result = dbProvider.ExecuteScalar(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
             return result;
         }
@@ -244,8 +247,12 @@ namespace M2SA.AppGenome.Data
         /// <param name="action"></param>
         public static void ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues, Action<DbDataReader> action)
         {
-            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            ArgumentAssertion.IsNotNull(sql, "sql");
 
+            if (null == action)
+                throw new ArgumentNullException("action");
+
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
             using (var dbReader = dbProvider.ExecuteReader(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout))
             {
                 action(dbReader);

@@ -210,7 +210,7 @@ namespace M2SA.AppGenome.Data.SqlMap
                 basePath = basePath + @"\";
             }
 
-            var sqlFiles = Directory.GetFiles(string.Format("{0}{1}", basePath, filePath), SqlMappingFilePattern, SearchOption.AllDirectories);
+            var sqlFiles = Directory.GetFiles(string.Format("{0}{1}", basePath, filePath), filePattern, SearchOption.AllDirectories);
             foreach (var sqlFile in sqlFiles)
             {
                 var sqlMapXml = new XmlDocument();

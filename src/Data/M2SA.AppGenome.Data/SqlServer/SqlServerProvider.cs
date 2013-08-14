@@ -32,7 +32,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public int ExecuteNonQuery(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, commandText, this.ConvertToDBParams(parameterValues));
+            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public DataSet ExecuteDataSet(string commandText, IDictionary<string, object> parameterValues, System.Data.CommandType commandType, int timeout)
         {
-            return SqlServerHelper.ExecuteDataset(this.ConnectionString, commandType, commandText, this.ConvertToDBParams(parameterValues));
+            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public object ExecuteScalar(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, this.ConvertToDBParams(parameterValues));
+            return SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public DbDataReader ExecuteReader(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, commandText, this.ConvertToDBParams(parameterValues));
+            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
         }
 
         #endregion
 
-        SqlParameter[] ConvertToDBParams(IDictionary<string, object> parameterValues)
+        static SqlParameter[] ConvertToDBParams(IDictionary<string, object> parameterValues)
         {
             if (null == parameterValues || parameterValues.Count == 0)
             {
@@ -87,7 +87,7 @@ namespace M2SA.AppGenome.Data.SqlServer
             var paramIndex = 0;
             foreach(var item in parameterValues)
             {
-                var paramName = this.BuildParameterName(item.Key);
+                var paramName = BuildParameterName(item.Key);
                 paramList[paramIndex] = new SqlParameter(paramName, item.Value);
                 paramIndex++;
             }
@@ -95,7 +95,7 @@ namespace M2SA.AppGenome.Data.SqlServer
             return paramList;
         }
 
-        string BuildParameterName(string name)
+        static string BuildParameterName(string name)
         {
             if (name[0] != ParameterToken)
             {

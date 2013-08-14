@@ -36,6 +36,8 @@ namespace M2SA.AppGenome.Data
         /// <param name="entity"></param>
         public static void Serialize<T>(this DataRow row, T entity)
         {
+            ArgumentAssertion.IsNotNull(row, "row");
+
             var targetType = entity.GetType();
             var targetProperties = targetType.GetPersistProperties();
 

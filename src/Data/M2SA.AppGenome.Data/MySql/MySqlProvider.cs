@@ -32,7 +32,7 @@ namespace M2SA.AppGenome.Data.MySql
         /// <returns></returns>
         public int ExecuteNonQuery(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return MySqlHelper.ExecuteNonQuery(this.ConnectionString, commandText, this.ConvertToDBParams(parameterValues));
+            return MySqlHelper.ExecuteNonQuery(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace M2SA.AppGenome.Data.MySql
         /// <returns></returns>
         public DataSet ExecuteDataSet(string commandText, IDictionary<string, object> parameterValues, System.Data.CommandType commandType, int timeout)
         {
-            return MySqlHelper.ExecuteDataset(this.ConnectionString, commandText, this.ConvertToDBParams(parameterValues));
+            return MySqlHelper.ExecuteDataset(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace M2SA.AppGenome.Data.MySql
         /// <returns></returns>
         public object ExecuteScalar(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return MySqlHelper.ExecuteScalar(this.ConnectionString, commandText, this.ConvertToDBParams(parameterValues));
+            return MySqlHelper.ExecuteScalar(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace M2SA.AppGenome.Data.MySql
         /// <returns></returns>
         public DbDataReader ExecuteReader(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return MySqlHelper.ExecuteReader(this.ConnectionString, commandText, this.ConvertToDBParams(parameterValues));
+            return MySqlHelper.ExecuteReader(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
         }
 
         #endregion
 
-        MySqlParameter[] ConvertToDBParams(IDictionary<string, object> parameterValues)
+        static MySqlParameter[] ConvertToDBParams(IDictionary<string, object> parameterValues)
         {
             if (null == parameterValues || parameterValues.Count == 0)
             {
@@ -87,7 +87,7 @@ namespace M2SA.AppGenome.Data.MySql
             var paramIndex = 0;
             foreach(var item in parameterValues)
             {
-                var paramName = this.BuildParameterName(item.Key);
+                var paramName = BuildParameterName(item.Key);
                 paramList[paramIndex] = new MySqlParameter(paramName, item.Value);
                 paramIndex++;
             }
@@ -95,7 +95,7 @@ namespace M2SA.AppGenome.Data.MySql
             return paramList;
         }
 
-        string BuildParameterName(string name)
+        static string BuildParameterName(string name)
         {
             if (name[0] != ParameterToken)
             {

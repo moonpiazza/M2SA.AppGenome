@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\bin\debug\M2SA.AppGenome.Data.xml</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,12 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\bin\release\M2SA.AppGenome.Data.xml</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\lib\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\lib\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -45,9 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentAssert .cs" />
     <Compile Include="DatabaseConfig.cs" />
     <Compile Include="DatabaseProviderFactory.cs" />
     <Compile Include="DBParamsExtension.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IDatabaseProvider.cs" />
     <Compile Include="MySql\MySqlProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -62,6 +62,11 @@
     <Compile Include="Configuration\IResolveObject.cs" />
     <Compile Include="Configuration\ResolveFactoryBase.cs" />
     <Compile Include="Cache\ICache.cs" />
+    <Compile Include="Data\DatabaseType.cs" />
+    <Compile Include="Data\IEntity.cs" />
+    <Compile Include="Data\IRepository.cs" />
+    <Compile Include="Data\IRepositoryFactory.cs" />
+    <Compile Include="Data\RepositoryManager.cs" />
     <Compile Include="ObjectBuilder.cs" />
     <Compile Include="Configuration\ThreadPoolConfig.cs" />
     <Compile Include="Configuration\XmlConfigSection.cs" />
@@ -77,7 +82,7 @@
     <Compile Include="ObjectIOCFactory.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Logging\ILogEntry.cs" />
-    <Compile Include="PersistentState.cs" />
+    <Compile Include="Data\PersistentState.cs" />
     <Compile Include="ExceptionHandling\ExceptionHandlingException.cs" />
     <Compile Include="ExceptionHandling\ExceptionPolicy.cs" />
     <Compile Include="ExceptionHandling\ExceptionPolicyEntry.cs" />

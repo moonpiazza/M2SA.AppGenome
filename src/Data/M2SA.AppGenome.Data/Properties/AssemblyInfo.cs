@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("M2SA.AppGenome.Logging")]
+[assembly: AssemblyTitle("M2SA.AppGenome.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("M2sa Studio")]
-[assembly: AssemblyProduct("M2SA.AppGenome.Logging")]
+[assembly: AssemblyProduct("M2SA.AppGenome.Data")]
 [assembly: AssemblyCopyright("Copyright © M2sa.net 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(true)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("0d598ed6-4fb2-40a2-a525-93544cf7c4fb")]
+[assembly: Guid("6213e03e-be29-4bf6-b68d-162ac0f8ff87")]
 
 // 程序集的版本信息由下面四个值组成:
 //

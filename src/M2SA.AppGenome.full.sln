@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues", "Qu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Queues.Tests", "Queues\M2SA.AppGenome.Queues.Tests\M2SA.AppGenome.Queues.Tests.csproj", "{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Data", "Data\M2SA.AppGenome.Data\M2SA.AppGenome.Data.csproj", "{74A5959E-0600-400A-A1D6-2235D02E5122}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2SA.AppGenome.Data.Tests", "Data\M2SA.AppGenome.Data.Tests\M2SA.AppGenome.Data.Tests.csproj", "{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74A5959E-0600-400A-A1D6-2235D02E5122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74A5959E-0600-400A-A1D6-2235D02E5122}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74A5959E-0600-400A-A1D6-2235D02E5122}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74A5959E-0600-400A-A1D6-2235D02E5122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,5 +78,6 @@ Global
 		{611E4612-0333-46C4-A2E3-29648F9D1E60} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 		{6D2EBC08-5E38-4D1B-966E-82BA038D51CC} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 		{8787EA04-7D4D-4A97-96DF-A4EC4CD25CD9} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
+		{89C6C0DC-EC0B-4C82-95BF-16E37DAEDA17} = {4EA3398E-036E-4392-9E9B-5216A115E34E}
 	EndGlobalSection
 EndGlobal

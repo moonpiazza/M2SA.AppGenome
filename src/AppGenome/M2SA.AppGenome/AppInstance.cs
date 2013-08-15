@@ -229,7 +229,6 @@ namespace M2SA.AppGenome
             AppInstance.RegisterModule(AppConfig.LoggingKey, "M2SA.AppGenome.Logging");
             AppInstance.RegisterModule(AppConfig.QueuesKey, "M2SA.AppGenome.Queues");
             AppInstance.RegisterModule(AppConfig.CachedKey, "M2SA.AppGenome.Cache");
-            AppInstance.RegisterModule(AppConfig.AppHostKey, "M2SA.AppGenome.AppHub");
         }
 
         static void SetDefaultConfig()
@@ -258,6 +257,8 @@ namespace M2SA.AppGenome
             //AppInstance.RegisterTypeAlias(string.Format("{0}.MSMQ", AppConfig.QueuesKey), "M2SA.AppGenome.MessageQueues.MSMQ,M2SA.AppGenome.MessageQueues");
             //AppInstance.RegisterTypeAlias(string.Format("{0}.QueueCluster", AppConfig.QueuesKey), "M2SA.AppGenome.MessageQueues.QueueCluster,M2SA.AppGenome.MessageQueues");
             //AppInstance.RegisterTypeAlias(string.Format("{0}.QueueLoadStrategy", AppConfig.QueuesKey), "M2SA.AppGenome.MessageQueues.QueueLoadStrategy,M2SA.AppGenome.MessageQueues");
+
+            AppInstance.RegisterTypeAlias<ExitCommandListener>(typeof(ExitCommandListener).Name);
 
             AppInstance.RegisterTypeAliasByModule<ExceptionPolicy>(AppConfig.ExceptionHandlingKey);
             AppInstance.RegisterTypeAliasByModule<LoggingExceptionHandler>(AppConfig.ExceptionHandlingKey);

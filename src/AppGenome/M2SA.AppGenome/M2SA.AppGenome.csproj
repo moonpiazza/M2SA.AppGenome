@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="AppHub\AppCommandListener.cs" />
+    <Compile Include="AppHub\ExitCommandListener.cs" />
     <Compile Include="AppHub\CommandArguments.cs" />
+    <Compile Include="AppHub\CommandType.cs" />
     <Compile Include="AppHub\ConsoleExitHanlder.cs" />
+    <Compile Include="AppHub\LogHelper.cs" />
     <Compile Include="AppInstance.cs" />
     <Compile Include="AppHub\ApplicationHub.cs" />
     <Compile Include="ArgumentAssert .cs" />

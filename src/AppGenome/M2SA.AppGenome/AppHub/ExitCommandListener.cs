@@ -4,92 +4,13 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.AppHub
 {
     /// <summary>
     /// 
     /// </summary>
-    public class LogHelper
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public static readonly string LoggerName = "HostLogger";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <param name="container"></param>
-        /// <param name="info"></param>
-        /// <param name="args"></param>
-        static void Info(object appId, string container, string info, params object[] args)
-        {
-            info = string.Format("[{0} ]{1}", container, info);
-
-            var logEntry = new LogEntry() {
-                SessionId = appId.ToString(),
-                Message = string.Format(info, args)
-            };
-
-            LogManager.GetLogger(LogHelper.LoggerName).Info(logEntry);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <param name="info"></param>
-        /// <param name="args"></param>
-        public static void AppInfo(object appId, string info, params object[] args)
-        {
-            Info(appId, "App", info, args);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <param name="info"></param>
-        /// <param name="args"></param>
-        public static void HostInfo(object appId, string info, params object[] args)
-        {
-            Info(appId, "Host", info, args);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum CommandType
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Start = 1,
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        Restart = 2,
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        Exit = 999
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class AppCommandListener : IExtensionApplication
+    public sealed class ExitCommandListener : IExtensionApplication
     {        
 
         /// <summary>
@@ -139,7 +60,7 @@ namespace M2SA.AppGenome.AppHub
             this.IsRunning = true;            
             if (this.CommandArguments.HostProcessId > 0)
             {
-                this.notifyMessage();
+                this.NotifyMessage();
 
                 var hostProcess = Process.GetProcessById(this.CommandArguments.HostProcessId);
                 hostProcess.EnableRaisingEvents = true;
@@ -161,9 +82,9 @@ namespace M2SA.AppGenome.AppHub
 
         #endregion
 
-        void ExcuteCommand(CommandType cType)
+        void ExcuteCommand(CommandType commandType)
         {
-            switch (cType)
+            switch (commandType)
             {
                 case CommandType.Exit:
                     {
@@ -186,15 +107,15 @@ namespace M2SA.AppGenome.AppHub
             this.ExcuteCommand(CommandType.Exit);
         }
 
-        void notifyMessage()
+        void NotifyMessage()
         {
-            var ct = new Thread(new ThreadStart(notifyMessageByThread));
+            var ct = new Thread(new ThreadStart(NotifyMessageByThread));
             ct.Start();
         }
 
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        void notifyMessageByThread()
+        void NotifyMessageByThread()
         {
             var exitMessageFile = string.Format("{0}.exit", this.CommandArguments.SessionId);
             exitMessageFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, exitMessageFile);

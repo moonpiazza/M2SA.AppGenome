@@ -31,11 +31,6 @@ namespace M2SA.AppGenome
         /// <summary>
         /// 
         /// </summary>
-        public static readonly string AppHostKey = "apphost";
-
-        /// <summary>
-        /// 
-        /// </summary>
         public static readonly string LoggingKey = "logging";
 
         /// <summary>

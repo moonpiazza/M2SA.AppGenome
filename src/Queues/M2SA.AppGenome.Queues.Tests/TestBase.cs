@@ -12,13 +12,13 @@ namespace M2SA.AppGenome.Queues.Tests
         [TestFixtureSetUp]
         public virtual void Start()
         {
-            ExtensibleApplication.GetInstance().Start();
+            ApplicationHost.GetInstance().Start();
         }
 
         [TestFixtureTearDown]
         public virtual void Stop()
         {
-            ExtensibleApplication.GetInstance().Stop();
+            ApplicationHost.GetInstance().Stop();
         }
     }
 }

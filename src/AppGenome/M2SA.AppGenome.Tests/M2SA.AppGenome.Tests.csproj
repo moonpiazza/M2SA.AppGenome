@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppHubTest.cs" />
     <Compile Include="ConfigNodeTest.cs" />
     <Compile Include="ExceptionPolicyTest.cs" />
     <Compile Include="TestObjects\DomainSetting.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="TestObjects\TestApplication.cs" />
     <Compile Include="TypeExtensionTest.cs" />
     <Compile Include="ObjectContainerTest.cs" />
   </ItemGroup>

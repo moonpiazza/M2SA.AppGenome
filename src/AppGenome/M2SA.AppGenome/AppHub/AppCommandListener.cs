@@ -104,7 +104,7 @@ namespace M2SA.AppGenome.AppHub
         /// <summary>
         /// 
         /// </summary>
-        public ExtensibleApplication Application
+        public ApplicationHost ApplicationHost
         {
             get;
             private set;
@@ -121,7 +121,7 @@ namespace M2SA.AppGenome.AppHub
 
         #region IExtensionApplication 成员
 
-        void IExtensionApplication.OnInit(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnInit(ApplicationHost onwer, CommandArguments args)
         {
             ArgumentAssertion.IsNotNull(onwer, "onwer");
             onwer.Exit += new EventHandler(ExtensibleApplication_Exit);
@@ -132,9 +132,9 @@ namespace M2SA.AppGenome.AppHub
             System.Environment.Exit(2);
         }
 
-        void IExtensionApplication.OnStart(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnStart(ApplicationHost onwer, CommandArguments args)
         {
-            this.Application = onwer;
+            this.ApplicationHost = onwer;
             this.CommandArguments = args;
             this.IsRunning = true;            
             if (this.CommandArguments.HostProcessId > 0)
@@ -149,7 +149,7 @@ namespace M2SA.AppGenome.AppHub
             }
         }
 
-        void IExtensionApplication.OnStop(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnStop(ApplicationHost onwer, CommandArguments args)
         {
             this.IsRunning = false;
 
@@ -167,7 +167,7 @@ namespace M2SA.AppGenome.AppHub
             {
                 case CommandType.Exit:
                     {
-                        this.Application.Stop();
+                        this.ApplicationHost.Stop();
                         break;
                     }
                 default:

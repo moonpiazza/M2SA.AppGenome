@@ -12,20 +12,20 @@ namespace M2SA.AppGenome
     /// <summary>
     /// 
     /// </summary>
-    public class ExtensibleApplication
+    public class ApplicationHost
     {
         static readonly object syncRoot = new object();
 
-        static ExtensibleApplication instance = null;
+        static ApplicationHost instance = null;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static ExtensibleApplication GetInstance(params string[] args)
+        public static ApplicationHost GetInstance(params string[] args)
         {
-            ExtensibleApplication result = instance;
+            ApplicationHost result = instance;
             if (null == instance)
             {
                 lock (syncRoot)
@@ -36,7 +36,7 @@ namespace M2SA.AppGenome
                     }
                     else
                     {
-                        instance = new ExtensibleApplication(args);
+                        instance = new ApplicationHost(args);
                         result = instance;
                     }
                 }                
@@ -89,17 +89,19 @@ namespace M2SA.AppGenome
             private set;
         }
 
-        private ExtensibleApplication(params string[] args)
+        private ApplicationHost(params string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             AppDomain.CurrentDomain.DomainUnload += new EventHandler(CurrentDomain_DomainUnload);
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
-            this.extensions = new List<IExtensionApplication>();
             this.CommandArguments = new CommandArguments(args);
-
-            this.Register<AppInstance>(ObjectIOCFactory.GetSingleton<AppInstance>());
-            this.Register<TaskProcessor>(AppInstance.GetTaskProcessor());
+            this.extensions = new List<IExtensionApplication>()
+            {
+                ObjectIOCFactory.GetSingleton<AppInstance>(),
+                AppInstance.GetTaskProcessor(),
+                ObjectIOCFactory.GetSingleton<ApplicationHub>(),
+            };
         }
 
         void CurrentDomain_ProcessExit(object sender, EventArgs e)
@@ -206,32 +208,6 @@ namespace M2SA.AppGenome
                 }
                 this.IsRunning = false;
                 this.OnExit();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-        public void Register<T>(T item) where T : IExtensionApplication
-        {
-            lock (syncRoot)
-            {
-                this.extensions.Add(item);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-        public void UnRegister<T>(T item) where T : IExtensionApplication
-        {
-            lock (syncRoot)
-            {
-                this.extensions.Remove(item);
             }
         }
 

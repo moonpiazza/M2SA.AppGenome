@@ -49,6 +49,7 @@
     <Compile Include="AppHub\CommandArguments.cs" />
     <Compile Include="AppHub\ConsoleExitHanlder.cs" />
     <Compile Include="AppInstance.cs" />
+    <Compile Include="AppHub\ApplicationHub.cs" />
     <Compile Include="ArgumentAssert .cs" />
     <Compile Include="Cache\CacheManager.cs" />
     <Compile Include="Cache\EmptyCacheNotify.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="ExceptionHandling\ReplaceHandler.cs" />
     <Compile Include="ExceptionHandling\WrapHandler.cs" />
     <Compile Include="ExceptionExtension.cs" />
-    <Compile Include="ExtensibleApplication.cs" />
+    <Compile Include="ApplicationHost.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="LockDecorator.cs" />

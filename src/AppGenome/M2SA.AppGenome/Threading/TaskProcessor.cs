@@ -149,12 +149,12 @@ namespace M2SA.AppGenome.Threading
 
         #region IExtensionApplication 成员
 
-        void IExtensionApplication.OnInit(ExtensibleApplication onwer, M2SA.AppGenome.AppHub.CommandArguments args)
+        void IExtensionApplication.OnInit(ApplicationHost onwer, M2SA.AppGenome.AppHub.CommandArguments args)
         {
             
         }
 
-        void IExtensionApplication.OnStart(ExtensibleApplication onwer, M2SA.AppGenome.AppHub.CommandArguments args)
+        void IExtensionApplication.OnStart(ApplicationHost onwer, M2SA.AppGenome.AppHub.CommandArguments args)
         {
             LogManager.GetLogger().Debug("---------- TaskProcessor.Start... ----------");   
 
@@ -163,7 +163,7 @@ namespace M2SA.AppGenome.Threading
             t.Start();
         }
 
-        void IExtensionApplication.OnStop(ExtensibleApplication onwer, M2SA.AppGenome.AppHub.CommandArguments args)
+        void IExtensionApplication.OnStop(ApplicationHost onwer, M2SA.AppGenome.AppHub.CommandArguments args)
         {
             var stop = Stopwatch.StartNew();
 

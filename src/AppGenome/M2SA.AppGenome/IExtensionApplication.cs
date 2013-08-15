@@ -18,20 +18,20 @@ namespace M2SA.AppGenome
         /// </summary>
         /// <param name="onwer"></param>
         /// <param name="args"></param>
-        void OnInit(ExtensibleApplication onwer, CommandArguments args);
+        void OnInit(ApplicationHost onwer, CommandArguments args);
 
         /// <summary>
         /// 当应用程序启用时触发
         /// </summary>
         /// <param name="onwer"></param>
         /// <param name="args"></param>
-        void OnStart(ExtensibleApplication onwer, CommandArguments args);
+        void OnStart(ApplicationHost onwer, CommandArguments args);
 
         /// <summary>
         /// 当应用程序退出时触发
         /// </summary>
         /// <param name="onwer"></param>
         /// <param name="args"></param>
-        void OnStop(ExtensibleApplication onwer, CommandArguments args);
+        void OnStop(ApplicationHost onwer, CommandArguments args);
     }
 }

@@ -24,7 +24,7 @@ namespace M2SA.AppGenome
     {
         #region Static Members
         
-        static AppConfig appConfig = new AppConfig();
+        static readonly AppConfig appConfig;
 
         /// <summary>
         /// 
@@ -35,6 +35,24 @@ namespace M2SA.AppGenome
             {
                 return appConfig;
             }
+        }
+
+        static AppInstance()
+        {
+            var config = new AppConfig();
+            var configNode = AppInstance.GetConfigNode(AppConfig.AppBaseKey);
+            if (null != configNode)
+            {
+                config.Initialize(configNode);
+                var systemWebInfo = System.Configuration.ConfigurationManager.GetSection("system.web");
+                if (systemWebInfo != null)
+                {
+                    var systemWeb = (System.Web.Configuration.SystemWebSectionGroup)systemWebInfo;
+                    config.Debug = systemWeb.Compilation.Debug;
+                }
+            }
+
+            appConfig = config;
         }
 
         /// <summary>
@@ -250,20 +268,8 @@ namespace M2SA.AppGenome
 
         #region IExtensionApplication 成员
 
-        void IExtensionApplication.OnInit(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnInit(ApplicationHost onwer, CommandArguments args)
         {
-            var configNode = AppInstance.GetConfigNode(AppConfig.AppBaseKey);
-            if (null != configNode)
-            {
-                AppInstance.Config.Initialize(configNode);
-                var systemWebInfo = System.Configuration.ConfigurationManager.GetSection("system.web");
-                if (systemWebInfo != null)
-                {
-                    var systemWeb = (System.Web.Configuration.SystemWebSectionGroup)systemWebInfo;
-                    AppInstance.Config.Debug = systemWeb.Compilation.Debug;
-                }       
-            }
-
             if (AppInstance.Config.Debug)
             {
                 var log = LogManager.GetLogger();
@@ -275,7 +281,7 @@ namespace M2SA.AppGenome
             }
         }
 
-        void IExtensionApplication.OnStart(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnStart(ApplicationHost onwer, CommandArguments args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             if (AppInstance.Config.Debug)
@@ -284,7 +290,7 @@ namespace M2SA.AppGenome
             }
         }
 
-        void IExtensionApplication.OnStop(ExtensibleApplication onwer, CommandArguments args)
+        void IExtensionApplication.OnStop(ApplicationHost onwer, CommandArguments args)
         {
             if (AppInstance.Config.Debug)
             {

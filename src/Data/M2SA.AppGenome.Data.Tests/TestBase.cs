@@ -18,16 +18,16 @@ namespace M2SA.AppGenome.Data.Tests
         public virtual void Start()
         {
             stopwatch = Stopwatch.StartNew();
-            ExtensibleApplication.GetInstance().Start();
+            ApplicationHost.GetInstance().Start();
             AppInstance.RegisterTypeAlias<RepositoryFactory>("RepositoryFactory");
         }
 
         [TestFixtureTearDown]
         public virtual void Stop()
         {
-            ExtensibleApplication.GetInstance().Stop();
+            ApplicationHost.GetInstance().Stop();
             stopwatch.Stop();
-            Console.WriteLine("Application run : {0}", stopwatch.Elapsed);
+            Console.WriteLine("ApplicationHost run : {0}", stopwatch.Elapsed);
         }
     }
 }

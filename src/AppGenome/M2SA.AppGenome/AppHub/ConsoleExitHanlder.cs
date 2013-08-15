@@ -11,7 +11,7 @@ namespace M2SA.AppGenome.AppHub
     /// <summary>
     /// 
     /// </summary>
-    internal class ConsoleExitHanlder
+    public class ConsoleExitHanlder
     {
         internal static class NativeMethods
         {

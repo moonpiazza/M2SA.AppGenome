@@ -69,6 +69,8 @@ namespace M2SA.AppGenome.Logging
             
             AppInstance.RegisterTypeAliasByModule<FileListener>(AppConfig.LoggingKey);
             AppInstance.RegisterTypeAliasByModule<ConsoleListener>(AppConfig.LoggingKey);
+            AppInstance.RegisterTypeAliasByModule<QueueListener>(AppConfig.LoggingKey);
+
 
             AppInstance.RegisterTypeAliasByModule<TextFormatter>(AppConfig.LoggingKey);
             this.RegisterHandler();

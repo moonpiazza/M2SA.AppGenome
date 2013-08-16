@@ -49,6 +49,7 @@
     <Compile Include="Formatters\FormatterUtility.cs" />
     <Compile Include="Formatters\ILogEntryFormatter.cs" />
     <Compile Include="Formatters\TextFormatter.cs" />
+    <Compile Include="Listeners\QueueListener.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="ISessionEntry.cs" />
     <Compile Include="ISessionLog.cs" />

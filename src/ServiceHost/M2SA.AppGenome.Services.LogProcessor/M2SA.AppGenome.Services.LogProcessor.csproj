@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{360CD0E6-1B27-444D-BD9B-CD0CB8EFAAD7}</ProjectGuid>
+    <ProjectGuid>{36480885-16E5-4EFB-9B0B-D4B784583040}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>M2SA.AppGenome.Services.MemCachedStats</RootNamespace>
-    <AssemblyName>M2SA.AppGenome.Services.MemCachedStats</AssemblyName>
+    <RootNamespace>M2SA.AppGenome.Services.LogProcessor</RootNamespace>
+    <AssemblyName>M2SA.AppGenome.Services.LogProcessor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -20,27 +20,29 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\bin\servicehost\services.MemCachedStats\</OutputPath>
+    <OutputPath>..\..\..\bin\servicehost\LogProcessor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\bin\servicehost\services.MemCachedStats\M2SA.AppGenome.Services.MemCachedStats.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>..\..\..\bin\servicehost\LogProcessor\M2SA.AppGenome.Services.LogProcessor.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\bin\servicehost\services.MemCachedStats\</OutputPath>
+    <OutputPath>..\..\..\bin\servicehost\LogProcessor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="M2SA.AppGenome.Cache, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\release\M2SA.AppGenome.Cache.dll</HintPath>
+    <Reference Include="M2SA.AppGenome.Logging">
+      <HintPath>..\..\..\bin\release\M2SA.AppGenome.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="M2SA.AppGenome.Queues">
+      <HintPath>..\..\..\bin\release\M2SA.AppGenome.Queues.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,21 +50,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoadMemCachedStatsListener.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="QueueListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="appgenome.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AppGenome\M2SA.AppGenome\M2SA.AppGenome.csproj">
       <Project>{682BEB8B-8F34-446D-B264-D26378E86014}</Project>
       <Name>M2SA.AppGenome</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="appgenome.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

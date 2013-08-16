@@ -23,12 +23,12 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\..\res\CodeDesign_Rules_For_M2SA.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\..\bin\servicehost\M2SA.AppGenome.ServiceHost.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\servicehost\M2SA.AppGenome.ServiceHost.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\AppHub\</OutputPath>
+    <OutputPath>..\..\..\bin\servicehost\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

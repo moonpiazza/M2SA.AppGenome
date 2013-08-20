@@ -25,6 +25,7 @@ namespace M2SA.AppGenome.Cache
         private CacheFactory()
         {
             AppInstance.RegisterTypeAliasByModule<MemCached.MemCache>(AppConfig.CachedKey);
+            AppInstance.RegisterTypeAliasByModule<AppDomainCache>(AppConfig.CachedKey);
             AppInstance.RegisterTypeAliasByModule<ActiveCacheNotify>(AppConfig.CachedKey);
         }
 

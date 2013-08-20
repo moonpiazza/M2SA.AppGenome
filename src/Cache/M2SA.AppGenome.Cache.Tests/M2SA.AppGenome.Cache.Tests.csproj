@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ActiveCacheTest.cs" />
     <Compile Include="CacheConfigTest.cs" />
+    <Compile Include="CacheTestBase.cs" />
     <Compile Include="DefaultCacheTest.cs" />
     <Compile Include="MultiServersTest.cs" />
     <Compile Include="TestObjects\MemoryCacheItemHander.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="SlaveServersTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="AppDomainCacheTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="appgenome.config">

@@ -116,6 +116,7 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// </summary>
         public override void Clear()
         {
+            //Not Supported;
         }
 
         /// <summary>

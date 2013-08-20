@@ -53,6 +53,7 @@
     <Compile Include="AppInstance.cs" />
     <Compile Include="AppHub\ApplicationHub.cs" />
     <Compile Include="ArgumentAssert .cs" />
+    <Compile Include="Cache\CacheExtend.cs" />
     <Compile Include="Cache\CacheManager.cs" />
     <Compile Include="Cache\EmptyCacheNotify.cs" />
     <Compile Include="Cache\ICacheFactory.cs" />

@@ -17,10 +17,11 @@ namespace M2SA.AppGenome.Reflection
         private Type mTargetType;
         private string mProperty;
         private Type mPropertyType;
-        private PropertyInfo PropertyInfo;
-        private FieldInfo FieldInfo;
+        private PropertyInfo propertyInfo;
+        private FieldInfo fieldInfo;
         private bool mCanRead;
         private bool mCanWrite;
+        private bool nonSerialized;
 
         /// <summary>
         /// 
@@ -52,6 +53,14 @@ namespace M2SA.AppGenome.Reflection
             get
             {
                 return this.mCanWrite;
+            }
+        }
+
+        public bool NonSerialized
+        {
+            get
+            {
+                return this.nonSerialized;
             }
         }
 
@@ -89,30 +98,32 @@ namespace M2SA.AppGenome.Reflection
 
             this.mTargetType = targetType;
 
-            this.PropertyInfo = targetType.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-            this.FieldInfo = targetType.GetField(property, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+            this.propertyInfo = targetType.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+            this.fieldInfo = targetType.GetField(property, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
             //
             // Make sure the property exists
             //
-            if (this.PropertyInfo == null && this.FieldInfo == null)
+            if (this.propertyInfo == null && this.fieldInfo == null)
             {
                 throw new PropertyAccessorException(
                     string.Format("Property \"{0}\" does not exist for type "
                                   + "{1}.", property, targetType));
             }
-            else if (this.PropertyInfo != null)
+            else if (this.propertyInfo != null)
             {
-                this.mCanRead = this.PropertyInfo.CanRead;
-                this.mCanWrite = this.PropertyInfo.CanWrite;
-                this.mProperty = this.PropertyInfo.Name;
-                this.mPropertyType = this.PropertyInfo.PropertyType;
+                this.mCanRead = this.propertyInfo.CanRead;
+                this.mCanWrite = this.propertyInfo.CanWrite;
+                this.mProperty = this.propertyInfo.Name;
+                this.mPropertyType = this.propertyInfo.PropertyType;
+                this.nonSerialized = this.propertyInfo.GetCustomAttributes(typeof(NonSerializedPropertyAttribute), true).Length > 0;
             }
             else
             {
                 this.mCanRead = true;
                 this.mCanWrite = true;
-                this.mProperty = this.FieldInfo.Name;
-                this.mPropertyType = this.FieldInfo.FieldType;
+                this.mProperty = this.fieldInfo.Name;
+                this.mPropertyType = this.fieldInfo.FieldType;
+                this.nonSerialized = this.fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0;
             }
         }
 
@@ -125,13 +136,13 @@ namespace M2SA.AppGenome.Reflection
         {
             if (mCanRead)
             {
-                if (this.PropertyInfo != null)
+                if (this.propertyInfo != null)
                 {
-                    return this.PropertyInfo.GetValue(target, null);
+                    return this.propertyInfo.GetValue(target, null);
                 }
                 else
                 {
-                    return this.FieldInfo.GetValue(target);
+                    return this.fieldInfo.GetValue(target);
                 }
             }
             else
@@ -152,13 +163,13 @@ namespace M2SA.AppGenome.Reflection
             if (mCanWrite)
             {
                 var val = value.Convert(this.PropertyType);
-                if (this.PropertyInfo != null)
+                if (this.propertyInfo != null)
                 {                    
-                    this.PropertyInfo.SetValue(target, val, null);
+                    this.propertyInfo.SetValue(target, val, null);
                 }
                 else
                 {
-                    this.FieldInfo.SetValue(target, val);
+                    this.fieldInfo.SetValue(target, val);
                 }
             }
             else

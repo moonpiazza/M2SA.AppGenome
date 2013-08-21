@@ -61,6 +61,14 @@ namespace M2SA.AppGenome.Reflection
         /// <summary>
         /// 
         /// </summary>
+        bool NonSerialized
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         Type PropertyType
         {
             get;

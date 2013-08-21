@@ -11,7 +11,7 @@ namespace M2SA.AppGenome.Data
     /// <summary>
     /// 
     /// </summary>
-    public static class DBParamsExtension 
+    public static class DbParamsExtension 
     {
 
         /// <summary>
@@ -24,7 +24,15 @@ namespace M2SA.AppGenome.Data
             if (entity == null)
                 return null;
 
-            var propertyValues =  entity.GetPropertyValues();
+            var targetProperties = entity.GetType().GetPersistProperties();
+            var propNames = new List<string>(targetProperties.Count);
+            foreach (var pair in targetProperties)
+            {
+                if(pair.Value.IsPrimitiveType())
+                    propNames.Add(pair.Key);
+            }
+
+            var propertyValues = entity.GetPropertyValues(propNames);
             return propertyValues;
         }
 

@@ -50,7 +50,7 @@
     <Compile Include="ArgumentAssert .cs" />
     <Compile Include="DatabaseConfig.cs" />
     <Compile Include="DatabaseProviderFactory.cs" />
-    <Compile Include="DBParamsExtension.cs" />
+    <Compile Include="DbParamsExtension.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IDatabaseProvider.cs" />
     <Compile Include="MySql\MySqlProvider.cs" />

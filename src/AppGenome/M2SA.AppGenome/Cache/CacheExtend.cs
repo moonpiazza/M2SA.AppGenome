@@ -20,6 +20,9 @@ namespace M2SA.AppGenome.Cache
         /// <returns></returns>
         public static T LoadEntityAndCache<T>(this ICache cache, string key, Func<T> loadEntity)
         {
+            ArgumentAssertion.IsNotNull(cache, "cache");
+            ArgumentAssertion.IsNotNull(loadEntity, "loadEntity");
+
             var entity = cache.Get<T>(key);
             if (null == entity)
             {

@@ -260,7 +260,7 @@ namespace M2SA.AppGenome.Reflection
                 var propName = prop.Name;
                 var propType = prop.PropertyType;
 
-                if (prop.CanRead && prop.CanWrite)
+                if (prop.CanRead && prop.CanWrite && prop.NonSerialized == false)
                 {
                     propertyTypes.Add(propName, propType);
                 }

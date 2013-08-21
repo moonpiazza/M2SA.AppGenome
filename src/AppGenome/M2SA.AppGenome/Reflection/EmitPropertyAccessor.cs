@@ -22,6 +22,7 @@ namespace M2SA.AppGenome.Reflection
         private Hashtable mTypeHash;
         private bool mCanRead;
         private bool mCanWrite;
+        private bool nonSerialized;
 
         /// <summary>
         /// 
@@ -53,6 +54,14 @@ namespace M2SA.AppGenome.Reflection
             get
             {
                 return this.mCanWrite;
+            }
+        }
+
+        public bool NonSerialized
+        {
+            get
+            {
+                return this.nonSerialized;
             }
         }
 
@@ -108,6 +117,7 @@ namespace M2SA.AppGenome.Reflection
                 this.mCanWrite = propertyInfo.CanWrite;
                 this.mProperty = propertyInfo.Name;
                 this.mPropertyType = propertyInfo.PropertyType;
+                this.nonSerialized = propertyInfo.GetCustomAttributes(typeof(NonSerializedPropertyAttribute), true).Length > 0;
             }
             else
             {
@@ -115,6 +125,7 @@ namespace M2SA.AppGenome.Reflection
                 this.mCanWrite = true;
                 this.mProperty = fieldInfo.Name;
                 this.mPropertyType = fieldInfo.FieldType;
+                this.nonSerialized = fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0;
             }
         }
 

@@ -29,7 +29,7 @@ namespace M2SA.AppGenome.Logging.Listeners
         /// <returns></returns>
         protected override IConfigNode LoadConfigInfo(string name)
         {
-            var nodePath = string.Format("listeners/listener[@name='{0}']", name);
+            var nodePath = string.Format("/listeners/listener[@name='{0}']", name);
             var configNode = AppInstance.GetConfigNode(this.ModuleKey, nodePath);
             if (null == configNode)
                 throw new ArgumentOutOfRangeException("name", name, "cannot find the Listener");

@@ -20,7 +20,7 @@ namespace M2SA.AppGenome.Tests
         [Test]
         public void RegisterTypeTest()
         {
-            AppInstance.RegisterTypeAlias<ServerGroup>("ServerGroup");
+            AppInstance.RegisterTypeAlias<ServerGroup>();
             var actualType = TypeExtension.GetMapType("ServerGroup");
 
             Assert.IsNotNull(actualType);

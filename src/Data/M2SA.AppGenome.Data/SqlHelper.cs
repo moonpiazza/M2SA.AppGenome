@@ -19,8 +19,8 @@ namespace M2SA.AppGenome.Data
     {
         static SqlHelper()
         {
-            AppInstance.RegisterTypeAlias<MySql.MySqlProvider>(typeof(MySql.MySqlProvider).Name);
-            AppInstance.RegisterTypeAlias<SqlServer.SqlServerProvider>(typeof(SqlServer.SqlServerProvider).Name);                  
+            AppInstance.RegisterTypeAlias<MySql.MySqlProvider>();
+            AppInstance.RegisterTypeAlias<SqlServer.SqlServerProvider>();                  
         }
 
         /// <summary>

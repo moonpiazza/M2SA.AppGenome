@@ -37,7 +37,7 @@ namespace M2SA.AppGenome.Cache
         /// <returns></returns>
         protected override IConfigNode LoadConfigInfo(string name)
         {
-            var nodePath = string.Format("cache[@name='{0}']", name);
+            var nodePath = string.Format("/cache[@name='{0}']", name);
             var configNode = AppInstance.GetConfigNode(this.ModuleKey, nodePath);
             return configNode;
         }

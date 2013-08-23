@@ -95,7 +95,7 @@ namespace M2SA.AppGenome.Logging
         {
             if (this.LogConfigMap.ContainsKey(name) == false)
             {                
-                var nodePath = string.Format("loggers/logger[@name='{0}']", name);
+                var nodePath = string.Format("/loggers/logger[@name='{0}']", name);
                 var configNode = AppInstance.GetConfigNode(this.ModuleKey, nodePath);
                 if (null == configNode)
                 {

@@ -47,7 +47,7 @@ namespace M2SA.AppGenome.Queues
         /// <returns></returns>
         protected override IConfigNode LoadConfigInfo(string name)
         {
-            var nodePath = string.Format("queue[@name='{0}']", name);
+            var nodePath = string.Format("/queue[@name='{0}']", name);
             var configNode = AppInstance.GetConfigNode(this.ModuleKey, nodePath);
             return configNode;
         }

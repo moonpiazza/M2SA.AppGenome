@@ -107,7 +107,7 @@ namespace M2SA.AppGenome
             }
             else
             {
-                xpath = string.Format(@"/configuration/{0}/{1}", configSectionName, nodePath);
+                xpath = string.Format(@"/configuration/{0}{1}", configSectionName, nodePath);
             }
 
             var targetNode = xml.SelectSingleNode(xpath);
@@ -181,10 +181,22 @@ namespace M2SA.AppGenome
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        public static void RegisterTypeAlias<T>()
+        {
+            var targetType = typeof(T);
+            RegisterTypeAlias(targetType.Name, targetType.AssemblyQualifiedName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="alias"></param>
         public static void RegisterTypeAlias<T>(string alias)
         {
-            RegisterTypeAlias(alias, typeof(T).AssemblyQualifiedName);
+            var targetType = typeof(T);
+            RegisterTypeAlias(string.Format("{0}.{1}", targetType.Name,alias), targetType.AssemblyQualifiedName);
+            //RegisterTypeAlias(alias, targetType.AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -245,7 +257,7 @@ namespace M2SA.AppGenome
             AppInstance.RegisterTypeAlias("TaskThreadException", typeof(TaskThreadException).GetSimpleQualifiedName());
             AppInstance.RegisterTypeAlias("HostileRequestException", typeof(HostileRequestException).GetSimpleQualifiedName());
 
-            AppInstance.RegisterTypeAlias<ExceptionPolicyFactory>("ExceptionPolicyFactory");
+            AppInstance.RegisterTypeAliasByModule<ExceptionPolicyFactory>(AppConfig.ExceptionHandlingKey);
 
             //AppInstance.RegisterTypeAlias("LogFactory", "M2SA.AppGenome.Logging.LogRespository,M2SA.AppGenome.Logging");
             //AppInstance.RegisterTypeAlias("CacheFactory", "M2SA.AppGenome.Cache.CacheFactory,M2SA.AppGenome.Cache");
@@ -258,7 +270,7 @@ namespace M2SA.AppGenome
             //AppInstance.RegisterTypeAlias(string.Format("{0}.QueueCluster", AppConfig.QueuesKey), "M2SA.AppGenome.MessageQueues.QueueCluster,M2SA.AppGenome.MessageQueues");
             //AppInstance.RegisterTypeAlias(string.Format("{0}.QueueLoadStrategy", AppConfig.QueuesKey), "M2SA.AppGenome.MessageQueues.QueueLoadStrategy,M2SA.AppGenome.MessageQueues");
 
-            AppInstance.RegisterTypeAlias<ExitCommandListener>(typeof(ExitCommandListener).Name);
+            AppInstance.RegisterTypeAlias<ExitCommandListener>();
 
             AppInstance.RegisterTypeAliasByModule<ExceptionPolicy>(AppConfig.ExceptionHandlingKey);
             AppInstance.RegisterTypeAliasByModule<LoggingExceptionHandler>(AppConfig.ExceptionHandlingKey);

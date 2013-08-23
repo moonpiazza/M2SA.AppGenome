@@ -20,7 +20,7 @@ namespace M2SA.AppGenome.Tests
         [Test]
         public void ResolveServerGroupTest()
         {
-            AppInstance.RegisterTypeAlias<ServerGroup>("ServerGroup");
+            AppInstance.RegisterTypeAlias<ServerGroup>();
             var targetType = TypeExtension.GetMapType("ServerGroup");
             Assert.IsNotNull(targetType);
             Assert.AreEqual(typeof(ServerGroup), targetType);

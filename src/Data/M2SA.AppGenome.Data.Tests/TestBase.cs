@@ -19,7 +19,7 @@ namespace M2SA.AppGenome.Data.Tests
         {
             stopwatch = Stopwatch.StartNew();
             ApplicationHost.GetInstance().Start();
-            AppInstance.RegisterTypeAlias<RepositoryFactory>("RepositoryFactory");
+            AppInstance.RegisterTypeAlias<RepositoryFactory>();
         }
 
         [TestFixtureTearDown]

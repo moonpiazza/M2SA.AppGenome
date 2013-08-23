@@ -162,6 +162,7 @@ namespace M2SA.AppGenome.Data
             {
                 var sqlName = this.FormatSqlName("Update");
                 var pValues = this.Convert(model);
+                pValues["Id"] = model.Id;
                 var rowsAffected = SqlHelper.ExecuteNonQuery(sqlName, pValues);
                 result = rowsAffected > 0;
             }

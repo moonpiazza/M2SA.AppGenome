@@ -130,11 +130,11 @@ namespace M2SA.AppGenome
 
             configName = configName.Substring(0, 1).ToLower() + configName.Substring(1);
 
-            var configPath = configName;
+            string nodePath = null;
             if (string.IsNullOrEmpty(alias) == false)
-                configPath = string.Format("{0}[alias='{1}']", configName, alias);
+                nodePath = string.Format("[@alias='{0}']", alias);
 
-            var resolveInfo = AppInstance.GetConfigNode(configPath);
+            var resolveInfo = AppInstance.GetConfigNode(configName, nodePath);
             return resolveInfo;
         }
 

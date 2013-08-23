@@ -73,5 +73,25 @@ namespace M2SA.AppGenome.Tests
             Assert.AreEqual(domainSetting, domainSetting2);
 
         }
+
+        [Test]
+        public void ResolveInstanceFromAliasTest()
+        {
+            AppInstance.RegisterTypeAlias<DomainSetting>("a");
+            AppInstance.RegisterTypeAlias<EmailConfig>("a");
+
+            var emailConfig = ObjectIOCFactory.ResolveInstance<EmailConfig>("a");
+            Assert.NotNull(emailConfig);
+            Assert.AreEqual(emailConfig.GetType(), typeof(EmailConfig));
+
+
+            var domainSetting = ObjectIOCFactory.ResolveInstance<IDomainSetting>("a");
+            Assert.NotNull(domainSetting);
+            Assert.AreEqual(domainSetting.GetType(), typeof(DomainSetting));
+            Assert.NotNull(domainSetting.DefaultRule);
+
+            domainSetting.Print();
+
+        }
     }
 }

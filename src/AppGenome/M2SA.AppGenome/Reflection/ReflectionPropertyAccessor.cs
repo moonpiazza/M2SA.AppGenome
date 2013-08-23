@@ -56,6 +56,9 @@ namespace M2SA.AppGenome.Reflection
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool NonSerialized
         {
             get

@@ -295,7 +295,18 @@ namespace M2SA.AppGenome.Configuration
                 result = Type.GetType(typeAlias);
                 if (null == result)
                 {
-                    result = TypeExtension.GetMapType(typeAlias);
+                    var aliasKeys = new string[] { string.Format("{0}.{1}", source.Name, typeAlias), typeAlias };
+
+                    if (source.IsInterface && source.Name.StartsWith("I"))
+                    {
+                        aliasKeys = new string[] { string.Format("{0}.{1}", source.Name, typeAlias)
+                            , string.Format("{0}.{1}", source.Name.Substring(1), typeAlias), typeAlias };
+                    }
+                    aliasKeys.FirstOrDefault<string>(aliasKey =>
+                    {
+                        result = TypeExtension.GetMapType(aliasKey);
+                        return result != null;
+                    });
                 }
             }
 

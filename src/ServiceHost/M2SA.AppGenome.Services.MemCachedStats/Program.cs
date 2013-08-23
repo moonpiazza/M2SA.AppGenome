@@ -10,7 +10,7 @@ namespace M2SA.AppGenome.Services.MemCachedStats
     {
         static void Main(string[] args)
         {
-            AppInstance.RegisterTypeAlias<LoadMemCachedStatsListener>(typeof(LoadMemCachedStatsListener).Name);
+            AppInstance.RegisterTypeAlias<LoadMemCachedStatsListener>();
             ObjectIOCFactory.GetSingleton<ApplicationHub>().Register<ExitCommandListener>(new ExitCommandListener());
             ApplicationHost.GetInstance(args).Start();
 

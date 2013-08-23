@@ -8,7 +8,7 @@ namespace M2SA.AppGenome.Data.Tests.Mocks
 	{
 		static RepositoryFactory()
 		{
-			AppInstance.RegisterTypeAlias<TestRepository>("TestRepository");
+			AppInstance.RegisterTypeAlias<TestRepository>();
 		}
 		
         /// <summary>

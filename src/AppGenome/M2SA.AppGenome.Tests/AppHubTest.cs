@@ -14,7 +14,7 @@ namespace M2SA.AppGenome.Tests
         [Test]
         public void RunTest()
         {
-            AppInstance.RegisterTypeAlias<TestApplication>("TestApplication");
+            AppInstance.RegisterTypeAlias<TestApplication>();
 
             ObjectIOCFactory.GetSingleton<ApplicationHub>().Register<TestApplication>(new TestApplication() { Name = "TestApplicationForCode" });
 

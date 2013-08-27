@@ -122,6 +122,7 @@
     <Compile Include="Reflection\IClassAccessor.cs" />
     <Compile Include="Reflection\IPropertyAccessor.cs" />
     <Compile Include="Reflection\ObjectExtension.cs" />
+    <Compile Include="Reflection\ObjectFormatExtension.cs" />
     <Compile Include="Reflection\PropertyAccessorException.cs" />
     <Compile Include="Reflection\ReflectionClassAccessor.cs" />
     <Compile Include="Reflection\ReflectionPropertyAccessor.cs" />

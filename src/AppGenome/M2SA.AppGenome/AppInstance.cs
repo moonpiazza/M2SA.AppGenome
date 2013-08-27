@@ -190,13 +190,12 @@ namespace M2SA.AppGenome
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">接口(或基类型)</typeparam>
+        /// <typeparam name="TImpl">目标类型</typeparam>
         /// <param name="alias"></param>
-        public static void RegisterTypeAlias<T>(string alias)
+        public static void RegisterTypeAlias<T, TImpl>(string alias) where TImpl : T
         {
-            var targetType = typeof(T);
-            RegisterTypeAlias(string.Format("{0}.{1}", targetType.Name,alias), targetType.AssemblyQualifiedName);
-            //RegisterTypeAlias(alias, targetType.AssemblyQualifiedName);
+            RegisterTypeAlias(string.Format("{0}.{1}", typeof(T).Name, alias), typeof(TImpl).AssemblyQualifiedName);
         }
 
         /// <summary>

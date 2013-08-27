@@ -57,6 +57,7 @@
     <Compile Include="TestObjects\TestApplication.cs" />
     <Compile Include="TypeExtensionTest.cs" />
     <Compile Include="ObjectContainerTest.cs" />
+    <Compile Include="ObjectFormatTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="appgenome.config">

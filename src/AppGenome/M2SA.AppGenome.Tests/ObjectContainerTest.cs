@@ -77,8 +77,8 @@ namespace M2SA.AppGenome.Tests
         [Test]
         public void ResolveInstanceFromAliasTest()
         {
-            AppInstance.RegisterTypeAlias<DomainSetting>("a");
-            AppInstance.RegisterTypeAlias<EmailConfig>("a");
+            AppInstance.RegisterTypeAlias<DomainSetting,DomainSetting>("a");
+            AppInstance.RegisterTypeAlias<EmailConfig, EmailConfig>("a");
 
             var emailConfig = ObjectIOCFactory.ResolveInstance<EmailConfig>("a");
             Assert.NotNull(emailConfig);

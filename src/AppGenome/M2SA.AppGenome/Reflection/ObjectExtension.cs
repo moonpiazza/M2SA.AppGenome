@@ -59,6 +59,26 @@ namespace M2SA.AppGenome.Reflection
             return ToText(val, val.GetType().Name, 0, output).ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static string ToXmlText(this object val)
+        {
+            var text = val.ToText();
+            if (null != text)
+            {
+                text =
+                    text.Replace("<", "&lt;")
+                        .Replace(">", "&gt;")
+                        .Replace("&", "&amp;")
+                        .Replace("'", "&apos;")
+                        .Replace("\"", "&quot;");
+            }
+            return text;
+        }
+
         static StringBuilder ToText(object val, string name, int level, StringBuilder output)
         {
             var pre = new string('\t', level + 1);

@@ -49,8 +49,8 @@ namespace M2SA.AppGenome.ExceptionHandling
             }
             catch (Exception ex)
             {
-                var log = string.Format("{0}_LoggingException.log", DateTime.Now.ToString("yyyyMMddHH"));
-                FileHelper.WriteInfo(log, ex.ToText());
+                EffectiveFileLogger.WriteException(exception);
+                EffectiveFileLogger.WriteException(ex);
             }
             return exception;
         }

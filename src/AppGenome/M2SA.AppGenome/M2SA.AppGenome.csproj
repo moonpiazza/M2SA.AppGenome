@@ -71,6 +71,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IRepositoryFactory.cs" />
     <Compile Include="Data\RepositoryManager.cs" />
+    <Compile Include="Logging\EffectiveFileLogger.cs" />
     <Compile Include="ObjectBuilder.cs" />
     <Compile Include="Configuration\ThreadPoolConfig.cs" />
     <Compile Include="Configuration\XmlConfigSection.cs" />

@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EffectiveFileLogger.cs" />
     <Compile Include="FilePattern.cs" />
     <Compile Include="Formatters\FormatterBase.cs" />
     <Compile Include="Formatters\FormatterUtility.cs" />

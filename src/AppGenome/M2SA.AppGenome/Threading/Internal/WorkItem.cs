@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Diagnostics;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Threading.Internal
 {
@@ -397,7 +398,14 @@ namespace M2SA.AppGenome.Threading.Internal
                 {
                     // Save the exception so we can rethrow it later
                     exception = ex;
-                    new TaskThreadException(ex).HandleException();
+                    try
+                    {
+                        new TaskThreadException(ex).HandleException();
+                    }
+                    catch 
+                    {
+                        EffectiveFileLogger.WriteException(new TaskThreadException(ex));
+                    }
                 }
 
                 // Remove the value of the execution thread, so it will be impossible to cancel the work item,

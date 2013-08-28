@@ -73,7 +73,7 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 日志级别
         /// </summary>
-        public virtual LogLevel LogLeveL
+        public virtual LogLevel LogLevel
         {
             get;
             set;

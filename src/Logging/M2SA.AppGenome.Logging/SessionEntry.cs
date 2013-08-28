@@ -52,25 +52,25 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 
         /// </summary>
-        public override LogLevel LogLeveL
+        public override LogLevel LogLevel
         {
             get
             {
-                base.LogLeveL = LogLevel.All;
+                base.LogLevel = LogLevel.All;
                 if (this.EntryList.Count > 0)
                 {
                     for (var i = 0; i < this.EntryList.Count; i++)
                     {
-                        if (base.LogLeveL > this.EntryList[i].LogLeveL)
-                            base.LogLeveL = this.EntryList[i].LogLeveL;
+                        if (base.LogLevel < this.EntryList[i].LogLevel)
+                            base.LogLevel = this.EntryList[i].LogLevel;
                     }
                 }
 
-                return base.LogLeveL;
+                return base.LogLevel;
             }
             set
             {
-                base.LogLeveL = value;
+                base.LogLevel = value;
             }
         }
 

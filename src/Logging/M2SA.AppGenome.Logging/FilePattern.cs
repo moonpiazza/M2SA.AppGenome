@@ -59,6 +59,7 @@ namespace M2SA.AppGenome.Logging
             {
                 filePath = filePath.Replace("@SessionId", entry.SessionId);
             }
+            filePath = filePath.Replace("@LogLevel", entry.LogLevel.ToString());
 
             return filePath;
         }

@@ -49,7 +49,7 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 日志级别
         /// </summary>
-        LogLevel LogLeveL { get; set; }
+        LogLevel LogLevel { get; set; }
 
         /// <summary>
         /// 日志消息

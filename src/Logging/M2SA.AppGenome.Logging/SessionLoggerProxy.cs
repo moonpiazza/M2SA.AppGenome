@@ -14,6 +14,7 @@ namespace M2SA.AppGenome.Logging
     public class SessionLoggerProxy : WeakReference, ISessionLog
     {
         string sessionId = null;
+        string targetType = null;
 
         /// <summary>
         /// 
@@ -30,7 +31,11 @@ namespace M2SA.AppGenome.Logging
         /// <param name="logger"></param>
         public SessionLoggerProxy(ILog logger)
             : base(logger)
-        { }
+        {
+            if(null == logger)
+                throw new ArgumentNullException("logger");
+            this.targetType = logger.GetType().AssemblyQualifiedName;
+        }
 
         /// <summary>
         /// 
@@ -39,7 +44,11 @@ namespace M2SA.AppGenome.Logging
         /// <param name="trackResurrection"></param>
         public SessionLoggerProxy(ILog logger, bool trackResurrection)
             : base(logger, trackResurrection)
-        { }
+        {
+            if (null == logger)
+                throw new ArgumentNullException("logger");
+            this.targetType = logger.GetType().AssemblyQualifiedName;
+        }
 
         /// <summary>
         /// 
@@ -54,6 +63,7 @@ namespace M2SA.AppGenome.Logging
 
             this.Name = info.GetString("Name");
             this.sessionId = info.GetString("SessionId");
+            this.targetType = info.GetString("targetType");
         }
 
         /// <summary>
@@ -67,7 +77,7 @@ namespace M2SA.AppGenome.Logging
                 if (log == null)
                 {
                     var configNode = LogFactory.Instance.GetConfigInfo(this.Name);
-                    log = (ISessionLog)typeof(ISessionLog).BuildObject();
+                    log = (ISessionLog)typeof(ISessionLog).BuildObject(this.targetType);
                     log.Initialize(configNode);
                     log.SessionId = this.sessionId;
                     this.Target = log;

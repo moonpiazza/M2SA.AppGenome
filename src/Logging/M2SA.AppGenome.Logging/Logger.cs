@@ -277,7 +277,7 @@ namespace M2SA.AppGenome.Logging
                     entry.WriteTime = DateTime.Now;
                     var syncCount = 0;
                     this.Listeners.ForEach(item => {
-                        if (item.SupportAsync == false && this.IsWriteForListener(entry.LogLeveL, this.ListenerIndexes[item.Name]))
+                        if (item.SupportAsync == false && this.IsWriteForListener(entry.LogLevel, this.ListenerIndexes[item.Name]))
                         {
                         	try
                         	{
@@ -300,7 +300,7 @@ namespace M2SA.AppGenome.Logging
                 {
                     entry.WriteTime = DateTime.Now;
                     this.Listeners.ForEach(item => {
-                        if (this.IsWriteForListener(entry.LogLeveL, this.ListenerIndexes[item.Name]))
+                        if (this.IsWriteForListener(entry.LogLevel, this.ListenerIndexes[item.Name]))
                         	try
                         	{
                             	item.WriteMessage(entry);
@@ -335,7 +335,7 @@ namespace M2SA.AppGenome.Logging
 
             entry.WriteTime = DateTime.Now;
             this.Listeners.ForEach(item => {
-                if (item.SupportAsync && this.IsWriteForListener(entry.LogLeveL, this.ListenerIndexes[item.Name]))
+                if (item.SupportAsync && this.IsWriteForListener(entry.LogLevel, this.ListenerIndexes[item.Name]))
                     try
                     {
                         item.WriteMessage(entry);
@@ -421,7 +421,7 @@ namespace M2SA.AppGenome.Logging
                     entry.Message = string.Format("{0}\r\n[{1}]{2}", entry.Message, entry.BizType, createEntryException.Message);
                 }
                                 
-                entry.LogLeveL = LogLevel.Error;
+                entry.LogLevel = LogLevel.Error;
                 entry.ExtendInfo[OriginalLogLevel] = originalLevel;
                 entry.ExtendInfo[CreateEntryExceptionBizType] = createEntryException;
 
@@ -452,7 +452,7 @@ namespace M2SA.AppGenome.Logging
         {
             if (message != null && message is Exception && exception == null)
             {
-                return CreateEntry(level, null, exception);
+                return CreateEntry(level, null, (Exception)message);
             }
 
             ILogEntry entry = null;
@@ -485,7 +485,7 @@ namespace M2SA.AppGenome.Logging
                 entry.Message = message.ToString();
             }
 
-            entry.LogLeveL = level;
+            entry.LogLevel = level;
             if (exception != null && entry.Exception == null)
                 entry.Exception = exception;
 
@@ -531,7 +531,7 @@ namespace M2SA.AppGenome.Logging
             }
             catch (Exception ex)
             {
-                this.WriteCreateEntryException(entry.LogLeveL, entry.Message, entry.Exception,ex);
+                this.WriteCreateEntryException(entry.LogLevel, entry.Message, entry.Exception,ex);
             }
         }
 
@@ -543,7 +543,7 @@ namespace M2SA.AppGenome.Logging
                 enrty.URI = HttpContext.Current.Request.FilePath;
             }
 
-            if ((this.LevelLimit.SysInfoLimit & enrty.LogLeveL) != enrty.LogLeveL)
+            if ((this.LevelLimit.SysInfoLimit & enrty.LogLevel) != enrty.LogLevel)
             {
                 return;
             }

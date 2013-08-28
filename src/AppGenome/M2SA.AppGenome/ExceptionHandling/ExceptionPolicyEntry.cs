@@ -17,7 +17,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public string Name
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public string ExceptionType
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public PostHandlingAction PostHandlingAction
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public IList<IExceptionHandler> Handlers
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>

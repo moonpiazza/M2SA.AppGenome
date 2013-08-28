@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using M2SA.AppGenome.Configuration;
+using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Reflection;
 using M2SA.AppGenome.Web;
 
@@ -15,6 +16,51 @@ namespace M2SA.AppGenome.ExceptionHandling
     /// </summary>
     public class ExceptionPolicy : ResolveObjectBase, IExceptionPolicy
     {
+        internal static ExceptionPolicy CreateDefaultPolicy()
+        {
+            var entryForException = new ExceptionPolicyEntry();
+            entryForException.Name = "SystemException";
+            entryForException.ExceptionType = "Exception";
+            entryForException.PostHandlingAction = PostHandlingAction.NotifyRethrow;
+            entryForException.Handlers = new List<IExceptionHandler>(1){ 
+                new LoggingExceptionHandler()
+                {
+                    LogCategory = "ExceptionLogger",
+                    LogLevel = LogLevel.Error
+                }
+            };
+
+            var entryForFatalException = new ExceptionPolicyEntry();
+            entryForFatalException.Name = "FatalException";
+            entryForFatalException.ExceptionType = "FatalException";
+            entryForFatalException.PostHandlingAction = PostHandlingAction.NotifyRethrow;
+            entryForFatalException.Handlers = new List<IExceptionHandler>(1){ 
+                new LoggingExceptionHandler()
+                {
+                    LogCategory = "FatalExceptionLogger",
+                    LogLevel = LogLevel.Fatal
+                }
+            };
+
+            var entryForTaskException = new ExceptionPolicyEntry();
+            entryForTaskException.Name = "TaskThreadException";
+            entryForTaskException.ExceptionType = "TaskThreadException";
+            entryForTaskException.PostHandlingAction = PostHandlingAction.NotifyRethrow;
+            entryForTaskException.Handlers = new List<IExceptionHandler>(1){ 
+                new LoggingExceptionHandler()
+                {
+                    LogCategory = "TaskThreadExceptionLogger",
+                    LogLevel = LogLevel.Error
+                }
+            };
+
+            var policy = new ExceptionPolicy();
+            policy.PolicyEntries = new List<ExceptionPolicyEntry>(3) { entryForException, entryForFatalException, entryForTaskException };
+            policy.InitPolicyMap();
+
+            return policy;
+        }
+
         IDictionary<Type, ExceptionPolicyEntry> policyMap = null;
 
         /// <summary>
@@ -33,6 +79,11 @@ namespace M2SA.AppGenome.ExceptionHandling
         public override void Initialize(IConfigNode config)
         {
             base.Initialize(config);
+            this.InitPolicyMap();
+        }
+
+        private void InitPolicyMap()
+        {
             if (this.PolicyEntries == null)
             {
                 this.policyMap = new Dictionary<Type, ExceptionPolicyEntry>(0);

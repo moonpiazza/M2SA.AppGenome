@@ -19,7 +19,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public LogLevel LogLevel
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace M2SA.AppGenome.ExceptionHandling
         public string LogCategory
         {
             get;
-            private set;
+            internal set;
         }
 
         #region IExceptionHandler 成员

@@ -145,6 +145,7 @@ namespace M2SA.AppGenome.Reflection
         static Type GetMapTypeByAlias(string typeAlias)
         {
             Type result = null;
+            if (AppInstance.Config == null) return null;
             var aliasKeys = new List<string>(AppInstance.Config.Modules.Count + 1);
             aliasKeys.Add(typeAlias);
             foreach (var moduleKey in AppInstance.Config.Modules.Keys)

@@ -56,7 +56,7 @@ namespace M2SA.AppGenome.Services.MemCachedStats
 
         void Process()
         {
-            var loadStatsAction = new TimeAction(this.Cache, this.PocessInterval, LoadStats, true);
+            var loadStatsAction = new TimeAction(this.Cache, this.PocessInterval, LoadStats);
             AppInstance.GetTaskProcessor().RegisterAction(this.Cache, loadStatsAction);
         }
 

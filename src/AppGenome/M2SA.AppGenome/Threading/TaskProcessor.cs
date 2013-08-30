@@ -71,6 +71,21 @@ namespace M2SA.AppGenome.Threading
         /// <summary>
         /// 
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="action"></param>
+        /// <param name="pocessInterval"></param>
+        /// <param name="canCancel"></param>
+        /// <param name="concurrency"></param>
+        public void RegisterAction<T>(string name, Action<T> action, TimeSpan pocessInterval, bool canCancel, int concurrency)
+        {
+            var taskAction = new TaskActionGroup<T>(name, pocessInterval, action, canCancel, concurrency);
+            this.RegisterAction(name, taskAction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="name"></param>
         /// <param name="taskAction"></param>
         public void RegisterAction(string name, ITaskAction taskAction)

@@ -62,11 +62,13 @@ namespace M2SA.AppGenome.Threading
         /// <param name="cronExpressionValue"></param>
         /// <param name="action"></param>
         /// <param name="concurrency"></param>
-        public TimeAction(string name, string cronExpressionValue, Action<DateTime> action, int concurrency)
+        /// <param name="canCancel"></param>
+        public TimeAction(string name, string cronExpressionValue, Action<DateTime> action, int concurrency, bool canCancel)
         {
             this.Name = name;
             this.cronExpression = new CronExpression(cronExpressionValue);
             this.Action = action;
+            this.CanCancel = canCancel;
             this.ResetNextFireTime();
 
             this.Concurrency = concurrency;
@@ -80,7 +82,7 @@ namespace M2SA.AppGenome.Threading
         /// <param name="cronExpressionValue"></param>
         /// <param name="action"></param>
         public TimeAction(string name, string cronExpressionValue, Action<DateTime> action)
-            : this(name, cronExpressionValue, action, 1)
+            : this(name, cronExpressionValue, action, 1, true)
         {
         }
 
@@ -90,11 +92,10 @@ namespace M2SA.AppGenome.Threading
         /// <param name="name"></param>
         /// <param name="cronExpressionValue"></param>
         /// <param name="action"></param>
-        /// <param name="canCancel"></param>
-        public TimeAction(string name, string cronExpressionValue, Action<DateTime> action, bool canCancel)
-            : this(name, cronExpressionValue, action)
+        /// <param name="concurrency"></param>
+        public TimeAction(string name, string cronExpressionValue, Action<DateTime> action, int concurrency)
+            : this(name, cronExpressionValue, action, concurrency, true)
         {
-            this.CanCancel = canCancel;
         }
 
         /// <summary>
@@ -104,11 +105,12 @@ namespace M2SA.AppGenome.Threading
         /// <param name="pocessInterval"></param>
         /// <param name="action"></param>
         /// <param name="concurrency"></param>
-        public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action, int concurrency)
+        public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action, int concurrency, bool canCancel)
         {
             this.Name = name;
             this.waitSpan = pocessInterval;
             this.Action = action;
+            this.CanCancel = canCancel;
             this.ResetNextFireTime();
 
             this.Concurrency = concurrency;
@@ -122,7 +124,7 @@ namespace M2SA.AppGenome.Threading
         /// <param name="pocessInterval"></param>
         /// <param name="action"></param>
         public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action)
-            : this(name, pocessInterval, action, 1)
+            : this(name, pocessInterval, action, 1, true)
         {
         }
 
@@ -132,11 +134,10 @@ namespace M2SA.AppGenome.Threading
         /// <param name="name"></param>
         /// <param name="pocessInterval"></param>
         /// <param name="action"></param>
-        /// <param name="canCancel"></param>
-        public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action, bool canCancel) 
-            : this(name, pocessInterval, action)
+        /// <param name="concurrency"></param>
+        public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action, int concurrency)
+            : this(name, pocessInterval, action, concurrency, true)
         {
-            this.CanCancel = canCancel;
         }
 
         #region ITaskAction 成员

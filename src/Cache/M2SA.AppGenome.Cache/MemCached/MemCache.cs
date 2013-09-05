@@ -87,7 +87,8 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <returns></returns>
         public override object GetItem(string key)
         {
-            var value = this.readProxy.Get(key);
+            var cacheKey = FormatKey(key);
+            var value = this.readProxy.Get(cacheKey);
             return value;
         }
 
@@ -99,7 +100,8 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <param name="expiryTime"></param>
         public override void SetItem(string key, object data, TimeSpan expiryTime)
         {
-            this.writeProxy.Set(key, data, this.ExpiryTime);
+            var cacheKey = FormatKey(key);
+            this.writeProxy.Set(cacheKey, data, this.ExpiryTime);
         }
 
         /// <summary>
@@ -108,7 +110,8 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <param name="key"></param>
         public override void RemoveItem(string key)
         {
-            this.writeProxy.Delete(key);
+            var cacheKey = FormatKey(key);
+            this.writeProxy.Delete(cacheKey);
         }
 
         /// <summary>
@@ -136,7 +139,8 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <returns></returns>
         public virtual long? Increment(string key, int amount)
         {
-            return (long)writeProxy.Increment(key, (uint)amount);
+            var cacheKey = FormatKey(key);
+            return (long)writeProxy.Increment(cacheKey, (uint)amount);
         }
 
         /// <summary>
@@ -146,9 +150,19 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <returns></returns>
         public object[] Get(string[] keys)
         {
+            if (keys != null && keys.Length > 0)
+            {
+                for(var i=0;i<keys.Length;i++)
+                    keys[i] = FormatKey(keys[i]);
+            }
             return readProxy.Get(keys);
         }
 
         #endregion
+
+        private static string FormatKey(string key)
+        {
+            return key.Replace(" ", "~");
+        }
     }
 }

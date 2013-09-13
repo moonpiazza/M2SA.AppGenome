@@ -452,9 +452,21 @@ namespace M2SA.AppGenome.Reflection
         /// <param name="propertyValues"></param>
         public static void SetPropertyValues(this object target, IDictionary<string, object> propertyValues)
         {
+            SetPropertyValues(target, propertyValues, AccessorType.Reflection);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="propertyValues"></param>
+        /// <param name="accessorType"></param>
+        public static void SetPropertyValues(this object target, IDictionary<string, object> propertyValues,
+            AccessorType accessorType)
+        {
             ArgumentAssertion.IsNotNull(propertyValues, "propertyValues");
 
-            var accessor = ClassAccessorRepository.GetClassAccessor(target);
+            var accessor = ClassAccessorRepository.GetClassAccessor(target, accessorType);
 
             foreach (var pair in propertyValues)
             {

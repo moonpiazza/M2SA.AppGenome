@@ -10,7 +10,7 @@ namespace M2SA.AppGenome.Data
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TId"></typeparam>
-    public interface IRepository<T, TId>
+    public interface IRepository<T, TId> where T : IEntity<TId>
     {
         /// <summary>
         /// 

@@ -105,6 +105,7 @@ namespace M2SA.AppGenome.Threading
         /// <param name="pocessInterval"></param>
         /// <param name="action"></param>
         /// <param name="concurrency"></param>
+        /// <param name="canCancel"></param>
         public TimeAction(string name, TimeSpan pocessInterval, Action<DateTime> action, int concurrency, bool canCancel)
         {
             this.Name = name;

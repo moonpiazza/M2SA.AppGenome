@@ -104,7 +104,7 @@ namespace M2SA.AppGenome.Data.SqlMap
                 {
                     ConfigName = connInfo.Name,
                     ConnectionString = connInfo.ConnectionString,
-                    DBType = GetDatabaseTypeFromConfig(connInfo.Name),
+                    DBType = GetDatabaseTypeFromConfig(connInfo.Name, connInfo.ProviderName),
                     ProviderName = connInfo.ProviderName
                 };
                 databases.Add(dbConfig);
@@ -155,13 +155,20 @@ namespace M2SA.AppGenome.Data.SqlMap
             //}
         }
 
-        private static DatabaseType GetDatabaseTypeFromConfig(string configName)
+        private static DatabaseType GetDatabaseTypeFromConfig(string configName, string providerName)
         {
             var dbType = SqlMapping.DefaultDbType;
             string appSettingKey = string.Format("{0}.DatabaseType", configName);
             var dbTypeStr = ConfigurationManager.AppSettings[appSettingKey];
 
-            if (string.IsNullOrEmpty(dbTypeStr) == false)
+            if (string.IsNullOrEmpty(dbTypeStr))
+            {
+                if (providerName == typeof(MySql.MySqlProvider).Name)
+                    dbType = DatabaseType.MySql;
+                else if (providerName == typeof(SqlServer.SqlServerProvider).Name)
+                    dbType = DatabaseType.SqlServer;
+            }
+            else
             {
                 dbType = (DatabaseType)Enum.Parse(typeof(DatabaseType), dbTypeStr);
             }

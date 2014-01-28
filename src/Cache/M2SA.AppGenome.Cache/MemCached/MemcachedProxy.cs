@@ -12,6 +12,7 @@ namespace M2SA.AppGenome.Cache.MemCached
     /// <summary>
     /// 
     /// </summary>
+    [CLSCompliant(false)]
     public class MemcachedProxy
     {
         /// <summary>
@@ -1285,7 +1286,7 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <summary>
         /// 
         /// </summary>
-        public uint MaxPoolSize
+        public int MaxPoolSize
         {
             get
             {
@@ -1304,7 +1305,7 @@ namespace M2SA.AppGenome.Cache.MemCached
         /// <summary>
         /// 
         /// </summary>
-        public uint MinPoolSize
+        public int MinPoolSize
         {
             get
             {

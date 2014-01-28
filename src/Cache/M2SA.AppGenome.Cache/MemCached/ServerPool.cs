@@ -28,13 +28,13 @@ namespace M2SA.AppGenome.Cache.MemCached
 		//Internal configuration properties
 		private int sendReceiveTimeout = 2000;
 		private int connectTimeout = 2000;
-		private uint maxPoolSize = 100;
-		private uint minPoolSize = 50;
+		private int maxPoolSize = 100;
+		private int minPoolSize = 50;
 		private TimeSpan socketRecycleAge = TimeSpan.FromMinutes(30);
 		internal int SendReceiveTimeout { get { return sendReceiveTimeout; } set { sendReceiveTimeout = value; } }
 		internal int ConnectTimeout { get { return connectTimeout; } set { connectTimeout = value; } }
-		internal uint MaxPoolSize { get { return maxPoolSize; } set { maxPoolSize = value; } }
-		internal uint MinPoolSize { get { return minPoolSize; } set { minPoolSize = value; } }
+		internal int MaxPoolSize { get { return maxPoolSize; } set { maxPoolSize = value; } }
+		internal int MinPoolSize { get { return minPoolSize; } set { minPoolSize = value; } }
 		internal TimeSpan SocketRecycleAge { get { return socketRecycleAge; } set { socketRecycleAge = value; } }
 
         public readonly ServerScope Scope;

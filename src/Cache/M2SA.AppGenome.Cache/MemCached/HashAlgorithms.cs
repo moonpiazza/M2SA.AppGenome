@@ -11,6 +11,7 @@ namespace M2SA.AppGenome.Cache.MemCached
 	/// http://www.isthe.com/chongo/tech/comp/fnv/
 	/// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+    [CLSCompliant(false)]
     public class FNV1_32 : HashAlgorithm
 	{
 		private static readonly uint FNV_prime = 16777619;
@@ -62,6 +63,7 @@ namespace M2SA.AppGenome.Cache.MemCached
 	/// http://www.isthe.com/chongo/tech/comp/fnv/
 	/// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+    [CLSCompliant(false)]
     public class FNV1a_32 : HashAlgorithm
 	{
 		private static readonly uint FNV_prime = 16777619;
@@ -112,6 +114,7 @@ namespace M2SA.AppGenome.Cache.MemCached
 	/// http://home.comcast.net/~bretm/hash/6.html
 	/// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+    [CLSCompliant(false)]
     public class ModifiedFNV1_32 : FNV1_32
 	{
         /// <summary>

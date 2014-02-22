@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using M2SA.AppGenome.Reflection;
 
 namespace M2SA.AppGenome.Data
 {
@@ -26,7 +24,11 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         public static TRepository GetRepository<TRepository>(string categoryName)
         {
-            return ObjectIOCFactory.GetSingleton<IRepositoryFactory>("RepositoryFactory." + categoryName).GetRepository<TRepository>();
+            var repositoryFactoryName = string.Concat("RepositoryFactory.",categoryName);
+            if (null == TypeExtension.GetMapType(repositoryFactoryName))
+                return ObjectIOCFactory.GetSingleton<TRepository>();
+            else
+                return ObjectIOCFactory.GetSingleton<IRepositoryFactory>("RepositoryFactory." + categoryName).GetRepository<TRepository>();
         }
     }
 }

@@ -19,7 +19,8 @@ namespace M2SA.AppGenome.Reflection
         public static bool IsPrimitiveType(this Type target)
         {
             ArgumentAssertion.IsNotNull(target, "target");
-            return ((target.IsValueType && Type.GetTypeCode(target) != TypeCode.Object) || target.Equals(typeof(string))|| target.Equals(typeof(TimeSpan)));
+            return ((target.IsValueType && Type.GetTypeCode(target) != TypeCode.Object) 
+                || target.Equals(typeof(string)) || target.Equals(typeof(TimeSpan)) || target.Equals(typeof(Guid)));
         }
 
         /// <summary>

@@ -50,12 +50,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="QueueListener.cs" />
+    <Compile Include="AppBaseProvider.cs" />
+    <Compile Include="DatabaseListener.cs" />
+    <Compile Include="DataRepositories\AppBaseRepository.cs" />
+    <Compile Include="DataRepositories\IAppBaseRepository.cs" />
+    <Compile Include="DataRepositories\LogEntryModuleRepository.cs" />
+    <Compile Include="DataRepositories\LogStatisticItemRepository.cs" />
+    <Compile Include="DataRepositories\ILogStatisticItemRepository.cs" />
+    <Compile Include="DataRepositories\ILogEntryModuleRepository.cs" />
+    <Compile Include="DataRepositories\ILogLabRepository.cs" />
+    <Compile Include="DataRepositories\LogLabRepository.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="IAppBaseProvider.cs" />
+    <Compile Include="LogLab.cs" />
+    <Compile Include="ModuleEnvironment.cs" />
+    <Compile Include="QueueProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LogStatisticItem.cs" />
+    <Compile Include="LogEntryModule.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="appgenome.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -66,6 +82,24 @@
       <Project>{682BEB8B-8F34-446D-B264-D26378E86014}</Project>
       <Name>M2SA.AppGenome</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\M2SA.AppGenome.Data\M2SA.AppGenome.Data.csproj">
+      <Project>{74a5959e-0600-400a-a1d6-2235d02e5122}</Project>
+      <Name>M2SA.AppGenome.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sqlmap\AppLog\LogStatisticItemRepository.sql.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sqlmap\AppLog\LogEntryModuleRepository.sql.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sqlmap\AppLog\LogLabRepository.sql.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sqlmap\AppLog\AppBaseRepository.sql.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

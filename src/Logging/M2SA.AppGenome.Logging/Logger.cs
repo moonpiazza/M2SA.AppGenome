@@ -408,6 +408,7 @@ namespace M2SA.AppGenome.Logging
                     }
                 }
                 entry.AppName = AppInstance.Config.AppName;
+                entry.LogName = this.Name;
                 entry.LogTime = DateTime.Now;
                 entry.ServerIP = this.ServerIP;
                 entry.BizType = CreateEntryExceptionBizType;
@@ -510,6 +511,10 @@ namespace M2SA.AppGenome.Logging
             {
                 entry.AppName = AppInstance.Config.AppName;
             }
+            if (string.IsNullOrEmpty(entry.LogName))
+            {
+                entry.LogName = this.Name;
+            }
             if (entry.LogTime == DateTime.MinValue || entry.LogTime == DateTime.MaxValue)
             {
                 entry.LogTime = DateTime.Now;
@@ -536,23 +541,33 @@ namespace M2SA.AppGenome.Logging
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        void AppendSysInfo(ILogEntry enrty)
+        void AppendSysInfo(ILogEntry entry)
         {
-            if (string.IsNullOrEmpty(enrty.URI) && HttpContext.Current != null)
+            HttpRequest httpRequest = null;
+            if (string.IsNullOrEmpty(entry.URI) && HttpContext.Current != null)
             {
-                enrty.URI = HttpContext.Current.Request.FilePath;
+                try
+                {
+                    httpRequest = HttpContext.Current.Request;
+                }
+                catch
+                {
+                    httpRequest = null;
+                }
             }
 
-            if ((this.LevelLimit.SysInfoLimit & enrty.LogLevel) != enrty.LogLevel)
+            if (null != httpRequest) entry.URI = httpRequest.FilePath;
+
+            if ((this.LevelLimit.SysInfoLimit & entry.LogLevel) != entry.LogLevel)
             {
                 return;
             }
 
-            if (enrty.SysInfo == null)
+            if (entry.SysInfo == null)
             {
                 try
                 {
-                    enrty.SysInfo = SystemInfo.GetInfo();
+                    entry.SysInfo = SystemInfo.GetInfo();
                 }
                 catch (Exception ex)
                 {
@@ -560,35 +575,35 @@ namespace M2SA.AppGenome.Logging
                 }
             }
 
-            var context = HttpContext.Current;
-            if (context == null)
+            if (httpRequest == null)
                 return;
 
-            if (enrty.ExtendInfo.ContainsKey(ConstLogKeys.HttpRequestKey) == false)
+            if (entry.ExtendInfo.ContainsKey(ConstLogKeys.HttpRequestKey) == false)
             {
                 var requestInfo = new Dictionary<string, object>();
-                if (context.Request.UrlReferrer != null)
+                if (httpRequest.UrlReferrer != null)
                 {
-                    requestInfo.Add("Referrer", context.Request.UrlReferrer.ToString());
+                    requestInfo.Add("Referrer", httpRequest.UrlReferrer.ToString());
                 }
-                requestInfo.Add("URL", context.Request.Url.ToString());
-                requestInfo.Add("RawUrl", context.Request.RawUrl);
+                requestInfo.Add("URL", httpRequest.Url.ToString());
+                requestInfo.Add("RawUrl", httpRequest.RawUrl);
 
-                if (context.Request.Form.Count > 0)
+                if (httpRequest.Form.Count > 0)
                 {
-                    var formInfo = new Dictionary<string, object>(context.Request.Form.Count);
-                    context.Request.Form.AllKeys.ToList<string>().ForEach(item => 
+                    var formInfo = new Dictionary<string, object>(httpRequest.Form.Count);
+                    httpRequest.Form.AllKeys.ToList<string>().ForEach(item => 
                     {
-                        formInfo.Add(item, context.Request.Form[item]);
+                        formInfo.Add(item, httpRequest.Form[item]);
                     });
                     requestInfo.Add("FormParams", formInfo);
                 }
 
-                if (context.Request.Cookies.Count > 0)
+                if (httpRequest.Cookies.Count > 0)
                 {
-                    var cookiesInfo = new Dictionary<string, object>(context.Request.Cookies.Count);
-                    context.Request.Cookies.AllKeys.ToList<string>().ForEach(item => {
-                        var httpCookie = context.Request.Cookies[item];
+                    var cookiesInfo = new Dictionary<string, object>(httpRequest.Cookies.Count);
+                    httpRequest.Cookies.AllKeys.ToList<string>().ForEach(item =>
+                    {
+                        var httpCookie = httpRequest.Cookies[item];
                         var cookieInfo = new HttpCookieInfo(httpCookie);
                         var cookieKey = string.Format("{0}.{1}", httpCookie.Domain, item);
                         cookiesInfo[cookieKey] = cookieInfo;
@@ -596,14 +611,14 @@ namespace M2SA.AppGenome.Logging
                     requestInfo.Add("Cookies", cookiesInfo);
                 }
 
-                if (context.Request.ServerVariables.Count > 0)
+                if (httpRequest.ServerVariables.Count > 0)
                 {
-                    var serverInfo = new Dictionary<string, object>(context.Request.ServerVariables.Count);
-                    context.Request.ServerVariables.AllKeys.ToList<string>().ForEach(item => {
-                        var val = context.Request.ServerVariables[item];
+                    var serverInfo = new Dictionary<string, object>(httpRequest.ServerVariables.Count);
+                    httpRequest.ServerVariables.AllKeys.ToList<string>().ForEach(item => {
+                        var val = httpRequest.ServerVariables[item];
                         if (string.IsNullOrEmpty(val) == false)
                         {
-                            serverInfo[item] = context.Request.ServerVariables[item];
+                            serverInfo[item] = httpRequest.ServerVariables[item];
                         }
                     });
                     requestInfo.Add("ServerVariables", serverInfo);
@@ -611,15 +626,15 @@ namespace M2SA.AppGenome.Logging
 
                 try
                 {
-                    var browserInfo = new HttpBrowserInfo(context.Request.Browser);
+                    var browserInfo = new HttpBrowserInfo(httpRequest.Browser);
                     requestInfo.Add("BrowserInfo", browserInfo);
                 }
                 catch (Exception ex)
                 {
-                    enrty.ExtendInfo.Add("BrowserInfo-Exception", ex);
+                    entry.ExtendInfo.Add("BrowserInfo-Exception", ex);
                 }
 
-                enrty.ExtendInfo.Add(ConstLogKeys.HttpRequestKey, requestInfo);
+                entry.ExtendInfo.Add(ConstLogKeys.HttpRequestKey, requestInfo);
             }
         }
 

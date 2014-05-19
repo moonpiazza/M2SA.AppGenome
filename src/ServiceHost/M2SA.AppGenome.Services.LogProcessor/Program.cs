@@ -10,7 +10,8 @@ namespace M2SA.AppGenome.Services.LogProcessor
     {
         static void Main(string[] args)
         {
-            AppInstance.RegisterTypeAlias<QueueListener>();
+            AppInstance.RegisterTypeAlias<QueueProcessor>();
+            AppInstance.RegisterTypeAliasByModule<DatabaseListener>(AppConfig.LoggingKey);
             ObjectIOCFactory.GetSingleton<ApplicationHub>().Register<ExitCommandListener>(new ExitCommandListener());
             ApplicationHost.GetInstance(args).Start();
 

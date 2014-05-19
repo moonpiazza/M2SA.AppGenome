@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root xmlns="http://m2sa.net/Schema/SqlMapping">
+  <module moduleName="AppBaseRepository" dbName="M2SA.AppGenome.AppLog">
+    <sqlWrap sqlName="SelectByName" supportDBType="3">
+      select top 1 AppId,AppName from AppBase where AppName = @AppName
+    </sqlWrap>
+  </module>
+</root>

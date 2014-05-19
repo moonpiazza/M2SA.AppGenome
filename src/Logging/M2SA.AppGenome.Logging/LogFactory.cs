@@ -149,20 +149,24 @@ namespace M2SA.AppGenome.Logging
         {            
             if (this.LogConfigMap.ContainsKey(name) == false)
             {
+                ILog log = null; 
                 var defaultCategory = this.GetDefaultCategory();
-                if (name == defaultCategory)
+                if (this.LogConfigMap.ContainsKey(defaultCategory))
                 {
-                    var log = new SystemLogger();
-                    return log;
+                    log = this.ResolveObject(defaultCategory);                    
                 }
-                else 
+                else
                 {
-                    return this.GetLogger();
+                    log = new SystemLogger();
                 }
+
+                log.Name = name;
+                return log;
             }
             else
             {
                 var obj = base.ResolveObject(name);
+                obj.Name = name;
                 if (obj is ISessionLog)
                 {
                     var proxy = new SessionLoggerProxy(obj);

@@ -30,5 +30,18 @@ namespace M2SA.AppGenome.Logging.Tests
             dic.Add("Message", "ABVC");
             log.Info(dic);            
         }
+
+        [Test]
+        public void TestLogInfoByModule()
+        {
+            var log = LogManager.GetLogger("TestModule");
+
+            var dic = new Dictionary<string, object>();
+            dic.Add("Method", "TestLogInfo");
+            dic.Add("BizType", "Biz123");
+            dic.Add("BizId", 111.ToString());
+            dic.Add("Message", "ABVC");
+            log.Info(dic);
+        }
     }
 }

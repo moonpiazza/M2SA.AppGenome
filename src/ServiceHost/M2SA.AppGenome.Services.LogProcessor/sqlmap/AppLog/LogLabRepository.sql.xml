@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root xmlns="http://m2sa.net/Schema/SqlMapping">
+  <module moduleName="LogLabRepository" dbName="M2SA.AppGenome.AppLog">
+    <sqlWrap sqlName="Insert" supportDBType="3">
+      if (exists(select 1 From LogLab Where AppId=@AppId and LabName=@LabName))
+        begin
+          select LabId From LogLab Where AppId=@AppId and LabName=@LabName
+        end
+      else
+        begin
+          insert into LogLab (AppId,LabName) values (@AppId,@LabName);
+          select @@identity;
+        end
+    </sqlWrap>
+  </module>
+</root>

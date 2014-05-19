@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root xmlns="http://m2sa.net/Schema/SqlMapping">
+  <module moduleName="LogEntryModuleRepository" dbName="M2SA.AppGenome.AppLog">
+    <sqlWrap sqlName="Insert" supportDBType="2">
+      declare @EntryId bigint
+      insert into LogEntry (AppId,LogName,SessionId,ServerIP,BizType,LogLevel,Message,URI,LogTime,BizId,BizOperator)
+      values (@AppId,@LogName,@SessionId,@ServerIP,@BizType,@LogLevel,@Message,@URI,@LogTime,@BizId,@BizOperator);
+      select @EntryId = @@identity;
+
+      insert into LogEntryDetail (EntryId, Detail) values (@EntryId, @Detail);
+
+      select @EntryId;
+    </sqlWrap>
+    <sqlWrap sqlName="InsertLogEntryLab" supportDBType="2">
+      if (not exists(select 1 From LogEntryLab Where EntryId=@EntryId and LabId=@LabId))
+        insert into LogEntryLab (EntryId, LabId) values (@EntryId, @LabId)
+    </sqlWrap>
+  </module>
+</root>

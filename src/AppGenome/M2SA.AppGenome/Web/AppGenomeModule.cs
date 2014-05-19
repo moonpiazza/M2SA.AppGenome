@@ -44,7 +44,7 @@ namespace M2SA.AppGenome.Web
 
         void httpApplication_EndRequest(object sender, EventArgs e)
         {
-            if (AppInstance.Config.Debug)
+            if (AppInstance.Config.Debug && null != this.stopwatch)
             {
                 this.stopwatch.Stop();
                 LogManager.GetLogger().Trace("{0} : {1}", this.httpApplication.Context.Request.Url, this.stopwatch.Elapsed);

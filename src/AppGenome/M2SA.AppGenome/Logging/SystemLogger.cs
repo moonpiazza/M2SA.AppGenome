@@ -23,6 +23,12 @@ namespace M2SA.AppGenome.Logging
         }
 
         #region ILog 成员
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get; set; }
+
         /// <summary>
         /// 
         /// </summary>

@@ -17,6 +17,11 @@ namespace M2SA.AppGenome.Logging
         string AppName { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        string LogName { get; set; }
+
+        /// <summary>
         /// 会话标识
         /// </summary>
         string SessionId { get; set; }
@@ -34,11 +39,12 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 业务标识
         /// </summary>
-        string BizId
-        {
-            get;
-            set;
-        }
+        string BizId { get; set; }
+
+        /// <summary>
+        /// 操作员
+        /// </summary>
+        string BizOperator { get; set; }
 
         /// <summary>
         /// 日志标签，可以有多个
@@ -69,24 +75,18 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 写日志时间
         /// </summary>
-        DateTime WriteTime
-        {
-            get;
-            set;
-        }
+        DateTime WriteTime { get; set; }
 
         /// <summary>
         /// 扩展属性
         /// </summary>
-        Dictionary<string, object> ExtendInfo
-        {
-            get;
-        }
+        Dictionary<string, object> ExtendInfo { get; }
 
         /// <summary>
         /// 系统信息
         /// </summary>
         SystemInfo SysInfo { get; set; }
+
         /// <summary>
         /// 异常信息
         /// </summary>

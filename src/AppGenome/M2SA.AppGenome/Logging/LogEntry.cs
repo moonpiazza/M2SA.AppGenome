@@ -12,135 +12,88 @@ namespace M2SA.AppGenome.Logging
     [Serializable]
     public class LogEntry : ILogEntry
     {
-
         #region ILogEntry 成员
 
         /// <summary>
         /// 应用程序标识
         /// </summary>
-        public string AppName
-        {
-            get;
-            set;
-        }
+        public string AppName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string LogName { get; set; }
 
         /// <summary>
         /// 会话标识
         /// </summary>
-        public string SessionId
-        {
-            get;
-            set;
-        }
+        public string SessionId { get; set; }
 
         /// <summary>
         /// 会话标识
         /// </summary>
-        public string ServerIP
-        {
-            get;
-            set;
-        }
+        public string ServerIP { get; set; }
 
         /// <summary>
         /// 业务类型
         /// </summary>
-        public string BizType
-        {
-            get;
-            set;
-        }
+        public string BizType { get; set; }
 
         /// <summary>
         /// 业务标识
         /// </summary>
-        public string BizId
-        {
-            get;
-            set;
-        }
+        public string BizId { get; set; }
+
+        /// <summary>
+        /// 业务标识
+        /// </summary>
+        public string BizOperator { get; set; }
 
         /// <summary>
         /// 日志标签，可以有多个
         /// <see cref="ConstLogKeys.LabSeparator"/>
         /// </summary>
-        public string BizLabs
-        {
-            get;
-            set;
-        }
+        public string BizLabs { get; set; }
 
         /// <summary>
         /// 日志级别
         /// </summary>
-        public virtual LogLevel LogLevel
-        {
-            get;
-            set;
-        }
+        public virtual LogLevel LogLevel { get; set; }
 
         /// <summary>
         /// 日志消息
         /// </summary>
-        public string Message
-        {
-            get;
-            set;
-        }
+        public string Message { get; set; }
 
         /// <summary>
         /// 日志源URI
         /// </summary>
-        public string URI
-        {
-            get;
-            set;
-        }
+        public string URI { get; set; }
 
         /// <summary>
         /// 日志时间
         /// </summary>
-        public DateTime LogTime
-        {
-            get;
-            set;
-        }
+        public DateTime LogTime { get; set; }
 
         /// <summary>
         /// 写日志时间
         /// </summary>
-        public DateTime WriteTime
-        {
-            get;
-            set;
-        }
+        public DateTime WriteTime { get; set; }
 
         /// <summary>
         /// 异常信息
         /// </summary>
-        public Exception Exception
-        {
-            get;
-            set;
-        }
+        public Exception Exception { get; set; }
 
         /// <summary>
         /// 扩展属性
         /// </summary>
-        public Dictionary<string, object> ExtendInfo
-        {
-            get;
-            private set;
-        }
+        public Dictionary<string, object> ExtendInfo { get; private set; }
 
         /// <summary>
         /// 系统信息
         /// </summary>
-        public SystemInfo SysInfo
-        {
-            get;
-            set;
-        }
+        public SystemInfo SysInfo { get; set; }
 
         #endregion
 

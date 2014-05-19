@@ -14,6 +14,11 @@ namespace M2SA.AppGenome.Logging
         /// <summary>
         /// 
         /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="level"></param>
         /// <param name="msg"></param>
         /// <param name="exception"></param>

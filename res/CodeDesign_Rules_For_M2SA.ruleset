@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Microsoft 扩展的设计准则规则 For M2SA" Description="这些规则基于基本设计准则规则进行扩展，以便最大程度地报告可使用性和可维护性问题。将重点关注命名准则。如果您的项目包含库代码或者您要强制实施用于编写可维护代码的最高标准，请考虑包含此规则集。" ToolsVersion="11.0">
+<RuleSet Name="Microsoft 扩展的设计准则规则 For M2SA" Description="这些规则基于基本设计准则规则进行扩展，以便最大程度地报告可使用性和可维护性问题。将重点关注命名准则。如果您的项目包含库代码或者您要强制实施用于编写可维护代码的最高标准，请考虑包含此规则集。" ToolsVersion="12.0">
   <Include Path="basicdesignguidelinerules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="None" />
@@ -8,7 +8,6 @@
     <Rule Id="CA1024" Action="None" />
     <Rule Id="CA1031" Action="Error" />
     <Rule Id="CA1033" Action="None" />
-    <Rule Id="CA1040" Action="Warning" />
     <Rule Id="CA1045" Action="Warning" />
     <Rule Id="CA1053" Action="None" />
     <Rule Id="CA1056" Action="None" />
@@ -48,5 +47,6 @@
     <Rule Id="CA2201" Action="Error" />
     <Rule Id="CA2204" Action="Warning" />
     <Rule Id="CA2218" Action="Error" />
+    <Rule Id="CA2227" Action="None" />
   </Rules>
 </RuleSet>

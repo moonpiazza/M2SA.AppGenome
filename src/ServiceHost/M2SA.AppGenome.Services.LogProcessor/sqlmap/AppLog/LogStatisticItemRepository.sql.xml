@@ -5,17 +5,17 @@
       select @ItemId=ItemId From LogStatisticItem Where AppId=@AppId and LogName=@LogName and ServerIP=@ServerIP
 	      and BizType=@BizType and LogLevel=@LogLevel and URI=@URI and StatisticTime=@StatisticTime
 	
-      if (@ItemId is null)
-	    begin
-          insert into LogStatisticItem (AppId,LogName,ServerIP,BizType,LogLevel,URI,StatisticTime,Total)
-		    values (@AppId,@LogName,@ServerIP,@BizType,@LogLevel,@URI,@StatisticTime,@Total);
-	      select @ItemId = @@identity;
-        end
-      else
+      if (@ItemId>0)
         begin
           update LogStatisticItem set Total=Total+1 Where ItemId=@ItemId
         end
-    
+      else
+	      begin
+          insert into LogStatisticItem (AppId,LogName,ServerIP,BizType,LogLevel,URI,StatisticTime,Total)
+		        values (@AppId,@LogName,@ServerIP,@BizType,@LogLevel,@URI,@StatisticTime,@Total);
+	        select @ItemId = @@identity;
+        end
+   
       select @ItemId
     </sqlWrap>
     <sqlWrap sqlName="InsertLogStatisticItemLab" supportDBType="2">

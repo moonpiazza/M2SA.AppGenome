@@ -26,11 +26,6 @@ namespace M2SA.AppGenome.Services.LogProcessor
         /// <summary>
         /// 
         /// </summary>
-        public string AppId { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string LabName { get; set; }
 
         #endregion //Instance Properties

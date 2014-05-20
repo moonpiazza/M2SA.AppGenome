@@ -17,13 +17,13 @@ namespace M2SA.AppGenome.Logging.Tests
         public virtual void Start()
         {
             stopwatch = Stopwatch.StartNew();
-            //ApplicationHost.GetInstance().Start();            
+            ApplicationHost.GetInstance().Start();            
         }
 
         [TestFixtureTearDown]
         public virtual void Stop()
         {
-            //ApplicationHost.GetInstance().Stop();
+            ApplicationHost.GetInstance().Stop();
             stopwatch.Stop();
             Console.WriteLine("ApplicationHost run : {0}", stopwatch.Elapsed);
         }

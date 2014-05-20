@@ -46,7 +46,7 @@ namespace M2SA.AppGenome.Services.LogProcessor
                 throw new ArgumentNullException("entry");
 
             var appId = this.AppBaseProvider.GetAppIdByName(entry.AppName);
-            var labIds = SaveLabs(appId, entry);
+            var labIds = SaveLabs(entry);
 
             ResetNullProperties(entry);
 
@@ -89,7 +89,7 @@ namespace M2SA.AppGenome.Services.LogProcessor
             item.Save();
         }
 
-        private static IList<long> SaveLabs(string appId, ILogEntry entry)
+        private static IList<long> SaveLabs(ILogEntry entry)
         {
             var labIds = new List<long>();
             if (false == string.IsNullOrEmpty(entry.BizLabs))
@@ -101,11 +101,8 @@ namespace M2SA.AppGenome.Services.LogProcessor
                 foreach (string labName in labArray)
                 {
                     if (string.IsNullOrWhiteSpace(labName)) continue;
-                    var lab = new LogLab()
-                    {
-                        AppId = appId,
-                        LabName = labName.Trim()
-                    };
+                    var lab = new LogLab();
+                    lab.LabName = labName.Trim();
                     lab.Save();
                     if (false == labIds.Contains(lab.LabId))
                         labIds.Add(lab.LabId);

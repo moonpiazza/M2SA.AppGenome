@@ -97,6 +97,8 @@ namespace M2SA.AppGenome.Services.LogProcessor
 
         void queue_ReceiveCompleted(object message)
         {
+            if(false == this.IsRunning) return;
+
             AppInstance.GetThreadPool().QueueWorkItem(() => 
             { 
                 if (false == (message is ILogEntry))

@@ -215,10 +215,6 @@ namespace M2SA.AppGenome.Queues
             lock (syncRoot)
             {
                 this.queue.Send(message, transactionType);
-            } 
-            if (AppInstance.Config.Debug)
-            {
-                LogManager.GetLogger().Debug("Send {0} to {1}[{2}]", message.GetType().GetSimpleQualifiedName(), this.Name, this.Path);
             }            
         }
 

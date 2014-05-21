@@ -28,9 +28,6 @@ namespace M2SA.AppGenome.Services.LogProcessor
         public override void Initialize(IConfigNode config)
         {
             base.Initialize(config);
-
-            if (null == this.AppBaseProvider)
-                this.AppBaseProvider = new AppBaseProvider();
         }
 
         /// <summary>
@@ -39,13 +36,13 @@ namespace M2SA.AppGenome.Services.LogProcessor
         /// <param name="entry"></param>
         public override void WriteMessage(ILogEntry entry)
         {
-            if (null == this.AppBaseProvider)
-                throw new ArgumentNullException("AppBaseProvider", "AppBaseProvider is not implemented.");
-
             if (entry == null)
                 throw new ArgumentNullException("entry");
 
-            var appId = this.AppBaseProvider.GetAppIdByName(entry.AppName);
+            var appId = entry.AppName;
+            if (null != this.AppBaseProvider)
+                appId = this.AppBaseProvider.GetAppIdByName(entry.AppName);
+
             var labIds = SaveLabs(entry);
 
             ResetNullProperties(entry);

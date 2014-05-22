@@ -36,6 +36,11 @@ namespace M2SA.AppGenome.Configuration
             set;
         }
 
+        int PropertiesCount
+        {
+            get;
+        }
+
         /// <summary>
         /// 获取所有属性值
         /// </summary>

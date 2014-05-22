@@ -77,7 +77,8 @@ namespace M2SA.AppGenome.Configuration
                         continue;
                     }
 
-                    if (childNode.ChildNodes.Count > 0 && childNode.ChildNodes.Count == childNode.SelectNodes(childNode.ChildNodes[0].Name).Count)
+                    var childElements = FindChildElements(childNode.ChildNodes);
+                    if (childElements.Count > 0 && childElements.Count == childNode.SelectNodes(childElements[0].Name).Count)
                     {
                         var name = childNode.Name.ToLower();
                         foreach (XmlNode item in childNode.ChildNodes)
@@ -90,6 +91,19 @@ namespace M2SA.AppGenome.Configuration
 
                 this.propertyMap[childNode.Name.ToLower()] = new ConfigNode(childNode);
             }
+        }
+
+        private IList<XmlNode> FindChildElements(XmlNodeList nodes)
+        {
+            var elements = new List<XmlNode>(nodes.Count);
+            foreach (XmlNode item in nodes)
+            {
+                if (item.NodeType != XmlNodeType.Element)
+                    continue;
+
+                elements.Add(item);
+            }
+            return elements;
         }
 
         void AddChildNodeToProperty(IConfigNode node, string propName)
@@ -145,6 +159,14 @@ namespace M2SA.AppGenome.Configuration
                 this.enableSingleton = value;
                 this.SetProperty<bool>(EnableSingletonName, value);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int PropertiesCount
+        {
+            get { return this.propertyMap.Count; }
         }
 
         /// <summary>
@@ -281,17 +303,20 @@ namespace M2SA.AppGenome.Configuration
             if (nodeList != null && nodeList.Count > 0)
             {
                 var node = nodeList[0];
-                var strongKey = AppConfig.SrongNameSequence.FirstOrDefault<string>(
-                    name => node.ContainsProperty(name));
-
-                if (string.IsNullOrEmpty(strongKey))
+                if (node.PropertiesCount > 0)
                 {
-                    throw new ArgumentOutOfRangeException("nodeName", string.Format("not find the {0} key from {1}", node.Name, AppConfig.SrongNameSequence));
-                }
+                    var strongKey = AppConfig.SrongNameSequence.FirstOrDefault<string>(
+                       name => node.ContainsProperty(name));
 
-                foreach (var configNode in nodeList)
-                {
-                    nodeMap.Add(configNode.GetProperty<string>(strongKey), configNode);
+                    if (string.IsNullOrEmpty(strongKey))
+                    {
+                        throw new ArgumentOutOfRangeException("nodeName", string.Format("not find the {0} key from {1}", node.Name, AppConfig.SrongNameSequence));
+                    }
+
+                    foreach (var configNode in nodeList)
+                    {
+                        nodeMap.Add(configNode.GetProperty<string>(strongKey), configNode);
+                    }
                 }
             }
             return nodeMap;

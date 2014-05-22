@@ -507,9 +507,13 @@ namespace M2SA.AppGenome.Reflection
             {
                 target = Enum.Parse(targetType, value.ToString(), true);
             }
-            if (targetType.Equals(typeof(TimeSpan)))
+            else if (targetType.Equals(typeof(TimeSpan)))
             {
                 target = TimeSpan.Parse(value.ToString());
+            }
+            else if (targetType.Equals(typeof(Guid)))
+            {
+                target = Guid.Parse(value.ToString());
             }
             else
             {

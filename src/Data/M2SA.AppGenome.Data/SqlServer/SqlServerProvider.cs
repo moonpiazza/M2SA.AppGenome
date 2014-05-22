@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using M2SA.AppGenome.Reflection;
 
 namespace M2SA.AppGenome.Data.SqlServer
 {
@@ -21,6 +22,24 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// 
         /// </summary>
         public string ConnectionString { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandText"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="commandType"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public T ExecuteIdentity<T>(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
+        {
+            var identity = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
+            if (identity == DBNull.Value)
+                return default(T);
+            else
+                return identity.Convert<T>();
+        }
 
         /// <summary>
         /// 
@@ -58,7 +77,9 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public object ExecuteScalar(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
+            var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
+            if (result == DBNull.Value) result = null;
+            return result;
         }
 
         /// <summary>

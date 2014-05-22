@@ -151,12 +151,14 @@ namespace M2SA.AppGenome.Data
             {
                 var sqlName = this.FormatSqlName("Insert");
                 var pValues = this.Convert(model);
-                var value = SqlHelper.ExecuteScalar(sqlName, pValues);
-                if (value != null)
+                var identity = SqlHelper.ExecuteIdentity<TId>(sqlName, pValues);
+
+                var defaultValue = default(TId);
+                if (defaultValue != null && false == defaultValue.Equals(identity))
                 {
-                    model.Id = value.Convert<TId>();
+                    model.Id = identity;
                 }
-                result = default(TId) == null ? true : default(TId).Equals(model.Id) == false;
+                result = defaultValue == null ? model.Id != null : false == defaultValue.Equals(model.Id);
             }
             else
             {

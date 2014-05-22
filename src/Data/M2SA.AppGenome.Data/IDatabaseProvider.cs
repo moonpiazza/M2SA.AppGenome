@@ -25,6 +25,16 @@ namespace M2SA.AppGenome.Data
         /// <param name="commandType"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
+        T ExecuteIdentity<T>(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commandText"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="commandType"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         int ExecuteNonQuery(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
 
         /// <summary>

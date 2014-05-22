@@ -28,6 +28,62 @@ namespace M2SA.AppGenome.Data
         /// </summary>
         public readonly static string SqlLogger = "Sql";
 
+        #region ExecuteIdentity<T> Methods
+
+
+        /// <summary>
+        /// 通过指定SQL名称获取SQL语句，执行后返回自增值
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <returns></returns>
+        public static T ExecuteIdentity<T>(string sqlName, IDictionary<string, object> parameterValues)
+        {
+            return ExecuteIdentity<T>(sqlName, parameterValues, null);
+        }
+
+        /// <summary>
+        /// 通过指定SQL名称获取SQL语句，执行后返回自增值
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="partitionValues">分区字段值列表</param>
+        /// <returns></returns>
+        public static T ExecuteIdentity<T>(string sqlName, IDictionary<string, object> parameterValues, string partitionValues)
+        {
+            var sqlWrap = SqlMapping.GetSqlWrap(sqlName);
+            return ExecuteIdentity<T>(sqlWrap, parameterValues, partitionValues);
+        }
+
+        /// <summary>
+        /// 通过指定SqlWrap，执行后返回自增值
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <returns></returns>
+        public static T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
+        {
+            return ExecuteIdentity<T>(sql, parameterValues, null);
+        }
+
+        /// <summary>
+        /// 通过指定SqlWrap，执行后返回自增值
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="partitionValues">分区字段值列表</param>
+        /// <returns></returns>
+        public static T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues, string partitionValues)
+        {
+            ArgumentAssertion.IsNotNull(sql, "sql");
+
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            var identity = dbProvider.ExecuteIdentity<T>(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
+            return identity;
+        }
+
+        #endregion
+
         #region ExecuteNonQuery Methods
 
         /// <summary>

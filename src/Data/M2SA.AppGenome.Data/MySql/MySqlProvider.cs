@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.Common;
+using M2SA.AppGenome.Reflection;
 using MySql.Data.MySqlClient;
 
 namespace M2SA.AppGenome.Data.MySql
@@ -21,6 +22,24 @@ namespace M2SA.AppGenome.Data.MySql
         /// 
         /// </summary>
         public string ConnectionString { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandText"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="commandType"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public T ExecuteIdentity<T>(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
+        {
+            var identity = MySqlHelper.ExecuteScalar(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
+            if (identity == DBNull.Value)
+                return default(T);
+            else
+                return identity.Convert<T>();
+        }
 
         /// <summary>
         /// 
@@ -58,7 +77,9 @@ namespace M2SA.AppGenome.Data.MySql
         /// <returns></returns>
         public object ExecuteScalar(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            return MySqlHelper.ExecuteScalar(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
+            var result = MySqlHelper.ExecuteScalar(this.ConnectionString, commandText, ConvertToDBParams(parameterValues));
+            if (result == DBNull.Value) result = null;
+            return result;
         }
 
         /// <summary>

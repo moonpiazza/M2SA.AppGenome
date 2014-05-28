@@ -34,11 +34,8 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <returns></returns>
         public T ExecuteIdentity<T>(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout)
         {
-            var identity = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
-            if (identity == DBNull.Value)
-                return default(T);
-            else
-                return identity.Convert<T>();
+            var identityValue = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, commandText, ConvertToDBParams(parameterValues));
+            return identityValue.Convert<T>(default(T));
         }
 
         /// <summary>

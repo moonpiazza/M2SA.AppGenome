@@ -2,19 +2,25 @@
 
 namespace M2SA.AppGenome.Data
 {
-	/// <summary>
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IEntity
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        PersistentState PersistentState { get; set; }
+    }
+
+    /// <summary>
 	/// Description of IEntity.
 	/// </summary>
-	public interface IEntity<TId>
+    public interface IEntity<TId> : IEntity
 	{
         /// <summary>
         /// 
         /// </summary>
 		TId Id { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        PersistentState PersistentState { get; set; }
 	}
 }

@@ -494,6 +494,23 @@ namespace M2SA.AppGenome.Reflection
         /// <summary>
         /// 
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T Convert<T>(this object value, T defaultValue)
+        {
+            if (value == null || value == DBNull.Value) 
+                return defaultValue;
+
+            var targetType = typeof(T);
+            var target = value.Convert(targetType);
+            return (T)target;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <returns></returns>

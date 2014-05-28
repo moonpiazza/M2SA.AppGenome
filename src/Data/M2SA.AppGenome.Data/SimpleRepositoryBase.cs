@@ -40,10 +40,7 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         protected virtual T Convert(DataRow dataRow)
         {
-            var entity = new T();
-            dataRow.Serialize<T>(entity);
-            entity.PersistentState = PersistentState.Persistent;
-            return entity;
+            return dataRow.Serialize<T>();
         }
 
         /// <summary>

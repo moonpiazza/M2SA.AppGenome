@@ -13,7 +13,6 @@ namespace M2SA.AppGenome.Data
     /// </summary>
     public static class DbParamsExtension 
     {
-
         /// <summary>
         /// 
         /// </summary>
@@ -40,11 +39,52 @@ namespace M2SA.AppGenome.Data
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
+        public static IList<T> Convert<T>(this DataTable dataTable) where T : new()
+        {
+            ArgumentAssertion.IsNotNull(dataTable, "dataTable");
+
+            IList<T> list = null;
+            var itemCount = dataTable.Rows.Count;
+            if (itemCount > 0)
+            {
+                list = new List<T>(itemCount);
+                for (var i = 0; i < itemCount; i++)
+                {
+                    var item = dataTable.Rows[i].Serialize<T>();
+                    list.Add(item);
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public static T Serialize<T>(this DataRow row) where T : new()
+        {
+            var entity = new T();
+            row.Serialize<T>(entity);
+            return entity;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="row"></param>
         /// <param name="entity"></param>
-        public static void Serialize<T>(this DataRow row, T entity)
+        public static T Serialize<T>(this DataRow row, T entity)
         {
             ArgumentAssertion.IsNotNull(row, "row");
+            ArgumentAssertion.IsNotNull(entity, "entity");
+
+            if (entity is IEntity)
+                (entity as IEntity).PersistentState = PersistentState.Persistent;
 
             var targetType = entity.GetType();
             var targetProperties = targetType.GetPersistProperties();
@@ -67,6 +107,9 @@ namespace M2SA.AppGenome.Data
             }
 
             entity.SetPropertyValues(propertyValues);
+            
+            return entity;
         }
+
     }
 }

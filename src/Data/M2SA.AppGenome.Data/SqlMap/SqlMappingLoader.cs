@@ -251,17 +251,17 @@ namespace M2SA.AppGenome.Data.SqlMap
         private static SqlWrap ConvertToSql(XmlNode element, string moduleName, string moduleDBName)
         {
             var sqlWrap = new SqlWrap();
-            sqlWrap.SQLName = string.Format("{0}.{1}", moduleName, element.Attributes["sqlName"].InnerText);
-            sqlWrap.SQLText = element.InnerText;
+            sqlWrap.SqlName = string.Format("{0}.{1}", moduleName, element.Attributes["sqlName"].InnerText);
+            sqlWrap.SqlText = element.InnerText;
 
             var node = element.Attributes.GetNamedItem("dbName");
             if (null != node)
             {
-                sqlWrap.DBName = node.InnerText;
+                sqlWrap.DbName = node.InnerText;
             }
             else
             {
-                sqlWrap.DBName = moduleDBName;
+                sqlWrap.DbName = moduleDBName;
             }
 
             node = element.Attributes.GetNamedItem("commandType");
@@ -279,7 +279,7 @@ namespace M2SA.AppGenome.Data.SqlMap
             node = element.Attributes.GetNamedItem("desc");
             if (null != node)
             {
-                sqlWrap.SQLDesc = node.InnerText;
+                sqlWrap.SqlDesc = node.InnerText;
             }
 
             node = element.Attributes.GetNamedItem("partitionName");
@@ -288,10 +288,16 @@ namespace M2SA.AppGenome.Data.SqlMap
                 sqlWrap.PartitionName = node.InnerText;
             }
 
+            node = element.Attributes.GetNamedItem("primaryKey");
+            if (null != node)
+            {
+                sqlWrap.PrimaryKey = node.InnerText;
+            }
+
             node = element.Attributes.GetNamedItem("supportDBType");
             if (null != node)
             {
-                sqlWrap.SupportDBType = (DatabaseType)Enum.Parse(typeof(DatabaseType), node.InnerText);
+                sqlWrap.SupportDbType = (DatabaseType)Enum.Parse(typeof(DatabaseType), node.InnerText);
             }
 
             return sqlWrap;

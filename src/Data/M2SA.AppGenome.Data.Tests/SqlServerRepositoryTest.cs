@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using M2SA.AppGenome.Data.Tests.Mocks;
+using M2SA.AppGenome.Reflection;
 using NUnit.Framework;
 using M2SA.AppGenome.Data.SqlMap;
 
@@ -17,7 +19,7 @@ namespace M2SA.AppGenome.Data.Tests
             var dbConfig = new DatabaseConfig
             {
                 ConfigName = "TestDB",
-                ConnectionString = "server=192.168.1.168;user id=sa;password=sa;database=Temp_Airport;",
+                ConnectionString = "server=127.0.0.1;user id=sa;password=db2Test;database=TestDb;",
                 DBType = DatabaseType.SqlServer,
                 ProviderName = "SqlServerProvider"
             };
@@ -26,10 +28,10 @@ namespace M2SA.AppGenome.Data.Tests
             SqlMapping.AppendDatabases(databases);
         }
 
-        [Test]
-        public void DeleteAndSelectTest()
-        {
-            base.DeleteByIdTest();
-        }
+	    [Test]
+        public void PaginationTest()
+	    {
+            base.LoadForPaginationTest();
+	    }
 	}
 }

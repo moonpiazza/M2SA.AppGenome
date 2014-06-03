@@ -127,9 +127,9 @@ namespace M2SA.AppGenome.Data.SqlMap
 
         private static void AppendSqlWrap(SqlWrap sqlWrap)
         {
-            var sqlKey = sqlWrap.SQLName.ToLower();
+            var sqlKey = sqlWrap.SqlName.ToLower();
             if (SqlMap.ContainsKey(sqlKey))
-                Logging.LogManager.GetLogger(SqlHelper.SqlLogger).Warn("[SqlMap]{0} are covered.", sqlWrap.SQLName);
+                Logging.LogManager.GetLogger(SqlHelper.SqlLogger).Warn("[SqlMap]{0} are covered.", sqlWrap.SqlName);
             SqlMap[sqlKey] = sqlWrap;
         }
         

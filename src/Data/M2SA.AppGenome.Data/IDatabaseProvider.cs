@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.Common;
+using M2SA.AppGenome.Data.SqlMap;
 
 namespace M2SA.AppGenome.Data
 {
@@ -20,53 +21,50 @@ namespace M2SA.AppGenome.Data
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
-        /// <param name="commandType"></param>
-        /// <param name="timeout"></param>
         /// <returns></returns>
-        T ExecuteIdentity<T>(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+        T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
-        /// <param name="commandType"></param>
-        /// <param name="timeout"></param>
         /// <returns></returns>
-        int ExecuteNonQuery(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+        int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
-        /// <param name="commandType"></param>
-        /// <param name="timeout"></param>
         /// <returns></returns>
-        DataSet ExecuteDataSet(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+        DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
-        /// <param name="commandType"></param>
-        /// <param name="timeout"></param>
         /// <returns></returns>
-        object ExecuteScalar(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+        object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="commandText"></param>
+        /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
-        /// <param name="commandType"></param>
-        /// <param name="timeout"></param>
         /// <returns></returns>
-        DbDataReader ExecuteReader(string commandText, IDictionary<string, object> parameterValues, CommandType commandType, int timeout);
+        DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues);
 
-        //DataTable ExecuteTableForPage(string sqlText, IDictionary<string, object> parameterValues, CommandType commandType, string fileds, string orderbyPart);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="pagination"></param>
+        /// <returns></returns>
+        DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination);
     }
 }

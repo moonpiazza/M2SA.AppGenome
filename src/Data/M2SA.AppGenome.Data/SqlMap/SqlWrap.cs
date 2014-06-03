@@ -15,22 +15,22 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 数据库链接在配置中的名称
         /// </summary>
-        public string DBName { get; set; }
+        public string DbName { get; set; }
 
         /// <summary>
         /// SQL标识
         /// </summary>
-        public string SQLName { get; set; }
+        public string SqlName { get; set; }
 
         /// <summary>
         /// SQL文本
         /// </summary>
-        public string SQLText { get; set; }
+        public string SqlText { get; set; }
 
         /// <summary>
         /// sql描述
         /// </summary>
-        public string SQLDesc { get; set; }
+        public string SqlDesc { get; set; }
 
         /// <summary>
         /// 分区方法名称
@@ -38,9 +38,14 @@ namespace M2SA.AppGenome.Data.SqlMap
         public string PartitionName { get; set; }
 
         /// <summary>
+        /// 表的主键列名称
+        /// </summary>
+        public string PrimaryKey { get; set; }
+
+        /// <summary>
         /// SQL支持的数据库类型
         /// </summary>
-        public DatabaseType SupportDBType { get; set; }
+        public DatabaseType SupportDbType { get; set; }
 
         /// <summary>
         /// SQL的类型
@@ -58,7 +63,7 @@ namespace M2SA.AppGenome.Data.SqlMap
         public SqlWrap()
         {
             this.CommandTimeout = 30;
-            this.SupportDBType = DatabaseType.MySql;
+            this.SupportDbType = DatabaseType.MySql;
             this.CommandType = CommandType.Text;
         }
     }

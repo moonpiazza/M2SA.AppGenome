@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root xmlns="http://m2sa.net/Schema/SqlMapping">
   <module moduleName="TestRepository" dbName="TestDB">
-    <sqlWrap  sqlName="Insert"  supportDBType="3">
+    <sqlWrap  sqlName="Insert"  supportDBType="MySql,SqlServer">
       insert into TestEntity (Name, UpdateDate) values (@Name, @UpdateDate);
       select @@IDENTITY;
     </sqlWrap>
-    <sqlWrap  sqlName="Update"  supportDBType="3">
+    <sqlWrap  sqlName="Update"  supportDBType="MySql,SqlServer">
       update TestEntity set Name=@Name,UpdateDate=@UpdateDate where TestId = @Id
     </sqlWrap>
-    <sqlWrap  sqlName="DeleteById"  supportDBType="3">
+    <sqlWrap  sqlName="DeleteById"  supportDBType="MySql,SqlServer">
       delete from TestEntity where TestId = @Id
     </sqlWrap>
-    <sqlWrap  sqlName="SelectById"  supportDBType="3">
+    <sqlWrap  sqlName="SelectById"  supportDBType="MySql,SqlServer">
       select * from TestEntity where TestId = @Id
     </sqlWrap>
-    <sqlWrap  sqlName="SelectAll"  supportDBType="3">
+    <sqlWrap  sqlName="SelectAll"  supportDBType="MySql,SqlServer">
       select * from TestEntity
+    </sqlWrap>
+    <sqlWrap  sqlName="SelectForPagination"  supportDBType="MySql,SqlServer" primaryKey="TestId">
+      select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
     </sqlWrap>
   </module>
   <module moduleName="TestSchema" dbName="TestDB">
-    <sqlWrap  sqlName="CreateTable"  supportDBType="1">
+    <sqlWrap  sqlName="CreateTable"  supportDBType="MySql">
       CREATE TABLE TestEntity (
       TestId int NOT NULL AUTO_INCREMENT ,
       Name varchar(32) NOT NULL ,
-      UpdateDate datetime NOT NULL
-      PRIMARY KEY (TestId)
+      UpdateDate datetime NOT NULL,
+      Primary Key (TestId)
       ) ENGINE=InnoDB;
     </sqlWrap>
   </module>  

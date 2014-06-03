@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using M2SA.AppGenome.Reflection;
 using M2SA.AppGenome.Data.Tests.Mocks;
 
 namespace M2SA.AppGenome.Data.Tests
@@ -90,6 +91,31 @@ namespace M2SA.AppGenome.Data.Tests
             var entities = repository.LoadAll();
             Assert.IsNotNull(entities);
             Assert.IsTrue(0 < entities.Count);            
+        }
+
+        public void LoadForPaginationTest()
+        {
+            var repository = RepositoryManager.GetRepository<ITestRepository>();
+            Assert.IsNotNull(repository);
+
+            var random = new Random();
+            var pageSize = random.Next(3, 9);
+            var pageIndex = random.Next(1, 5);
+
+            var count = pageSize * (pageIndex + 1);
+            for (var i = 0; i < count; i++)
+            {
+                var entity = new TestEntity() { Name = TestHelper.RandomizeString(), UpdateDate = DateTime.Now };
+                Assert.AreEqual(0, entity.Id);
+                var result = repository.Save(entity);
+                Assert.IsTrue(result);
+                Assert.IsTrue(0 < entity.Id);
+            }
+            var pagination = new Pagination() { PageSize = pageSize, PageIndex = pageIndex };
+            var entities = repository.LoadForPagination(DateTime.Now, pagination);
+            Assert.IsNotNull(entities);
+
+            entities.Print();
         }
 	}
 }

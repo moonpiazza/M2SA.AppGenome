@@ -78,7 +78,7 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var identity = dbProvider.ExecuteIdentity<T>(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
+            var identity = dbProvider.ExecuteIdentity<T>(sql, parameterValues);
             return identity;
         }
 
@@ -134,7 +134,7 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var rowCount = dbProvider.ExecuteNonQuery(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
+            var rowCount = dbProvider.ExecuteNonQuery(sql, parameterValues);
             return rowCount;
         }
 
@@ -142,6 +142,61 @@ namespace M2SA.AppGenome.Data
 
         #region ExcuteTableForPage Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="pagination"></param>
+        /// <returns></returns>
+        public static DataTable ExecutePaginationTable(string sqlName, IDictionary<string, object> parameterValues, Pagination pagination)
+        {
+            var sqlWrap = SqlMapping.GetSqlWrap(sqlName);
+            return ExecutePaginationTable(sqlWrap, parameterValues, pagination, null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlName"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="pagination"></param>
+        /// <param name="partitionValues"></param>
+        /// <returns></returns>
+        public static DataTable ExecutePaginationTable(string sqlName, IDictionary<string, object> parameterValues, Pagination pagination, string partitionValues)
+        {
+            var sqlWrap = SqlMapping.GetSqlWrap(sqlName);
+            return ExecutePaginationTable(sqlWrap, parameterValues, pagination, partitionValues);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="pagination"></param>
+        /// <returns></returns>
+        public static DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination)
+        {
+            return ExecutePaginationTable(sql, parameterValues, pagination, null);
+        }
+
+        /// <summary>
+        /// 通过指定SqlWrap，执行后返回查询数据
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameterValues"></param>
+        /// <param name="pagination"></param>
+        /// <param name="partitionValues">分区字段值列表</param>
+        /// <returns></returns>
+        public static DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination, string partitionValues)
+        {
+            ArgumentAssertion.IsNotNull(sql, "sql");
+
+            var dbProvider = GetDatabaseProvider(sql, partitionValues);
+            var dataset = dbProvider.ExecutePaginationTable(sql, parameterValues, pagination);
+            return dataset;
+        }
 
         #endregion
 
@@ -194,7 +249,7 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var dataset = dbProvider.ExecuteDataSet(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
+            var dataset = dbProvider.ExecuteDataSet(sql, parameterValues);
             return dataset;
         }
 
@@ -250,7 +305,7 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var result = dbProvider.ExecuteScalar(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout);
+            var result = dbProvider.ExecuteScalar(sql, parameterValues);
             return result;
         }
 
@@ -309,7 +364,7 @@ namespace M2SA.AppGenome.Data
                 throw new ArgumentNullException("action");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            using (var dbReader = dbProvider.ExecuteReader(sql.SQLText, parameterValues, sql.CommandType, sql.CommandTimeout))
+            using (var dbReader = dbProvider.ExecuteReader(sql, parameterValues))
             {
                 action(dbReader);
             }
@@ -321,10 +376,10 @@ namespace M2SA.AppGenome.Data
 
         static IDatabaseProvider GetDatabaseProvider(SqlWrap sqlWrap, string partitionValues)
         {
-            var dbConfig = SqlMapping.GetDatabase(sqlWrap.DBName);
-            if ((dbConfig.DBType & sqlWrap.SupportDBType) == 0)
+            var dbConfig = SqlMapping.GetDatabase(sqlWrap.DbName);
+            if ((dbConfig.DBType & sqlWrap.SupportDbType) == 0)
             {
-                throw new ArgumentOutOfRangeException(string.Format("SqlWrap[{0}] 不支持类型为{1}的数据库[{2}]", sqlWrap.SQLName, dbConfig.DBType, sqlWrap.DBName));
+                throw new ArgumentOutOfRangeException(string.Format("SqlWrap[{0}] 不支持类型为{1}的数据库[{2}]", sqlWrap.SqlName, dbConfig.DBType, sqlWrap.DbName));
             }
 
             var dbProvider = DatabaseProviderFactory.GetDatabaseProvider(dbConfig);

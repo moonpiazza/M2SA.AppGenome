@@ -17,9 +17,18 @@
     <sqlWrap  sqlName="SelectAll"  supportDBType="MySql,SqlServer">
       select * from TestEntity
     </sqlWrap>
-    <sqlWrap  sqlName="SelectForPagination"  supportDBType="MySql,SqlServer" primaryKey="TestId">
+    
+    <sqlWrap  sqlName="SelectForPagination"  supportDBType="MySql,SqlServer">
       select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
     </sqlWrap>
+    <sqlWrap  sqlName="SelectForPaginationWithKey"  supportDBType="MySql,SqlServer" primaryKey="TestId">
+      select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
+    </sqlWrap>  
+    
+    <sqlWrap  sqlName="SelectByList"  supportDBType="MySql,SqlServer" primaryKey="TestId">
+      select * from TestEntity where UpdateDate&lt;@UpdateDate and TestId in (@IdList) order by UpdateDate ,TestId 
+    </sqlWrap>   
+  
   </module>
   <module moduleName="TestSchema" dbName="TestDB">
     <sqlWrap  sqlName="CreateTable"  supportDBType="MySql">

@@ -93,7 +93,7 @@ namespace M2SA.AppGenome.Configuration
             }
         }
 
-        private IList<XmlNode> FindChildElements(XmlNodeList nodes)
+        static IList<XmlNode> FindChildElements(XmlNodeList nodes)
         {
             var elements = new List<XmlNode>(nodes.Count);
             foreach (XmlNode item in nodes)

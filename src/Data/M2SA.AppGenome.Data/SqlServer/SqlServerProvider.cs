@@ -17,6 +17,19 @@ namespace M2SA.AppGenome.Data.SqlServer
     {
         static readonly char ParameterToken = '@';
 
+        private IKeywordProcessor[] keywordProcessores = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SqlServerProvider()
+        {
+            this.keywordProcessores = new IKeywordProcessor[]
+            {
+                new InKeyProcessor()
+            };
+        }
+
         #region IDatabaseProvider 成员
 
         /// <summary>
@@ -34,7 +47,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         public T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
-            var identityValue = SqlServerHelper.ExecuteScalar(this.ConnectionString, sql.CommandType, sql.SqlText, ConvertToDbParams(parameterValues));
+            var identityValue = this.ExecuteScalar(sql, parameterValues);
             return identityValue.Convert<T>(default(T));
         }
 
@@ -47,7 +60,21 @@ namespace M2SA.AppGenome.Data.SqlServer
         public int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
-            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, sql.CommandType, sql.SqlText, ConvertToDbParams(parameterValues));
+
+            var sqlText = sql.SqlText;
+            var commandType = sql.CommandType;
+            foreach (var processor in this.keywordProcessores)
+            {
+                var processResult = processor.Process(sqlText, parameterValues, Escape);
+                if (processResult.IsMatch)
+                {
+                    commandType = CommandType.Text;
+                    sqlText = processResult.SqlExpression;
+                    parameterValues = processResult.ParameterValues;
+                }
+            }
+
+            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -59,7 +86,20 @@ namespace M2SA.AppGenome.Data.SqlServer
         public DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
-            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, sql.CommandType, sql.SqlText, ConvertToDbParams(parameterValues));
+
+            var sqlText = sql.SqlText;
+            var commandType = sql.CommandType;
+            foreach (var processor in this.keywordProcessores)
+            {
+                var processResult = processor.Process(sqlText, parameterValues, Escape);
+                if (processResult.IsMatch)
+                {
+                    commandType = CommandType.Text;
+                    sqlText = processResult.SqlExpression;
+                    parameterValues = processResult.ParameterValues;
+                }
+            }
+            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -71,7 +111,21 @@ namespace M2SA.AppGenome.Data.SqlServer
         public object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
-            var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, sql.CommandType, sql.SqlText, ConvertToDbParams(parameterValues));
+
+            var sqlText = sql.SqlText;
+            var commandType = sql.CommandType;
+            foreach (var processor in this.keywordProcessores)
+            {
+                var processResult = processor.Process(sqlText, parameterValues, Escape);
+                if (processResult.IsMatch)
+                {
+                    commandType = CommandType.Text;
+                    sqlText = processResult.SqlExpression;
+                    parameterValues = processResult.ParameterValues;
+                }
+            }
+
+            var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
             return result;
         }
@@ -85,7 +139,21 @@ namespace M2SA.AppGenome.Data.SqlServer
         public DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
-            return SqlServerHelper.ExecuteReader(this.ConnectionString, sql.CommandType, sql.SqlText, ConvertToDbParams(parameterValues));
+
+            var sqlText = sql.SqlText;
+            var commandType = sql.CommandType;
+            foreach (var processor in this.keywordProcessores)
+            {
+                var processResult = processor.Process(sqlText, parameterValues, Escape);
+                if (processResult.IsMatch)
+                {
+                    commandType = CommandType.Text;
+                    sqlText = processResult.SqlExpression;
+                    parameterValues = processResult.ParameterValues;
+                }
+            }
+
+            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -101,7 +169,17 @@ namespace M2SA.AppGenome.Data.SqlServer
             ArgumentAssertion.IsNotNull(pagination, "pagination");
 
             var sqlText = GetPaginationSql(sql, pagination);
-            Console.WriteLine(sqlText);
+            
+            foreach (var processor in this.keywordProcessores)
+            {
+                var processResult = processor.Process(sqlText, parameterValues, Escape);
+                if (processResult.IsMatch)
+                {
+                    sqlText = processResult.SqlExpression;
+                    parameterValues = processResult.ParameterValues;
+                }
+            }
+
             var dataSet = SqlServerHelper.ExecuteDataSet(this.ConnectionString, CommandType.Text, sqlText, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
             pagination.TotalCount = totalCount;
@@ -142,28 +220,37 @@ namespace M2SA.AppGenome.Data.SqlServer
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
-            var parser = new PaginationSqlParser(sql.SqlText);
-            parser.Parse();
+            var paginationSql = PaginationSql.Parse(sql);
             
             var startIndex = (pagination.PageIndex - 1) * pagination.PageSize;
             var endIndex = pagination.PageIndex * pagination.PageSize;
-            var whereExpression = string.IsNullOrEmpty(parser.WhereExpression) ? "" : string.Concat("where ", parser.WhereExpression);
+            var whereExpression = string.IsNullOrEmpty(paginationSql.WhereExpression) ? "" : string.Concat("where ", paginationSql.WhereExpression);
 
             var sqlBuilder = new StringBuilder(1204);
-            sqlBuilder.AppendFormat("select count(*) from {0} {1};\r\n", parser.Tables, whereExpression);
+            sqlBuilder.AppendFormat("select count(*) from {0} {1};\r\n", paginationSql.Tables, whereExpression);
             if (string.IsNullOrEmpty(sql.PrimaryKey))
             {
-                sqlBuilder.AppendFormat("select {0} from (", parser.Columns);
-                sqlBuilder.AppendFormat("\r\n  select {0},row_number() over(order by {3}) _row_number from {1} {2}", parser.Columns, parser.Tables, whereExpression, parser.OrderExpression);
+                sqlBuilder.AppendFormat("select {0} from (", paginationSql.Columns);
+                sqlBuilder.AppendFormat("\r\n  select {0},row_number() over(order by {3}) _row_number from {1} {2}", paginationSql.Columns, paginationSql.Tables, whereExpression, paginationSql.OrderExpression);
                 sqlBuilder.AppendFormat("\r\n ) _ZZZ where _row_number>{0} and _row_number<= {1} order by _row_number", startIndex, endIndex);
             }
             else
             {
-                sqlBuilder.AppendFormat("select {0} from {1} _AAA, (", parser.Columns, parser.Tables);
-                sqlBuilder.AppendFormat("\r\n  select {0} _zzzId,row_number() over(order by {3}) _row_number from {1} {2}", sql.PrimaryKey, parser.Tables, whereExpression, parser.OrderExpression);
+                sqlBuilder.AppendFormat("select {0} from {1} _AAA, (", paginationSql.Columns, paginationSql.Tables);
+                sqlBuilder.AppendFormat("\r\n  select {0} _zzzId,row_number() over(order by {3}) _row_number from {1} {2}", sql.PrimaryKey, paginationSql.Tables, whereExpression, paginationSql.OrderExpression);
                 sqlBuilder.AppendFormat("\r\n ) _ZZZ where _row_number>{0} and _row_number<= {1} and _AAA.{2}=_ZZZ._zzzId order by _row_number", startIndex,endIndex,sql.PrimaryKey);
             }
             return sqlBuilder.ToString();
+        }
+
+        static string Escape(object obj)
+        {
+            var str = obj.ToString().Replace("'", "''");
+            var isNumber = (obj is int) || (obj is long) || (obj is decimal) || (obj is short);
+
+            if (false == isNumber)
+                str = string.Format("'{0}'", str);
+            return str;
         }
     }
 }

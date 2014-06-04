@@ -115,6 +115,29 @@ namespace M2SA.AppGenome.Data.Tests
             var entities = repository.LoadForPagination(DateTime.Now, pagination);
             Assert.IsNotNull(entities);
 
+            entities = repository.LoadForPaginationWithKey(DateTime.Now, pagination);
+            Assert.IsNotNull(entities);
+
+            entities.Print();
+        }
+
+        public virtual void FindByListTest()
+        {
+            var repository = RepositoryManager.GetRepository<ITestRepository>();
+            Assert.IsNotNull(repository);
+
+            var entity = new TestEntity() { Name = TestHelper.RandomizeString(), UpdateDate = DateTime.Now };
+            Assert.AreEqual(0, entity.Id);
+            var result = repository.Save(entity);
+            Assert.IsTrue(result);
+            Assert.IsTrue(0 < entity.Id);
+
+            var random = new Random();
+            var idList = new int[] { 0, entity.Id, random.Next(3, 5), random.Next(5, 10) };
+
+            var entities = repository.FindByList(idList);
+            //Assert.IsNotNull(entities);
+
             entities.Print();
         }
 	}

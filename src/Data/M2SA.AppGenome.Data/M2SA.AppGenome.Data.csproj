@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleRepositoryBase.cs" />
     <Compile Include="SqlHelper.cs" />
+    <Compile Include="SqlMap\IKeywordProcessor.cs" />
+    <Compile Include="SqlMap\InKeyProcessor.cs" />
+    <Compile Include="SqlMap\KeywordProcessResult.cs" />
+    <Compile Include="SqlMap\PaginationSql.cs" />
     <Compile Include="SqlMap\PaginationSqlParser.cs" />
     <Compile Include="SqlMap\SqlMapping.cs" />
     <Compile Include="SqlMap\SqlWrap.cs" />

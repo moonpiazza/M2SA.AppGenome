@@ -21,26 +21,6 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 
         /// </summary>
-        public string Columns { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Tables { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string WhereExpression { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string OrderExpression { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="sql"></param>
         public PaginationSqlParser(string sql)
         {
@@ -51,23 +31,24 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// 
         /// </summary>
         /// <returns></returns>
-        public Tuple<string, string, string, string> Parse()
+        public PaginationSql Parse()
         {
             var partialSql = this.originalSql.Trim();
 
+            var paginationSql = new PaginationSql();
             var extractInfo = ExtractColumns(partialSql);
-            this.Columns = extractInfo.Item1;
+            paginationSql.Columns = extractInfo.Item1;
             partialSql = partialSql.Substring(partialSql.IndexOf(extractInfo.Item2) + extractInfo.Item2.Length);
 
             extractInfo = ExtractOrderExpression(partialSql);
-            this.OrderExpression = extractInfo.Item1;
+            paginationSql.OrderExpression = extractInfo.Item1;
             partialSql = partialSql.Substring(0, partialSql.IndexOf(extractInfo.Item2));
 
             extractInfo = ExtractTables(partialSql);
-            this.Tables = extractInfo.Item1;
-            this.WhereExpression = extractInfo.Item2;
+            paginationSql.Tables = extractInfo.Item1;
+            paginationSql.WhereExpression = extractInfo.Item2;
 
-            return Tuple.Create<string, string, string, string>(this.Columns, this.Tables, this.WhereExpression, this.OrderExpression);
+            return paginationSql;
         }
 
         static Tuple<string, string> ExtractColumns(string partialSql)

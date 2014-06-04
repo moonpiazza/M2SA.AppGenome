@@ -60,6 +60,11 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 
         /// </summary>
+        public PaginationSql PaginationSql { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public SqlWrap()
         {
             this.CommandTimeout = 30;

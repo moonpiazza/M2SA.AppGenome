@@ -200,11 +200,25 @@ namespace M2SA.AppGenome.Data.SqlServer
             foreach(var item in parameterValues)
             {
                 var paramName = BuildParameterName(item.Key);
-                paramList[paramIndex] = new SqlParameter(paramName, item.Value);
+                var paramValue = FixDbParameterValue(item.Value);
+                paramList[paramIndex] = new SqlParameter(paramName, paramValue);
                 paramIndex++;
             }
 
             return paramList;
+        }
+
+        static object FixDbParameterValue(object paramValue)
+        {
+            if (null == paramValue) return paramValue;
+
+            if (paramValue is DateTime)
+            {
+                var time = (DateTime)paramValue;
+                if (time < Timestamp.ZeroTime)
+                    paramValue = Timestamp.ZeroTime;
+            }
+            return paramValue;
         }
 
         static string BuildParameterName(string name)

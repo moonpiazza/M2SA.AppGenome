@@ -95,7 +95,7 @@ namespace M2SA.AppGenome.Data
             {
                 foreach (var prop in targetProperties)
                 {
-                    if (prop.Key.ToLower() == column.ColumnName.ToLower())
+                    if (prop.Value.IsPrimitiveType() && prop.Key.ToLower() == column.ColumnName.ToLower())
                     {
                         if (row[column.ColumnName] != DBNull.Value)
                         {

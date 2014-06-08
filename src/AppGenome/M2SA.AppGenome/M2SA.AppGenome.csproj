@@ -159,6 +159,7 @@
     <Compile Include="Threading\TimeAction.cs" />
     <Compile Include="Threading\WIGStartInfo.cs" />
     <Compile Include="Threading\WorkItemInfo.cs" />
+    <Compile Include="Timestamp.cs" />
     <Compile Include="Web\AppGenomeModule.cs" />
     <Compile Include="Web\HostileRequestException.cs" />
     <Compile Include="Web\HttpBrowserInfo.cs" />

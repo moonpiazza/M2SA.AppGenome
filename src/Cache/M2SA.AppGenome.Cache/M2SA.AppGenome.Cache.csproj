@@ -48,6 +48,7 @@
     <Compile Include="ArgumentAssertion.cs" />
     <Compile Include="CacheFactory.cs" />
     <Compile Include="AppDomainCache.cs" />
+    <Compile Include="EmptyCache.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="MemCached\MemCache.cs" />
     <Compile Include="MemCached\HashAlgorithms.cs" />

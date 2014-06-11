@@ -49,10 +49,12 @@ namespace M2SA.AppGenome.Logging.Formatters
             var result = text;
 
             var propertyValues = ToMap(entry, text);
-            foreach (var pair in propertyValues)
+            var propKeys = propertyValues.Keys.ToList();
+            propKeys.Sort();
+            for (var i = propKeys.Count-1; i >= 0; i--)
             {
-                var paramName = string.Format("@{0}", pair.Key);
-                result = result.Replace(paramName, pair.Value.ToString());              
+                var paramName = string.Format("@{0}", propKeys[i]);
+                result = result.Replace(paramName, propertyValues[propKeys[i]].ToString());  
             }
             return result;
         }

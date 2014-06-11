@@ -58,6 +58,7 @@
     <Compile Include="SimpleRepositoryBase.cs" />
     <Compile Include="SqlHelper.cs" />
     <Compile Include="SqlMap\IKeywordProcessor.cs" />
+    <Compile Include="SqlMap\LikeKeyProcessor.cs" />
     <Compile Include="SqlMap\InKeyProcessor.cs" />
     <Compile Include="SqlMap\KeywordProcessResult.cs" />
     <Compile Include="SqlMap\PaginationSql.cs" />

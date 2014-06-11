@@ -26,6 +26,7 @@ namespace M2SA.AppGenome.Data.MySql
         {
             this.keywordProcessores = new IKeywordProcessor[]
             {
+                new LikeKeyProcessor(), 
                 new InKeyProcessor()
             };
         }

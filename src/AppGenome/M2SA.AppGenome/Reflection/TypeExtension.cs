@@ -20,9 +20,18 @@ namespace M2SA.AppGenome.Reflection
         {
             ArgumentAssertion.IsNotNull(target, "target");
             return ((target.IsValueType && Type.GetTypeCode(target) != TypeCode.Object) 
-                || target.Equals(typeof(string)) || target.Equals(typeof(TimeSpan)) || target.Equals(typeof(Guid)));
+                || target.Equals(typeof(string)) || target.Equals(typeof(TimeSpan)) || target.Equals(typeof(Guid)) || target.IsNullable());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool IsNullable(this Type target)
+        {
+            return (target.IsGenericType && target.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
+        }
         /// <summary>
         /// 是否是IList
         /// </summary>

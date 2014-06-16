@@ -69,8 +69,6 @@ namespace M2SA.AppGenome.Data.SqlMap
                     }
                 }
             }
-
-            LogManager.GetLogger().Info(result.SqlExpression);
             return result;
         }
 

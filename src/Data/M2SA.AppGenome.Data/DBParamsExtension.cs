@@ -97,7 +97,7 @@ namespace M2SA.AppGenome.Data
                 {
                     if (prop.Value.IsPrimitiveType() && prop.Key.ToLower() == column.ColumnName.ToLower())
                     {
-                        if (row[column.ColumnName] != DBNull.Value)
+                        if (row[column.ColumnName] != null && row[column.ColumnName] != DBNull.Value)
                         {
                             propertyValues.Add(prop.Key, row[column.ColumnName]);
                         }                        

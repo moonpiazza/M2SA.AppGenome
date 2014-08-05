@@ -51,6 +51,7 @@
     <Compile Include="DatabaseConfig.cs" />
     <Compile Include="DatabaseProviderFactory.cs" />
     <Compile Include="DbParamsExtension.cs" />
+    <Compile Include="SqlWrapException.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IDatabaseProvider.cs" />
     <Compile Include="MySql\MySqlProvider.cs" />

@@ -146,16 +146,25 @@ namespace M2SA.AppGenome.Reflection
             var pre = new string('\t', level + 1);
             output.AppendFormat("{0}{1} : {2}", pre, ex.GetType().FullName, ex.Message).AppendLine();
 
-            if (ex.InnerException != null)
+            if (ex.Data.Count > 0)
             {
-                BuildInnerException(ex.InnerException, level + 1, output);
+                output.AppendFormat("{0}Data:", pre).AppendLine();
+                foreach (DictionaryEntry item in ex.Data)
+                {
+                    output.AppendFormat("{0}\t{1} = {2}", pre, item.Key, item.Value.ToText().Replace("\r\n", "\r\n" + pre)).AppendLine();
+                }
             }
-
             if (ex.StackTrace != null)
             {
                 output.AppendFormat("{0}Stack trace:", pre).AppendLine();
                 output.AppendFormat("{0}{1}", pre, ex.StackTrace.Replace("\r\n", "\r\n" + pre)).AppendLine();
-            }            
+            } 
+
+            if (ex.InnerException != null)
+            {
+                output.AppendLine();
+                BuildInnerException(ex.InnerException, level + 1, output);
+            }
 
             return output;
         }
@@ -188,15 +197,24 @@ namespace M2SA.AppGenome.Reflection
         static StringBuilder BuildInnerException(Exception ex, int level, StringBuilder output)
         {
             var pre = new string('\t', level + 1);
-            output.AppendFormat("{0}{1} : {2}", pre, ex.GetType().FullName, ex.Message).AppendLine();
+            output.AppendFormat("{0}[InnerException]{1} : {2}", pre, ex.GetType().FullName, ex.Message).AppendLine();
+            if (ex.Data.Count > 0)
+            {
+                output.AppendFormat("{0}Data:", pre).AppendLine();
+                foreach (DictionaryEntry item in ex.Data)
+                {
+                    output.AppendFormat("{0}  {1} = {2}", pre, item.Key, item.Value.ToText().Replace("\r\n", "\r\n" + pre)).AppendLine();
+                }
+            }
             if (ex.StackTrace != null)
             {
                 output.AppendFormat("{0}Stack trace:", pre).AppendLine();
                 output.AppendFormat("{0}{1}", pre, ex.StackTrace.Replace("\r\n", "\r\n" + pre)).AppendLine();
-            }  
+            } 
 
             if (ex.InnerException != null)
             {
+                output.AppendLine();
                 BuildInnerException(ex.InnerException, level, output);
             }
             return output;

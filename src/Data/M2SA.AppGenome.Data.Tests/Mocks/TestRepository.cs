@@ -15,6 +15,8 @@ namespace M2SA.AppGenome.Data.Tests.Mocks
         IList<TestEntity> LoadForPaginationWithKey(DateTime updateDate, Pagination pagination);
 
         IList<TestEntity> FindByList(IList<int> idList);
+
+        void RaisError();
 	}
 		
     /// <summary>
@@ -54,6 +56,14 @@ namespace M2SA.AppGenome.Data.Tests.Mocks
 
             var list = dataSet.Tables[0].Convert<TestEntity>();
             return list;
+        }
+
+        public void RaisError()
+        {
+            var sqlName = this.FormatSqlName("RaisError");
+            var pValues = new Dictionary<string, object>(2);
+            pValues.Add("Now", DateTime.Now);
+            var dataSet = SqlHelper.ExecuteDataSet(sqlName, pValues);
         }
     }
 }

@@ -208,8 +208,8 @@ namespace M2SA.AppGenome.Data.MySql
             if (paramValue is DateTime)
             {
                 var time = (DateTime)paramValue;
-                if (time < Timestamp.ZeroTime)
-                    paramValue = Timestamp.ZeroTime;
+                if (time < Datestamp.ZeroTime)
+                    paramValue = Datestamp.ZeroTime;
             }
             return paramValue;
         }

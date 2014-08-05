@@ -78,8 +78,16 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var identity = dbProvider.ExecuteIdentity<T>(sql, parameterValues);
-            return identity;
+
+            try
+            {
+                var identity = dbProvider.ExecuteIdentity<T>(sql, parameterValues);
+                return identity;
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
+            }
         }
 
         #endregion
@@ -134,8 +142,16 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var rowCount = dbProvider.ExecuteNonQuery(sql, parameterValues);
-            return rowCount;
+
+            try
+            {
+                var rowCount = dbProvider.ExecuteNonQuery(sql, parameterValues);
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
+            }
         }
 
         #endregion
@@ -194,8 +210,15 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var dataset = dbProvider.ExecutePaginationTable(sql, parameterValues, pagination);
-            return dataset;
+            try
+            {
+                var dataset = dbProvider.ExecutePaginationTable(sql, parameterValues, pagination);
+                return dataset;
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
+            }
         }
 
         #endregion
@@ -249,8 +272,16 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var dataset = dbProvider.ExecuteDataSet(sql, parameterValues);
-            return dataset;
+
+            try
+            {
+                var dataset = dbProvider.ExecuteDataSet(sql, parameterValues);
+                return dataset;
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
+            }
         }
 
         #endregion
@@ -305,8 +336,16 @@ namespace M2SA.AppGenome.Data
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            var result = dbProvider.ExecuteScalar(sql, parameterValues);
-            return result;
+
+            try
+            {
+                var result = dbProvider.ExecuteScalar(sql, parameterValues);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
+            }
         }
 
         #endregion        
@@ -364,15 +403,30 @@ namespace M2SA.AppGenome.Data
                 throw new ArgumentNullException("action");
 
             var dbProvider = GetDatabaseProvider(sql, partitionValues);
-            using (var dbReader = dbProvider.ExecuteReader(sql, parameterValues))
+
+            try
             {
-                action(dbReader);
+                using (var dbReader = dbProvider.ExecuteReader(sql, parameterValues))
+                {
+                    action(dbReader);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw BuildSqlWrapException(ex, sql, parameterValues);
             }
         }
 
         #endregion        
 
         #region Helper Methods
+
+        private static SqlWrapException BuildSqlWrapException(Exception ex, SqlWrap sqlWrap, IDictionary<string, object> parameterValues)
+        {
+            var sqlException = new SqlWrapException(ex, sqlWrap.SqlName, parameterValues);
+            Logging.LogManager.GetLogger("DbException").Trace(sqlException);
+            return sqlException;
+        }
 
         static IDatabaseProvider GetDatabaseProvider(SqlWrap sqlWrap, string partitionValues)
         {

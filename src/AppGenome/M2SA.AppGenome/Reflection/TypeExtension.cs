@@ -30,6 +30,7 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static bool IsNullable(this Type target)
         {
+            ArgumentAssertion.IsNotNull(target, "target");
             return (target.IsGenericType && target.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
         }
         /// <summary>

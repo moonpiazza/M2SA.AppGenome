@@ -140,5 +140,13 @@ namespace M2SA.AppGenome.Data.Tests
 
             entities.Print();
         }
+
+        public virtual void RaisErrorTest()
+        {
+            var repository = RepositoryManager.GetRepository<ITestRepository>();
+            Assert.IsNotNull(repository);
+
+            repository.RaisError();
+        }
 	}
 }

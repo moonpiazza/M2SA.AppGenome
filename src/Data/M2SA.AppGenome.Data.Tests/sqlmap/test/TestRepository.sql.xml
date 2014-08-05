@@ -26,9 +26,12 @@
     </sqlWrap>  
     
     <sqlWrap  sqlName="SelectByList"  supportDBType="MySql,SqlServer" primaryKey="TestId">
-      select * from TestEntity where UpdateDate&lt;=@UpdateDate and TestId in (@IdList) order by UpdateDate ,TestId 
-    </sqlWrap>   
-  
+      select * from TestEntity where UpdateDate&lt;=@UpdateDate and TestId in (@IdList) order by UpdateDate ,TestId
+    </sqlWrap>
+    <sqlWrap  sqlName="RaisError"  supportDBType="MySql,SqlServer" primaryKey="TestId">
+      RaisError('server=127.0.0.1;user id=test-u;password=test-p;database=test-db',16, 1)
+    </sqlWrap>
+
   </module>
   <module moduleName="TestSchema" dbName="TestDB">
     <sqlWrap  sqlName="CreateTable"  supportDBType="MySql">

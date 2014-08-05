@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using M2SA.AppGenome.Data.Exceptions;
 using M2SA.AppGenome.Data.Tests.Mocks;
 using M2SA.AppGenome.Reflection;
 using NUnit.Framework;
@@ -23,7 +24,7 @@ namespace M2SA.AppGenome.Data.Tests
             var dbConfig = new DatabaseConfig
             {
                 ConfigName = "TestDB",
-                ConnectionString = "server=127.0.0.1;user id=sa;password=db2Test;database=TestDb;",
+                ConnectionString = "server=127.0.0.1\\sql2008;user id=sa;password=db2Test;database=TestDb;",
                 DBType = DatabaseType.SqlServer,
                 ProviderName = "SqlServerProvider"
             };
@@ -38,10 +39,24 @@ namespace M2SA.AppGenome.Data.Tests
             base.LoadForPaginationTest();
 	    }
 
+
         [Test]
         public override void FindByListTest()
         {
             base.FindByListTest();
+        }
+
+        [Test]
+        public override void RaisErrorTest()
+        {
+            try
+            {
+                base.RaisErrorTest();
+            }
+            catch (Exception ex)
+            {
+                ex.Print();
+            }
         }
 	}
 }

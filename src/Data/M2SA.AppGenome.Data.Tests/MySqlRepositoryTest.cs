@@ -19,7 +19,7 @@ namespace M2SA.AppGenome.Data.Tests
             var dbConfig = new DatabaseConfig
             {
                 ConfigName = "TestDB",
-                ConnectionString = "server=127.0.0.1;port=3306;user id=root;password=db2Test;database=testdb;",
+                ConnectionString = "server=127.0.0.1;port=3306;user id=root;password=db2test;database=testdb;",
                 DBType = DatabaseType.MySql,
                 ProviderName = "MySqlProvider"
             };
@@ -35,10 +35,24 @@ namespace M2SA.AppGenome.Data.Tests
             base.LoadForPaginationTest();
         }
 
+
         [Test]
         public override void FindByListTest()
         {
             base.FindByListTest();
+        }
+
+        [Test]
+        public override void RaisErrorTest()
+        {
+            try
+            {
+                base.RaisErrorTest();
+            }
+            catch (Exception ex)
+            {
+                ex.Print();
+            }
         }
 	}
 }

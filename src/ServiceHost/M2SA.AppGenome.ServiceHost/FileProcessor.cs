@@ -11,7 +11,9 @@ namespace M2SA.AppGenome.ServiceHost
     /// 
     /// </summary>
     public class FileProcessor : IExtensionApplication
-    {   
+    {
+        public bool AsyncStart { get { return false; } }
+
         /// <summary>
         /// 
         /// </summary>

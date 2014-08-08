@@ -227,6 +227,11 @@ namespace M2SA.AppGenome
         /// <summary>
         /// 
         /// </summary>
+        public bool AsyncStart { get { return false; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public AppInstance()
         {
             AppInstance.RegisterModules();

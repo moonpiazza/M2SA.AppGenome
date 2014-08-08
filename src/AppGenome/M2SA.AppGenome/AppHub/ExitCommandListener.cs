@@ -11,7 +11,11 @@ namespace M2SA.AppGenome.AppHub
     /// 
     /// </summary>
     public sealed class ExitCommandListener : IExtensionApplication
-    {        
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool AsyncStart { get { return false; } }
 
         /// <summary>
         /// 

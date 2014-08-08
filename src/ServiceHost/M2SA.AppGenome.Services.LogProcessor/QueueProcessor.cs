@@ -22,6 +22,8 @@ namespace M2SA.AppGenome.Services.LogProcessor
         private IMessageQueue queue;
         private List<IListener> listeners;
 
+        public bool AsyncStart { get { return false; } }
+
         /// <summary>
         /// 
         /// </summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using M2SA.AppGenome.AppHub;
 using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Threading;
@@ -14,9 +15,9 @@ namespace M2SA.AppGenome
     /// </summary>
     public class ApplicationHost
     {
-        static readonly object syncRoot = new object();
+        static readonly object SyncRoot = new object();
 
-        static ApplicationHost instance = null;
+        static ApplicationHost Instance = null;
 
         /// <summary>
         /// 
@@ -25,19 +26,19 @@ namespace M2SA.AppGenome
         /// <returns></returns>
         public static ApplicationHost GetInstance(params string[] args)
         {
-            ApplicationHost result = instance;
-            if (null == instance)
+            ApplicationHost result = Instance;
+            if (null == Instance)
             {
-                lock (syncRoot)
+                lock (SyncRoot)
                 {
-                    if (null != instance)
+                    if (null != Instance)
                     {
-                        result = instance;
+                        result = Instance;
                     }
                     else
                     {
-                        instance = new ApplicationHost(args);
-                        result = instance;
+                        Instance = new ApplicationHost(args);
+                        result = Instance;
                     }
                 }                
             }
@@ -156,7 +157,7 @@ namespace M2SA.AppGenome
                 return;
             }
 
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 if (this.IsRunning)
                 {
@@ -170,7 +171,15 @@ namespace M2SA.AppGenome
 
                 for (var i = 0; i < this.extensions.Count; i++)
                 {
-                    this.extensions[i].OnStart(this, this.CommandArguments);
+                    var extension = this.extensions[i];
+                    if (false == extension.AsyncStart)
+                        extension.OnStart(this, this.CommandArguments);
+                }
+                for (var i = 0; i < this.extensions.Count; i++)
+                {
+                    var extension = this.extensions[i];
+                    if (true == this.extensions[i].AsyncStart)
+                        new Thread(() => extension.OnStart(this, this.CommandArguments)).Start();
                 }
 
                 this.IsRunning = true;
@@ -188,7 +197,7 @@ namespace M2SA.AppGenome
                 return;
             }
 
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 if (this.IsRunning == false)
                 {

@@ -21,6 +21,11 @@ namespace M2SA.AppGenome.ServiceHost
         /// <summary>
         /// 
         /// </summary>
+        public bool AsyncStart { get { return false; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ApplicationHost ApplicationHost
         {
             get;

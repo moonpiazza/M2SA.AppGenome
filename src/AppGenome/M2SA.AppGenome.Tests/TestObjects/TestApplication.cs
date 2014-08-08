@@ -7,7 +7,10 @@ namespace M2SA.AppGenome.Tests.TestObjects
 {
     public class TestApplication : IExtensionApplication
     {
+        public bool AsyncStart { get; set; }
+
         public string Name { get; set; }
+
         public string TestId { get; set; }
 
         public TestApplication()

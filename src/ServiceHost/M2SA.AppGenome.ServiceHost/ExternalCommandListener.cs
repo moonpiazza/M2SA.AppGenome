@@ -13,6 +13,8 @@ namespace M2SA.AppGenome.ServiceHost
     /// </summary>
     public class ExternalCommandListener : IExtensionApplication
     {
+        public bool AsyncStart { get { return false; } }
+
         /// <summary>
         /// 
         /// </summary>

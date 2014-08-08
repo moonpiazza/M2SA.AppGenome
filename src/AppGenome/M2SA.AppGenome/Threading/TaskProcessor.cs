@@ -16,11 +16,16 @@ namespace M2SA.AppGenome.Threading
     /// </summary>
     public class TaskProcessor : IExtensionApplication
     {
-        readonly static object syncObject = new object();
+        readonly static object SyncObject = new object();
 
         TimeSpan onceInterval = new TimeSpan(0, 0, 1);
         IDictionary<string, ITaskAction> actionMap = null;
         IDictionary<string, TimeSpan> waitIntervalMap = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool AsyncStart { get { return false; } }
 
         /// <summary>
         /// 
@@ -90,7 +95,7 @@ namespace M2SA.AppGenome.Threading
         /// <param name="taskAction"></param>
         public void RegisterAction(string name, ITaskAction taskAction)
         {
-            lock (syncObject)
+            lock (SyncObject)
             {
                 if (this.actionMap.ContainsKey(name) == false)
                 {
@@ -127,7 +132,7 @@ namespace M2SA.AppGenome.Threading
         {
             while (true)
             {
-                lock (syncObject)
+                lock (SyncObject)
                 {
                     var stopwatch = Stopwatch.StartNew();
                     var actionNames = this.actionMap.Keys;
@@ -183,7 +188,7 @@ namespace M2SA.AppGenome.Threading
             var stop = Stopwatch.StartNew();
 
             LogManager.GetLogger().Debug("---------- TaskProcessor.BeginStop... ----------");  
-            lock (syncObject)
+            lock (SyncObject)
             {
                 var threadPool = AppInstance.GetThreadPool();
 

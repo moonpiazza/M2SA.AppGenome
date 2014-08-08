@@ -15,6 +15,8 @@ namespace M2SA.AppGenome.Services.MemCachedStats
     /// </summary>
     public class LoadMemCachedStatsListener : IExtensionApplication
     {
+        public bool AsyncStart { get { return false; } }
+
         /// <summary>
         /// 
         /// </summary>

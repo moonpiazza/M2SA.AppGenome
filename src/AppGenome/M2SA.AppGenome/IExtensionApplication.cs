@@ -14,6 +14,11 @@ namespace M2SA.AppGenome
     public interface IExtensionApplication
     {
         /// <summary>
+        /// 
+        /// </summary>
+        bool AsyncStart { get; }
+
+        /// <summary>
         /// 当应用程序初始化时触发
         /// </summary>
         /// <param name="onwer"></param>

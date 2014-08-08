@@ -9,7 +9,12 @@ namespace M2SA.AppGenome.AppHub
     /// </summary>
     public class ApplicationHub : ResolveObjectBase, IExtensionApplication
     {
-        static readonly object syncRoot = new object();
+        static readonly object SyncRoot = new object();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool AsyncStart { get { return false; } }
 
         /// <summary>
         /// 
@@ -41,9 +46,15 @@ namespace M2SA.AppGenome.AppHub
         /// <param name="args"></param>
         public void OnStart(ApplicationHost onwer, AppHub.CommandArguments args)
         {
-            foreach (var item in this.Extensions)
+            foreach (var extension in this.Extensions)
             {
-                item.OnStart(onwer, args);
+                if (false == extension.AsyncStart)
+                    extension.OnStart(onwer, args);
+            }
+            foreach (var extension in this.Extensions)
+            {
+                if (true == extension.AsyncStart)
+                    extension.OnStart(onwer, args);
             }
         }
 
@@ -75,7 +86,7 @@ namespace M2SA.AppGenome.AppHub
         /// <param name="item"></param>
         public void Register<T>(T item) where T : IExtensionApplication
         {
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 this.Extensions.Add(item);
             }
@@ -88,7 +99,7 @@ namespace M2SA.AppGenome.AppHub
         /// <param name="item"></param>
         public void UnRegister<T>(T item) where T : IExtensionApplication
         {
-            lock (syncRoot)
+            lock (SyncRoot)
             {
                 this.Extensions.Remove(item);
             }

@@ -265,7 +265,7 @@ namespace M2SA.AppGenome.Configuration
                             {
                                 if (tempProp.Key != itemKeyNodeName)
                                 {
-                                    val = DeserializePrimitiveValue(tempProp.Value, targetType);
+                                    val = DeserializePrimitiveValue(tempProp.Value, pairValueType);
                                 }
                             }
                         }

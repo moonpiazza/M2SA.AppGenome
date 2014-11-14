@@ -534,21 +534,21 @@ namespace M2SA.AppGenome.Reflection
         /// <returns></returns>
         public static object Convert(this object value, Type targetType)
         {
-            ArgumentAssertion.IsNotNull(value, "value");
             ArgumentAssertion.IsNotNull(targetType, "targetType");
 
             object target = null;
             if (targetType.IsEnum)
             {
+                ArgumentAssertion.IsNotNull(value, "value");
                 target = Enum.Parse(targetType, value.ToString(), true);
             }
             else if (targetType.Equals(typeof(TimeSpan)))
             {
-                target = TimeSpan.Parse(value.ToString());
+                target = null == value ? TimeSpan.Zero : TimeSpan.Parse(value.ToString());
             }
             else if (targetType.Equals(typeof(Guid)))
             {
-                target = Guid.Parse(value.ToString());
+                target = null == value ? Guid.Empty : Guid.Parse(value.ToString());
             }
             else
             {

@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Data;
 using System.Data.Common;
 using M2SA.AppGenome.Data.SqlMap;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Data
 {
@@ -424,10 +425,14 @@ namespace M2SA.AppGenome.Data
         private static SqlWrapException BuildSqlWrapException(Exception ex, SqlWrap sqlWrap, IDictionary<string, object> parameterValues)
         {
             var sqlException = new SqlWrapException(ex, sqlWrap.SqlName, parameterValues);
-            Logging.LogManager.GetLogger("DbException").Trace(sqlException);
+            
+            DataSettings dataSettings = ObjectIOCFactory.GetSingleton<DataSettings>();
+            dataSettings.SqlProcessor.Log(LogLevel.Error, ex.Message, ex);
+            
             return sqlException;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "partitionValues")]
         static IDatabaseProvider GetDatabaseProvider(SqlWrap sqlWrap, string partitionValues)
         {
             var dbConfig = SqlMapping.GetDatabase(sqlWrap.DbName);

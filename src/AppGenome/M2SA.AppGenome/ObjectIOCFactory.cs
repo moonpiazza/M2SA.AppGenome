@@ -114,7 +114,7 @@ namespace M2SA.AppGenome
         private static object ResolveObject(Type sourceType, string alias, IConfigNode resolveInfo)
         {
             var obj = sourceType.BuildObject(alias);
-            if (null != resolveInfo)
+            if (obj is IResolveObject)
                 (obj as IResolveObject).Initialize(resolveInfo);
             return obj;
         }

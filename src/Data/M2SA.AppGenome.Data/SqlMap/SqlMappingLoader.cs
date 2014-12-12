@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
+using M2SA.AppGenome.Reflection;
 using M2SA.AppGenome.Threading;
 
 namespace M2SA.AppGenome.Data.SqlMap
@@ -250,6 +251,7 @@ namespace M2SA.AppGenome.Data.SqlMap
 
         private static SqlWrap ConvertToSql(XmlNode element, string moduleName, string moduleDBName)
         {
+            DataSettings dataSettings = ObjectIOCFactory.GetSingleton<DataSettings>();
             var sqlWrap = new SqlWrap();
             sqlWrap.SqlName = string.Format("{0}.{1}", moduleName, element.Attributes["sqlName"].InnerText);
             sqlWrap.SqlText = element.InnerText;
@@ -274,6 +276,10 @@ namespace M2SA.AppGenome.Data.SqlMap
             if (null != node)
             {
                 sqlWrap.CommandTimeout = Convert.ToInt32(node.InnerText);
+            }
+            else
+            {
+                sqlWrap.CommandTimeout = dataSettings.SqlProcessor.CommandTimeout;
             }
 
             node = element.Attributes.GetNamedItem("desc");

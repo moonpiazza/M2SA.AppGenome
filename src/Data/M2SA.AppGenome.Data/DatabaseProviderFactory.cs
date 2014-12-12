@@ -19,8 +19,10 @@ namespace M2SA.AppGenome.Data
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static IDatabaseProvider GetDatabaseProvider(DatabaseConfig config)
         {
+            ArgumentAssertion.IsNotNull(config, "config");
             var providerName = config.ProviderName;
             if (providerTypes.ContainsKey(providerName) == false)
             {

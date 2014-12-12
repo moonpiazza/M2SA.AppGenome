@@ -10,6 +10,7 @@ namespace M2SA.AppGenome.Data
     /// <summary>
     /// 
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
     public abstract class SimpleRepositoryBase<T, TId> : IRepository<T, TId>
         where T : class, IEntity<TId>, new()
     {

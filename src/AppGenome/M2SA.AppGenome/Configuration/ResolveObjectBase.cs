@@ -18,7 +18,10 @@ namespace M2SA.AppGenome.Configuration
         /// <param name="config"></param>
         public virtual void Initialize(IConfigNode config)
         {
-            this.DeserializeObject(config);
+            if (null != config)
+            {
+                this.DeserializeObject(config);
+            }
         }
 
         #endregion

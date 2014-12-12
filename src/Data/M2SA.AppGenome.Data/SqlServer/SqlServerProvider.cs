@@ -75,7 +75,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 }
             }
 
-            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
+            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                     parameterValues = processResult.ParameterValues;
                 }
             }
-            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
+            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 }
             }
 
-            var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
+            var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
             return result;
         }
@@ -154,7 +154,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 }
             }
 
-            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, ConvertToDbParams(parameterValues));
+            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 }
             }
 
-            var dataSet = SqlServerHelper.ExecuteDataSet(this.ConnectionString, CommandType.Text, sqlText, ConvertToDbParams(parameterValues));
+            var dataSet = SqlServerHelper.ExecuteDataSet(this.ConnectionString, CommandType.Text, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
             pagination.TotalCount = totalCount;
             return dataSet.Tables[1];

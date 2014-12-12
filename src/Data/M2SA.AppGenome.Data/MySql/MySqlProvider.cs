@@ -7,6 +7,7 @@ using System.Data.Common;
 using M2SA.AppGenome.Data.SqlMap;
 using M2SA.AppGenome.Reflection;
 using MySql.Data.MySqlClient;
+using MySqlHelper = M2SA.AppGenome.Data.MySql.MySqlHelper;
 
 namespace M2SA.AppGenome.Data.MySql
 {
@@ -72,8 +73,7 @@ namespace M2SA.AppGenome.Data.MySql
                     parameterValues = processResult.ParameterValues;
                 }
             }
-
-            return MySqlHelper.ExecuteNonQuery(this.ConnectionString, sqlText, ConvertToDbParams(parameterValues));
+            return MySqlHelper.ExecuteNonQuery(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace M2SA.AppGenome.Data.MySql
                     parameterValues = processResult.ParameterValues;
                 }
             }
-            return MySqlHelper.ExecuteDataset(this.ConnectionString, sqlText, ConvertToDbParams(parameterValues));
+            return MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace M2SA.AppGenome.Data.MySql
                 }
             }
 
-            var result = MySqlHelper.ExecuteScalar(this.ConnectionString, sqlText, ConvertToDbParams(parameterValues));
+            var result = MySqlHelper.ExecuteScalar(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
             return result;
         }
@@ -146,7 +146,7 @@ namespace M2SA.AppGenome.Data.MySql
                 }
             }
 
-            return MySqlHelper.ExecuteReader(this.ConnectionString, sqlText, ConvertToDbParams(parameterValues));
+            return MySqlHelper.ExecuteReader(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace M2SA.AppGenome.Data.MySql
                 }
             }
 
-            var dataSet = MySqlHelper.ExecuteDataset(this.ConnectionString, sqlText, ConvertToDbParams(parameterValues));
+            var dataSet = MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
             pagination.TotalCount = totalCount;
             return dataSet.Tables[1];

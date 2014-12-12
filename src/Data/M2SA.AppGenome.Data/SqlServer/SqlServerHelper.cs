@@ -25,6 +25,7 @@
 using System;
 using System.Data;
 using System.Xml;
+using System.Diagnostics.CodeAnalysis;
 using System.Data.SqlClient;
 using System.Collections;
 
@@ -81,6 +82,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </summary>
         /// <param name="commandParameters">Array of SqlParameters to be assigned values</param>
         /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
         private static void AssignParameterValues(SqlParameter[] commandParameters, DataRow dataRow)
         {
             if ((commandParameters == null) || (dataRow == null)) 
@@ -164,6 +166,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
         /// <param name="commandParameters">An array of SqlParameters to be associated with the command or 'null' if no parameters are required</param>
         /// <param name="mustCloseConnection"><c>true</c> if the connection was opened by the method, otherwose is false.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞")]
         private static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, out bool mustCloseConnection )
         {
 			if( command == null ) throw new ArgumentNullException( "command" );
@@ -219,11 +222,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText)
+        public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteNonQuery(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteNonQuery(connectionString, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -237,9 +241,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 
@@ -249,7 +254,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                return ExecuteNonQuery(connection, commandType, commandText, commandParameters);
+                return ExecuteNonQuery(connection, commandType, commandText, commandTimeout, commandParameters);
             }
         }
 
@@ -266,9 +271,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="spName">The name of the stored prcedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
+        public static int ExecuteNonQuery(string connectionString, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -283,12 +289,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
+                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -302,11 +308,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText)
+        public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteNonQuery(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteNonQuery(connection, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -320,14 +327,17 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {	
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
             PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection );
     		
@@ -354,9 +364,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(SqlConnection connection, string spName, params object[] parameterValues)
+        public static int ExecuteNonQuery(SqlConnection connection, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -371,12 +382,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
+                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -390,11 +401,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText)
+        public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteNonQuery(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteNonQuery(transaction, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -408,15 +420,18 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-		public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -441,9 +456,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQuery(SqlTransaction transaction, string spName, params object[] parameterValues)
+        public static int ExecuteNonQuery(SqlTransaction transaction, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
@@ -459,12 +475,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName);
+                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -483,11 +499,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(string connectionString, CommandType commandType, string commandText)
+        public static DataSet ExecuteDataSet(string connectionString, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataSet(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataSet(connectionString, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -501,9 +518,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        public static DataSet ExecuteDataSet(string connectionString, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 
@@ -513,7 +531,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                return ExecuteDataSet(connection, commandType, commandText, commandParameters);
+                return ExecuteDataSet(connection, commandType, commandText, commandTimeout, commandParameters);
             }
         }
 
@@ -530,9 +548,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(string connectionString, string spName, params object[] parameterValues)
+        public static DataSet ExecuteDataSet(string connectionString, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -547,12 +566,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName);
+                return ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -566,11 +585,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(SqlConnection connection, CommandType commandType, string commandText)
+        public static DataSet ExecuteDataSet(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataSet(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataSet(connection, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 		
         /// <summary>
@@ -585,13 +605,16 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-		public static DataSet ExecuteDataSet(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static DataSet ExecuteDataSet(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -627,9 +650,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(SqlConnection connection, string spName, params object[] parameterValues)
+        public static DataSet ExecuteDataSet(SqlConnection connection, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -644,12 +668,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteDataSet(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataSet(connection, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteDataSet(connection, CommandType.StoredProcedure, spName);
+                return ExecuteDataSet(connection, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -663,11 +687,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(SqlTransaction transaction, CommandType commandType, string commandText)
+        public static DataSet ExecuteDataSet(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataSet(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataSet(transaction, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 		
         /// <summary>
@@ -681,15 +706,18 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-		public static DataSet ExecuteDataSet(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static DataSet ExecuteDataSet(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -722,9 +750,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSet(SqlTransaction transaction, string spName, params object[] parameterValues)
+        public static DataSet ExecuteDataSet(SqlTransaction transaction, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
@@ -740,12 +769,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteDataSet(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataSet(transaction, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteDataSet(transaction, CommandType.StoredProcedure, spName);
+                return ExecuteDataSet(transaction, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -777,16 +806,19 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction, or 'null'</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParameters to be associated with the command or 'null' if no parameters are required</param>
         /// <param name="connectionOwnership">Indicates whether the connection parameter was provided by the caller, or created by SqlServerHelper</param>
         /// <returns>SqlDataReader containing the results of the command</returns>
-        private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
         {	
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 
 			bool mustCloseConnection = false;
             // Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			try
 			{
 				PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
@@ -842,11 +874,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText)
+        public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(connectionString, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -860,9 +893,11 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
             SqlConnection connection = null;
@@ -872,7 +907,7 @@ namespace M2SA.AppGenome.Data.SqlServer
 				connection.Open();
 
                 // Call the private overload that takes an internally owned connection in place of the connection string
-                return ExecuteReader(connection, null, commandType, commandText, commandParameters,SqlConnectionOwnership.Internal);
+                return ExecuteReader(connection, null, commandType, commandText, commandTimeout, commandParameters,SqlConnectionOwnership.Internal);
             }
             catch
             {
@@ -896,9 +931,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
+        public static SqlDataReader ExecuteReader(string connectionString, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -910,12 +946,12 @@ namespace M2SA.AppGenome.Data.SqlServer
 
                 AssignParameterValues(commandParameters, parameterValues);
 
-                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
+                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -929,11 +965,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, string commandText)
+        public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, int commandTimeout, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(connection, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -947,12 +984,13 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
             // Pass through the call to the private overload using a null transaction value and an externally owned connection
-            return ExecuteReader(connection, (SqlTransaction)null, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
+            return ExecuteReader(connection, (SqlTransaction)null, commandType, commandText, commandTimeout, commandParameters, SqlConnectionOwnership.External);
         }
 
         /// <summary>
@@ -968,9 +1006,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlConnection connection, string spName, params object[] parameterValues)
+        public static SqlDataReader ExecuteReader(SqlConnection connection, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -982,12 +1021,12 @@ namespace M2SA.AppGenome.Data.SqlServer
 
                 AssignParameterValues(commandParameters, parameterValues);
 
-                return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteReader(connection, CommandType.StoredProcedure, spName);
+                return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1001,11 +1040,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText)
+        public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(transaction, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1019,15 +1059,16 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
 
 			// Pass through to private overload, indicating that the connection is owned by the caller
-            return ExecuteReader(transaction.Connection, transaction, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
+            return ExecuteReader(transaction.Connection, transaction, commandType, commandText, commandTimeout, commandParameters, SqlConnectionOwnership.External);
         }
 
         /// <summary>
@@ -1043,9 +1084,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReader(SqlTransaction transaction, string spName, params object[] parameterValues)
+        public static SqlDataReader ExecuteReader(SqlTransaction transaction, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
@@ -1058,12 +1100,12 @@ namespace M2SA.AppGenome.Data.SqlServer
 
                 AssignParameterValues(commandParameters, parameterValues);
 
-                return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
+                return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1082,11 +1124,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText)
+        public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(connectionString, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1100,9 +1143,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
             // Create & open a SqlConnection, and dispose of it after we are done
@@ -1111,7 +1155,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                return ExecuteScalar(connection, commandType, commandText, commandParameters);
+                return ExecuteScalar(connection, commandType, commandText, commandTimeout, commandParameters);
             }
         }
 
@@ -1128,9 +1172,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connectionString">A valid connection string for a SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
+        public static object ExecuteScalar(string connectionString, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -1145,12 +1190,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
+                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1164,11 +1209,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText)
+        public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(connection, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1182,15 +1228,17 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
-
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -1219,9 +1267,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(SqlConnection connection, string spName, params object[] parameterValues)
+        public static object ExecuteScalar(SqlConnection connection, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -1236,12 +1285,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
+                return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1255,11 +1304,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText)
+        public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(transaction, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1273,15 +1323,18 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -1306,9 +1359,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalar(SqlTransaction transaction, string spName, params object[] parameterValues)
+        public static object ExecuteScalar(SqlTransaction transaction, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
@@ -1324,12 +1378,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
+                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1346,11 +1400,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText)
+        public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteXmlReader(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteXmlReader(connection, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1365,14 +1420,17 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 
 			bool mustCloseConnection = false;
 			// Create a command and prepare it for execution
             SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			try
 			{
 				PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection );
@@ -1406,9 +1464,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="connection">A valid SqlConnection</param>
         /// <param name="spName">The name of the stored procedure using "FOR XML AUTO"</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReader(SqlConnection connection, string spName, params object[] parameterValues)
+        public static XmlReader ExecuteXmlReader(SqlConnection connection, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
@@ -1423,12 +1482,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
+                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1442,11 +1501,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText)
+        public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteXmlReader(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteXmlReader(transaction, commandType, commandText, commandTimeout, (SqlParameter[])null);
         }
 
         /// <summary>
@@ -1461,14 +1521,17 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
         /// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
+        /// <param name="commandTimeout"></param>
         /// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText, int commandTimeout, params SqlParameter[] commandParameters)
 		{
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
 			
@@ -1493,9 +1556,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// </remarks>
         /// <param name="transaction">A valid SqlTransaction</param>
         /// <param name="spName">The name of the stored procedure</param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReader(SqlTransaction transaction, string spName, params object[] parameterValues)
+        public static XmlReader ExecuteXmlReader(SqlTransaction transaction, string spName, int commandTimeout, params object[] parameterValues)
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
 			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
@@ -1511,12 +1575,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
+                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandTimeout);
             }
         }
 
@@ -1536,8 +1600,9 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
         /// <param name="dataSet">A dataset wich will contain the resultset generated by the command</param>
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
+        /// <param name="commandTimeout"></param>
         /// by a user defined name (probably the actual table name)</param>
-        public static void FillDataSet(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
+        public static void FillDataSet(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames, int commandTimeout)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
 			if( dataSet == null ) throw new ArgumentNullException( "dataSet" );
@@ -1548,7 +1613,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                FillDataSet(connection, commandType, commandText, dataSet, tableNames);
+                FillDataSet(connection, commandType, commandText, dataSet, tableNames, commandTimeout);
             }
         }
 
@@ -1566,10 +1631,11 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
         /// <param name="dataSet">A dataset wich will contain the resultset generated by the command</param>
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
-        /// by a user defined name (probably the actual table name)
+        /// by a user defined name (probably the actual table name) 
         /// </param>
+        /// <param name="commandTimeout"></param>
         public static void FillDataSet(string connectionString, CommandType commandType,
-            string commandText, DataSet dataSet, string[] tableNames,
+            string commandText, DataSet dataSet, string[] tableNames, int commandTimeout,
             params SqlParameter[] commandParameters)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
@@ -1580,7 +1646,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                FillDataSet(connection, commandType, commandText, dataSet, tableNames, commandParameters);
+                FillDataSet(connection, commandType, commandText, dataSet, tableNames, commandTimeout, commandParameters);
             }
         }
 
@@ -1601,9 +1667,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>    
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         public static void FillDataSet(string connectionString, string spName,
-            DataSet dataSet, string[] tableNames,
+            DataSet dataSet, string[] tableNames, int commandTimeout,
             params object[] parameterValues)
         {
 			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
@@ -1614,7 +1681,7 @@ namespace M2SA.AppGenome.Data.SqlServer
                 connection.Open();
 
                 // Call the overload that takes a connection in place of the connection string
-                FillDataSet (connection, spName, dataSet, tableNames, parameterValues);
+                FillDataSet(connection, spName, dataSet, tableNames, commandTimeout, parameterValues);
             }
         }
 
@@ -1632,10 +1699,11 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>    
-        public static void FillDataSet(SqlConnection connection, CommandType commandType, 
-            string commandText, DataSet dataSet, string[] tableNames)
+        /// <param name="commandTimeout"></param>
+        public static void FillDataSet(SqlConnection connection, CommandType commandType,
+            string commandText, DataSet dataSet, string[] tableNames, int commandTimeout)
         {
-            FillDataSet(connection, commandType, commandText, dataSet, tableNames, null);
+            FillDataSet(connection, commandType, commandText, dataSet, tableNames, commandTimeout, null);
         }
 
         /// <summary>
@@ -1653,12 +1721,13 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-        public static void FillDataSet(SqlConnection connection, CommandType commandType, 
-            string commandText, DataSet dataSet, string[] tableNames,
+        public static void FillDataSet(SqlConnection connection, CommandType commandType,
+            string commandText, DataSet dataSet, string[] tableNames, int commandTimeout,
             params SqlParameter[] commandParameters)
         {
-            FillDataSet(connection, null, commandType, commandText, dataSet, tableNames, commandParameters);
+            FillDataSet(connection, null, commandType, commandText, dataSet, tableNames, commandTimeout, commandParameters);
         }
 
         /// <summary>
@@ -1678,9 +1747,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
-        public static void FillDataSet(SqlConnection connection, string spName, 
-            DataSet dataSet, string[] tableNames,
+        public static void FillDataSet(SqlConnection connection, string spName,
+            DataSet dataSet, string[] tableNames, int commandTimeout,
             params object[] parameterValues)
         {
             if ( connection == null ) throw new ArgumentNullException( "connection" );
@@ -1697,12 +1767,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                FillDataSet(connection, CommandType.StoredProcedure, spName, dataSet, tableNames, commandParameters);
+                FillDataSet(connection, CommandType.StoredProcedure, spName, dataSet, tableNames, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                FillDataSet(connection, CommandType.StoredProcedure, spName, dataSet, tableNames);
+                FillDataSet(connection, CommandType.StoredProcedure, spName, dataSet, tableNames, commandTimeout);
             }    
         }
 
@@ -1720,11 +1790,12 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         public static void FillDataSet(SqlTransaction transaction, CommandType commandType, 
             string commandText,
-            DataSet dataSet, string[] tableNames)
+            DataSet dataSet, string[] tableNames, int commandTimeout)
         {
-            FillDataSet(transaction, commandType, commandText, dataSet, tableNames, null);    
+            FillDataSet(transaction, commandType, commandText, dataSet, tableNames, commandTimeout, null);    
         }
 
         /// <summary>
@@ -1742,12 +1813,14 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-        public static void FillDataSet(SqlTransaction transaction, CommandType commandType, 
-            string commandText, DataSet dataSet, string[] tableNames,
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:验证公共方法的参数", MessageId = "0")]
+        public static void FillDataSet(SqlTransaction transaction, CommandType commandType,
+            string commandText, DataSet dataSet, string[] tableNames, int commandTimeout,
             params SqlParameter[] commandParameters)
         {
-            FillDataSet(transaction.Connection, transaction, commandType, commandText, dataSet, tableNames, commandParameters);
+            FillDataSet(transaction.Connection, transaction, commandType, commandText, dataSet, tableNames, commandTimeout, commandParameters);
         }
 
         /// <summary>
@@ -1767,9 +1840,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         /// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
         public static void FillDataSet(SqlTransaction transaction, string spName,
-            DataSet dataSet, string[] tableNames,
+            DataSet dataSet, string[] tableNames, int commandTimeout,
             params object[] parameterValues) 
         {
 			if( transaction == null ) throw new ArgumentNullException( "transaction" );
@@ -1787,12 +1861,12 @@ namespace M2SA.AppGenome.Data.SqlServer
                 AssignParameterValues(commandParameters, parameterValues);
 
                 // Call the overload that takes an array of SqlParameters
-                FillDataSet(transaction, CommandType.StoredProcedure, spName, dataSet, tableNames, commandParameters);
+                FillDataSet(transaction, CommandType.StoredProcedure, spName, dataSet, tableNames, commandTimeout, commandParameters);
             }
             else 
             {
 				// Otherwise we can just call the SP without params
-                FillDataSet(transaction, CommandType.StoredProcedure, spName, dataSet, tableNames);
+                FillDataSet(transaction, CommandType.StoredProcedure, spName, dataSet, tableNames, commandTimeout);
             }    
         }
 
@@ -1812,9 +1886,11 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
         /// by a user defined name (probably the actual table name)
         /// </param>
+        /// <param name="commandTimeout"></param>
         /// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-		private static void FillDataSet(SqlConnection connection, SqlTransaction transaction, CommandType commandType, 
-			string commandText, DataSet dataSet, string[] tableNames,
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        private static void FillDataSet(SqlConnection connection, SqlTransaction transaction, CommandType commandType,
+            string commandText, DataSet dataSet, string[] tableNames, int commandTimeout,
 			params SqlParameter[] commandParameters)
 		{
 			if( connection == null ) throw new ArgumentNullException( "connection" );
@@ -1822,6 +1898,7 @@ namespace M2SA.AppGenome.Data.SqlServer
 
 			// Create a command and prepare it for execution
 			SqlCommand command = new SqlCommand();
+            command.CommandTimeout = commandTimeout;
 			bool mustCloseConnection = false;
 			PrepareCommand(command, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
     			
@@ -1866,6 +1943,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="updateCommand">A valid transact-SQL statement or stored procedure used to update records in the data source</param>
         /// <param name="dataSet">The DataSet used to update the data source</param>
         /// <param name="tableName">The DataTable used to update the data source.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:验证公共方法的参数", MessageId = "3")]
         public static void UpdateDataSet(SqlCommand insertCommand, SqlCommand deleteCommand, SqlCommand updateCommand, DataSet dataSet, string tableName)
         {
 			if( insertCommand == null ) throw new ArgumentNullException( "insertCommand" );
@@ -1903,6 +1981,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="spName">The name of the stored procedure</param>
         /// <param name="sourceColumns">An array of string to be assigned as the source columns of the stored procedure parameters</param>
         /// <returns>A valid SqlCommand object</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
         public static SqlCommand CreateCommand(SqlConnection connection, string spName, params string[] sourceColumns) 
         {
 			if( connection == null ) throw new ArgumentNullException( "connection" );
@@ -1930,471 +2009,6 @@ namespace M2SA.AppGenome.Data.SqlServer
         }
         #endregion
 
-        #region ExecuteNonQueryTypedParams
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the database specified in 
-        /// the connection string using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a SqlConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
-        {
-			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-			
-			// If the row has values, the store procedure parameters must be initialized
-            if (dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connectionString, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                                
-                return SqlServerHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the specified SqlConnection 
-        /// using the dataRow column values as the stored procedure's parameters values.  
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="connection">A valid SqlConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQueryTypedParams(SqlConnection connection, String spName, DataRow dataRow)
-        {
-			if( connection == null ) throw new ArgumentNullException( "connection" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if (dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                                
-                return SqlServerHelper.ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns no resultset) against the specified
-        /// SqlTransaction using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="transaction">A valid SqlTransaction object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An int representing the number of rows affected by the command</returns>
-        public static int ExecuteNonQueryTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
-        {
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // Sf the row has values, the store procedure parameters must be initialized
-            if (dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                                
-                return SqlServerHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName);
-            }
-        }
-        #endregion
-
-        #region ExecuteDatasetTypedParams
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the database specified in 
-        /// the connection string using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a SqlConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSetTypedParams(string connectionString, String spName, DataRow dataRow)
-        {
-			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            //If the row has values, the store procedure parameters must be initialized
-            if ( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connectionString, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteDataSet(connectionString, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
-        /// using the dataRow column values as the store procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="connection">A valid SqlConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSetTypedParams(SqlConnection connection, String spName, DataRow dataRow)
-        {
-			if( connection == null ) throw new ArgumentNullException( "connection" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteDataSet(connection, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteDataSet(connection, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlTransaction 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on row values.
-        /// </summary>
-        /// <param name="transaction">A valid SqlTransaction object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A dataset containing the resultset generated by the command</returns>
-        public static DataSet ExecuteDataSetTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
-        {
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteDataSet(transaction, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteDataSet(transaction, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        #endregion
-
-        #region ExecuteReaderTypedParams
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the database specified in 
-        /// the connection string using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a SqlConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
-        {
-			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-			
-			// If the row has values, the store procedure parameters must be initialized
-            if ( dataRow != null && dataRow.ItemArray.Length > 0 )
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connectionString, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
-            }
-        }
-
-                
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="connection">A valid SqlConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
-        {
-			if( connection == null ) throw new ArgumentNullException( "connection" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteReader(connection, CommandType.StoredProcedure, spName);
-            }
-        }
-        
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlTransaction 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="transaction">A valid SqlTransaction object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
-        public static SqlDataReader ExecuteReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
-        {
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0 )
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteReader(transaction, CommandType.StoredProcedure, spName);
-            }
-        }
-        #endregion
-
-        #region ExecuteScalarTypedParams
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a 1x1 resultset) against the database specified in 
-        /// the connection string using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a SqlConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
-        {
-			if( connectionString == null || connectionString.Length == 0 ) throw new ArgumentNullException( "connectionString" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-			
-			// If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connectionString, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a 1x1 resultset) against the specified SqlConnection 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="connection">A valid SqlConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalarTypedParams(SqlConnection connection, String spName, DataRow dataRow)
-        {
-			if( connection == null ) throw new ArgumentNullException( "connection" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteScalar(connection, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a 1x1 resultset) against the specified SqlTransaction
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="transaction">A valid SqlTransaction object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-        public static object ExecuteScalarTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
-        {
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
-            }
-        }
-        #endregion
-
-        #region ExecuteXmlReaderTypedParams
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlConnection 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="connection">A valid SqlConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
-        {
-			if( connection == null ) throw new ArgumentNullException( "connection" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
-            }
-        }
-
-        /// <summary>
-        /// Execute a stored procedure via a SqlCommand (that returns a resultset) against the specified SqlTransaction 
-        /// using the dataRow column values as the stored procedure's parameters values.
-        /// This method will query the database to discover the parameters for the 
-        /// stored procedure (the first time each stored procedure is called), and assign the values based on parameter order.
-        /// </summary>
-        /// <param name="transaction">A valid SqlTransaction object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
-        /// <returns>An XmlReader containing the resultset generated by the command</returns>
-        public static XmlReader ExecuteXmlReaderTypedParams(SqlTransaction transaction, String spName, DataRow dataRow)
-        {
-			if( transaction == null ) throw new ArgumentNullException( "transaction" );
-			if( transaction != null && transaction.Connection == null ) throw new ArgumentException( "The transaction was rollbacked or commited, please provide an open transaction.", "transaction" );
-			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );
-
-            // If the row has values, the store procedure parameters must be initialized
-            if( dataRow != null && dataRow.ItemArray.Length > 0)
-            {
-                // Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                SqlParameter[] commandParameters = SqlServerHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
-                
-                // Set the parameters values
-                AssignParameterValues(commandParameters, dataRow);
-                
-                return SqlServerHelper.ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
-            }
-            else
-            {
-                return SqlServerHelper.ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
-            }
-        }
-        #endregion
-
     }
 
 	/// <summary>
@@ -2418,7 +2032,8 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="spName">The name of the stored procedure</param>
         /// <param name="includeReturnValueParameter">Whether or not to include their return value parameter</param>
         /// <returns>The parameter array discovered.</returns>
-		private static SqlParameter[] DiscoverSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:丢失范围之前释放对象")]
+        private static SqlParameter[] DiscoverSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
 		{
 			if( connection == null ) throw new ArgumentNullException( "connection" );
 			if( spName == null || spName.Length == 0 ) throw new ArgumentNullException( "spName" );

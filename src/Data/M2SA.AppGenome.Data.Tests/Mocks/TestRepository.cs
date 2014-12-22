@@ -37,9 +37,13 @@ namespace M2SA.AppGenome.Data.Tests.Mocks
 
         public IList<TestEntity> LoadForPaginationWithKey(DateTime updateDate, Pagination pagination)
         {
+            var idList = new List<int>();
+            for (var i = 0; i < 49; i++) idList.Add(i);
+
             var sqlName = this.FormatSqlName("SelectForPaginationWithKey");
             var pValues = new Dictionary<string, object>(1);
             pValues.Add("UpdateDate", updateDate);
+            pValues.Add("IdList", idList);
             var dataTable = SqlHelper.ExecutePaginationTable(sqlName, pValues, pagination);
 
             var list = dataTable.Convert<TestEntity>();

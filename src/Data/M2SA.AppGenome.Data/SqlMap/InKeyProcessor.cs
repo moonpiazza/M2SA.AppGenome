@@ -33,6 +33,7 @@ namespace M2SA.AppGenome.Data.SqlMap
             result.ParameterValues = parameterValues;
 
             var macthes = InKeyRegex.Matches(sqlText);
+            var processedParams = new List<string>(macthes.Count);
             foreach (Match macth in macthes)
             {
                 if (false == result.IsMatch) result.IsMatch = macth.Success;
@@ -43,12 +44,15 @@ namespace M2SA.AppGenome.Data.SqlMap
                     var paramName = macth.Groups["word"].Value;
 
                     var paramKey = FindParamKey(paramName, parameterValues);
-                    if (null == paramKey)
+                    if (processedParams.Contains(paramName))
+                        continue;
+                    else if (null == paramKey)
                         throw new ArgumentOutOfRangeException(paramName, string.Format("Must define param :{0}", paramName));
 
                     var paramValue = parameterValues[paramKey];
                     if (null != paramValue && paramValue is IEnumerable)
                     {
+                        processedParams.Add(paramName);
                         parameterValues.Remove(paramKey);
 
                         var paramBuilder = new StringBuilder();

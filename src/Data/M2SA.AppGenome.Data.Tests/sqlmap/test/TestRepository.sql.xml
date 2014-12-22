@@ -22,7 +22,9 @@
       select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
     </sqlWrap>
     <sqlWrap  sqlName="SelectForPaginationWithKey"  supportDBType="MySql,SqlServer" primaryKey="TestId">
-      select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
+      select * from TestEntity where UpdateDate&lt;@UpdateDate
+      and TestId in(@IdList)
+      order by UpdateDate ,TestId
     </sqlWrap>  
     
     <sqlWrap  sqlName="SelectByList"  supportDBType="MySql,SqlServer" primaryKey="TestId">

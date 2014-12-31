@@ -23,7 +23,7 @@
     </sqlWrap>
     <sqlWrap  sqlName="SelectForPaginationWithKey"  supportDBType="MySql,SqlServer" primaryKey="TestId">
       select * from TestEntity where UpdateDate&lt;@UpdateDate
-      and TestId in(@IdList)
+      and TestId in(ifnull(@IdList,TestId))
       order by UpdateDate ,TestId
     </sqlWrap>  
     

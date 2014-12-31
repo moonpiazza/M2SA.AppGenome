@@ -15,7 +15,8 @@ namespace M2SA.AppGenome.Data.SqlMap
     public class InKeyProcessor : IKeywordProcessor
     {
         static readonly Regex InKeyRegex = new Regex(@"\s+in\s*\(\s*@(?<word>[A-Za-z_]\w+)\s*\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        
+        static readonly Regex InKeyWithIsNullRegex = new Regex(@"\s+in\s*\(\s*i[s|f]null\(\s*@(?<word>[A-Za-z_]\w+)\s*,\s*[^\)]+\)\s*\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         /// <summary>
         /// 
         /// </summary>
@@ -32,7 +33,14 @@ namespace M2SA.AppGenome.Data.SqlMap
             result.SqlExpression = sqlText;
             result.ParameterValues = parameterValues;
 
-            var macthes = InKeyRegex.Matches(sqlText);
+            ProcessByKeyRegex(InKeyRegex, sqlText, parameterValues, result);
+            ProcessByKeyRegex(InKeyWithIsNullRegex, sqlText, parameterValues, result);
+            return result;
+        }
+
+        private static void ProcessByKeyRegex(Regex keyRegex, string sqlText, IDictionary<string, object> parameterValues, KeywordProcessResult result)
+        {
+            var macthes = keyRegex.Matches(sqlText);
             var processedParams = new List<string>(macthes.Count);
             foreach (Match macth in macthes)
             {
@@ -56,7 +64,7 @@ namespace M2SA.AppGenome.Data.SqlMap
                         parameterValues.Remove(paramKey);
 
                         var paramBuilder = new StringBuilder();
-                        var list = (IEnumerable)paramValue;
+                        var list = (IEnumerable) paramValue;
                         var index = 0;
                         foreach (var item in list)
                         {
@@ -66,14 +74,13 @@ namespace M2SA.AppGenome.Data.SqlMap
                             index++;
                         }
 
-                        var expressionResult = expression.Replace(string.Concat("@", paramName), paramBuilder.ToString());
+                        var expressionResult = string.Format(" in({0}) ", paramBuilder.ToString());
 
                         result.SqlExpression = result.SqlExpression.Replace(expression, expressionResult);
                         result.ParameterValues = parameterValues;
                     }
                 }
             }
-            return result;
         }
 
         private static string FindParamKey(string paramName, IDictionary<string, object> parameterValues)

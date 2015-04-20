@@ -19,10 +19,13 @@
     </sqlWrap>
     
     <sqlWrap  sqlName="SelectForPagination"  supportDBType="MySql,SqlServer">
-      select * from TestEntity where UpdateDate&lt;@UpdateDate order by UpdateDate ,TestId 
+      select * from TestEntity  
+      #if(@UpdateDate) { where UpdateDate&lt;@UpdateDate }
+      
+      order by UpdateDate ,TestId 
     </sqlWrap>
     <sqlWrap  sqlName="SelectForPaginationWithKey"  supportDBType="MySql,SqlServer" primaryKey="TestId">
-      select * from TestEntity where UpdateDate&lt;@UpdateDate
+      select * from TestEntity where 1=1 #if(@UpdateDate) { and UpdateDate&lt;@UpdateDate }
       and TestId in(ifnull(@IdList,TestId))
       order by UpdateDate ,TestId
     </sqlWrap>  

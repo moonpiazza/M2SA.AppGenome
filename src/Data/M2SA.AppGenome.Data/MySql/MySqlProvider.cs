@@ -14,30 +14,11 @@ namespace M2SA.AppGenome.Data.MySql
     /// <summary>
     /// 
     /// </summary>
-    public class MySqlProvider : IDatabaseProvider
+    public class MySqlProvider : DatabaseProviderBase
     {
         static readonly char ParameterToken = '@';
 
-        private IKeywordProcessor[] keywordProcessores = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public MySqlProvider()
-        {
-            this.keywordProcessores = new IKeywordProcessor[]
-            {
-                new LikeKeyProcessor(), 
-                new InKeyProcessor()
-            };
-        }
-
         #region IDatabaseProvider 成员
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ConnectionString { get; set; }
 
         /// <summary>
         /// 
@@ -46,7 +27,7 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
             var identityValue = this.ExecuteScalar(sql, parameterValues);
@@ -59,20 +40,11 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
-            var sqlText = sql.SqlText;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            var sqlText = this.TransformSql(sql.SqlText, parameterValues);
             return MySqlHelper.ExecuteNonQuery(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
@@ -82,20 +54,11 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
-            var sqlText = sql.SqlText;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            var sqlText = this.TransformSql(sql.SqlText, parameterValues);
             return MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
@@ -105,20 +68,11 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
-            var sqlText = sql.SqlText;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            var sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             var result = MySqlHelper.ExecuteScalar(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
@@ -131,20 +85,11 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
-            var sqlText = sql.SqlText;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            var sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             return MySqlHelper.ExecuteReader(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
@@ -156,22 +101,14 @@ namespace M2SA.AppGenome.Data.MySql
         /// <param name="parameterValues"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        public DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination)
+        public override DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
             ArgumentAssertion.IsNotNull(pagination, "pagination");
 
             var sqlText = GetPaginationSql(sql, pagination);
 
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            sqlText = this.TransformSql(sqlText, parameterValues);
 
             var dataSet = MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
@@ -266,12 +203,13 @@ namespace M2SA.AppGenome.Data.MySql
             return sqlBuilder.ToString();
         }
 
-        static string Escape(object obj)
+        protected override string Escape(object val)
         {
-            var str = obj.ToString().Replace(@"\", @"\\");
+            ArgumentAssertion.IsNotNull(val, "val");
+            var str = val.ToString().Replace(@"\", @"\\");
             str = str.Replace(@"'", @"\'");
             str = str.Replace(@"""", @"\""");
-            var isNumber = (obj is int) || (obj is long) || (obj is decimal) || (obj is short);
+            var isNumber = (val is int) || (val is long) || (val is decimal) || (val is short);
 
             if (false == isNumber)
                 str = string.Format("'{0}'", str);

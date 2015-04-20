@@ -13,30 +13,11 @@ namespace M2SA.AppGenome.Data.SqlServer
     /// <summary>
     /// 
     /// </summary>
-    public class SqlServerProvider : IDatabaseProvider
+    public class SqlServerProvider : DatabaseProviderBase
     {
         static readonly char ParameterToken = '@';
 
-        private IKeywordProcessor[] keywordProcessores = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public SqlServerProvider()
-        {
-            this.keywordProcessores = new IKeywordProcessor[]
-            {
-                new LikeKeyProcessor(), 
-                new InKeyProcessor()
-            };
-        }
-
         #region IDatabaseProvider 成员
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ConnectionString { get; set; }
 
         /// <summary>
         /// 
@@ -45,7 +26,7 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override T ExecuteIdentity<T>(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
             var identityValue = this.ExecuteScalar(sql, parameterValues);
@@ -58,22 +39,14 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override int ExecuteNonQuery(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    commandType = CommandType.Text;
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            if (CommandType.Text == commandType)
+                sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
@@ -84,22 +57,15 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override DataSet ExecuteDataSet(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    commandType = CommandType.Text;
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            if (CommandType.Text == commandType)
+                sqlText = this.TransformSql(sql.SqlText, parameterValues);
+
             return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
 
@@ -109,22 +75,14 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override object ExecuteScalar(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    commandType = CommandType.Text;
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            if (CommandType.Text == commandType)
+                sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
@@ -137,22 +95,14 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="sql"></param>
         /// <param name="parameterValues"></param>
         /// <returns></returns>
-        public DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues)
+        public override DbDataReader ExecuteReader(SqlWrap sql, IDictionary<string, object> parameterValues)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    commandType = CommandType.Text;
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+            if (CommandType.Text == commandType)
+                sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
         }
@@ -164,22 +114,16 @@ namespace M2SA.AppGenome.Data.SqlServer
         /// <param name="parameterValues"></param>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        public DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination)
+        public override DataTable ExecutePaginationTable(SqlWrap sql, IDictionary<string, object> parameterValues, Pagination pagination)
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
             ArgumentAssertion.IsNotNull(pagination, "pagination");
 
             var sqlText = GetPaginationSql(sql, pagination);
-            
-            foreach (var processor in this.keywordProcessores)
-            {
-                var processResult = processor.Process(sqlText, parameterValues, Escape);
-                if (processResult.IsMatch)
-                {
-                    sqlText = processResult.SqlExpression;
-                    parameterValues = processResult.ParameterValues;
-                }
-            }
+
+            sqlText = this.TransformSql(sqlText, parameterValues);
+
+            Console.WriteLine("{0}:{1}", sql.SqlName, sqlText);
 
             var dataSet = SqlServerHelper.ExecuteDataSet(this.ConnectionString, CommandType.Text, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
@@ -258,10 +202,11 @@ namespace M2SA.AppGenome.Data.SqlServer
             return sqlBuilder.ToString();
         }
 
-        static string Escape(object obj)
+        protected override string Escape(object val)
         {
-            var str = obj.ToString().Replace("'", "''");
-            var isNumber = (obj is int) || (obj is long) || (obj is decimal) || (obj is short);
+            ArgumentAssertion.IsNotNull(val, "val");
+            var str = val.ToString().Replace("'", "''");
+            var isNumber = (val is int) || (val is long) || (val is decimal) || (val is short);
 
             if (false == isNumber)
                 str = string.Format("'{0}'", str);

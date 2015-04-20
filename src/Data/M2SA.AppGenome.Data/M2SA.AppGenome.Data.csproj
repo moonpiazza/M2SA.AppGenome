@@ -49,10 +49,12 @@
   <ItemGroup>
     <Compile Include="ArgumentAssert .cs" />
     <Compile Include="DatabaseConfig.cs" />
+    <Compile Include="DatabaseProviderBase.cs" />
     <Compile Include="DatabaseProviderFactory.cs" />
     <Compile Include="DataSettings.cs" />
     <Compile Include="DbParamsExtension.cs" />
     <Compile Include="MySql\MySqlHelper.cs" />
+    <Compile Include="SqlMap\IfPreprocessor.cs" />
     <Compile Include="SqlWrapException.cs" />
     <Compile Include="IDatabaseProvider.cs" />
     <Compile Include="MySql\MySqlProvider.cs" />

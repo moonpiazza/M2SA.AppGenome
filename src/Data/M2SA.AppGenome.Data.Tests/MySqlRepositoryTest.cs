@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Transactions;
 using M2SA.AppGenome.Data.Tests.Mocks;
 using M2SA.AppGenome.Reflection;
 using NUnit.Framework;
@@ -26,6 +27,29 @@ namespace M2SA.AppGenome.Data.Tests
 
             databases.Add(dbConfig);
             SqlMapping.AppendDatabases(databases);
+        }
+
+        [Test]
+        public void ScopeTest()
+        {
+            var repository = RepositoryManager.GetRepository<ITestRepository>();
+            Assert.IsNotNull(repository);
+            using (var scope = new TransactionScope())
+            {
+                var entity = new TestEntity() { Name = TestHelper.RandomizeString(), UpdateDate = DateTime.Now };
+                Assert.AreEqual(0, entity.Id);
+                var result = repository.Save(entity);
+                Assert.IsTrue(result);
+                Assert.IsTrue(0 < entity.Id);
+
+
+                var entity2 = new TestEntity() { Name = TestHelper.RandomizeString(), UpdateDate = DateTime.Now };
+                Assert.AreEqual(0, entity2.Id);
+                var result2 = repository.Save(entity2);
+                Assert.IsTrue(result2);
+                Assert.IsTrue(0 < entity2.Id);
+                scope.Complete();
+            }
         }
 
 

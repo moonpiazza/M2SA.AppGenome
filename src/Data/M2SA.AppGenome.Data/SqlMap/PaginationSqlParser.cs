@@ -42,7 +42,8 @@ namespace M2SA.AppGenome.Data.SqlMap
 
             extractInfo = ExtractOrderExpression(partialSql);
             paginationSql.OrderExpression = extractInfo.Item1;
-            partialSql = partialSql.Substring(0, partialSql.IndexOf(extractInfo.Item2));
+            if (false == string.IsNullOrEmpty(paginationSql.OrderExpression))
+                partialSql = partialSql.Substring(0, partialSql.IndexOf(extractInfo.Item2));
 
             extractInfo = ExtractTables(partialSql);
             paginationSql.Tables = extractInfo.Item1;

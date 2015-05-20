@@ -188,14 +188,18 @@ namespace M2SA.AppGenome.Data.MySql
             if (string.IsNullOrEmpty(sql.PrimaryKey))
             {
                 sqlBuilder.AppendFormat("select {0} from {1} {2}", paginationSql.Columns, paginationSql.Tables, whereExpression);
-                sqlBuilder.AppendFormat(" order by {0} limit {1},{2}", paginationSql.OrderExpression, startIndex, pagination.PageSize);
+                if (false == string.IsNullOrEmpty(paginationSql.OrderExpression))
+                    sqlBuilder.AppendFormat(" order by {0}", paginationSql.OrderExpression);
+                sqlBuilder.AppendFormat(" limit {0},{1}", startIndex, pagination.PageSize);
             }
             else
             {
                 sqlBuilder.AppendFormat("select {0} from {1} _AAA, (", paginationSql.Columns, paginationSql.Tables);
 
                 sqlBuilder.AppendFormat("\r\n  select {0} _zzzId from {1} {2}", sql.PrimaryKey, paginationSql.Tables, whereExpression);
-                sqlBuilder.AppendFormat(" order by {0} limit {1},{2}", paginationSql.OrderExpression, startIndex, pagination.PageSize);
+                if (false == string.IsNullOrEmpty(paginationSql.OrderExpression))
+                    sqlBuilder.AppendFormat(" order by {0}", paginationSql.OrderExpression);
+                sqlBuilder.AppendFormat(" limit {0},{1}", startIndex, pagination.PageSize);
 
                 sqlBuilder.AppendFormat("\r\n ) _ZZZ where _AAA.{0}=_ZZZ._zzzId", sql.PrimaryKey);
                 sqlBuilder.AppendFormat(" order by {0}", paginationSql.OrderExpression);

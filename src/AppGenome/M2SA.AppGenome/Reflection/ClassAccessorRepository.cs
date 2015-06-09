@@ -9,7 +9,7 @@ namespace M2SA.AppGenome.Reflection
     /// </summary>
     public static class ClassAccessorRepository
     {
-        private static object syncObject = new object();
+        private static readonly object SyncObject = new object();
         private static IDictionary<string, IClassAccessor> ClassAccessores = new Dictionary<string, IClassAccessor>(16);
 
 
@@ -66,7 +66,7 @@ namespace M2SA.AppGenome.Reflection
             }
             else
             {
-                lock (syncObject)
+                lock (SyncObject)
                 {
                     if (ClassAccessores.ContainsKey(typeKey))
                     {

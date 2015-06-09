@@ -28,7 +28,7 @@ namespace M2SA.AppGenome.Logging.Listeners
         public override void WriteMessage(ILogEntry entry)
         {
             var message = this.Formatter.Format(entry);
-            Console.WriteLine(message);
+            SystemLogger.WriteLine(entry.LogLevel, message.ToString());
         }
 
         /// <summary>

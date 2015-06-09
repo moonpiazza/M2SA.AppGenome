@@ -11,6 +11,42 @@ namespace M2SA.AppGenome.Logging
     /// </summary>
     public class SystemLogger : ILog
     {
+        #region Static members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly IDictionary<LogLevel, ConsoleColor> ConsoleColors = new Dictionary<LogLevel, ConsoleColor>()
+        {
+            {LogLevel.Debug, ConsoleColor.DarkGray},
+            {LogLevel.Trace, ConsoleColor.DarkCyan},
+            {LogLevel.Info, ConsoleColor.White},
+            {LogLevel.Warn, ConsoleColor.Yellow},
+            {LogLevel.Error, ConsoleColor.DarkRed},
+            {LogLevel.Fatal, ConsoleColor.DarkMagenta}
+        };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        public static void WriteLine(LogLevel level, string format, params object[] args)
+        {
+            var color = ConsoleColor.White;
+            if (ConsoleColors.ContainsKey(level))
+                color = ConsoleColors[level];
+
+            if (level >= LogLevel.Warn)
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.ForegroundColor = color;
+            Console.WriteLine(format, args);
+            Console.ResetColor();
+        }
+
+        #endregion //Static members
+
         private LogLevel minLevel;
         private LogLevel maxLevel;
 
@@ -42,12 +78,12 @@ namespace M2SA.AppGenome.Logging
 
             if (null == exception)
             {
-                Console.WriteLine("{0}:{1}", level, msg);
+                WriteLine(level, "{0}:{1}", level, msg);
             }
             else
             {
-                Console.WriteLine("{0}:[{1}]{2}", level, exception.GetType().FullName, exception.Message);
-                Console.WriteLine("\t{0}", exception.StackTrace);
+                WriteLine(level, "[{0}]{1}", level, exception.GetType().FullName, exception.Message);
+                WriteLine(level, "\t{0}", exception.StackTrace);
             }
         }
 

@@ -598,7 +598,7 @@ namespace M2SA.AppGenome.Reflection
                         target = System.Convert.ToUInt64(value);
                         break;
                     case TypeCode.String:
-                        target = System.Convert.ToString(value);
+                        target = value == null ? null : System.Convert.ToString(value);
                         break;
                     default:
                         target = value;

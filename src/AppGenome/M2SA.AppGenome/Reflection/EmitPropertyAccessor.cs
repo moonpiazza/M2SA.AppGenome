@@ -127,6 +127,8 @@ namespace M2SA.AppGenome.Reflection
                 this.mPropertyType = fieldInfo.FieldType;
                 this.nonSerialized = fieldInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).Length > 0;
             }
+
+            this.Init();
         }
 
         /// <summary>
@@ -138,11 +140,6 @@ namespace M2SA.AppGenome.Reflection
         {
             if (mCanRead)
             {
-                if (this.mEmittedPropertyAccessor == null)
-                {
-                    this.Init();
-                }
-
                 return this.mEmittedPropertyAccessor.Get(target);
             }
             else
@@ -162,11 +159,6 @@ namespace M2SA.AppGenome.Reflection
         {
             if (mCanWrite)
             {
-                if (this.mEmittedPropertyAccessor == null)
-                {
-                    this.Init();
-                }
-
                 //
                 // Set the property value
                 //
@@ -186,16 +178,17 @@ namespace M2SA.AppGenome.Reflection
         /// </summary>
         private void Init()
         {
+            if (this.mEmittedPropertyAccessor == null) return;
+
             this.InitTypes();
 
             // Create the assembly and an instance of the 
             // property accessor class.
             Assembly assembly = EmitAssembly();
 
-            mEmittedPropertyAccessor =
-                assembly.CreateInstance("Property") as IPropertyAccessor;
+            this.mEmittedPropertyAccessor = assembly.CreateInstance("Property") as IPropertyAccessor;
 
-            if (mEmittedPropertyAccessor == null)
+            if (this.mEmittedPropertyAccessor == null)
             {
                 throw new PropertyAccessorException("Unable to create property accessor.");
             }

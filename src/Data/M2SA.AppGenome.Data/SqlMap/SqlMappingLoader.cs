@@ -205,7 +205,9 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <param name="filePattern"></param>
         private static void LoadSqlModules(string filePath, string filePattern)
         {
-            var moduleMap = new Dictionary<string, string>(4);
+            var sqlModules = new Dictionary<string, SqlModule>();
+
+            var moduleMap = new Dictionary<string, SqlModule>(4);
             var sqlWraps = new List<SqlWrap>(16);
 
             var basePath = AppDomain.CurrentDomain.RelativeSearchPath;
@@ -228,32 +230,50 @@ namespace M2SA.AppGenome.Data.SqlMap
                 nsmgr.AddNamespace("sql", "http://m2sa.net/Schema/SqlMapping");
 
                 var moduleNodes = sqlMapXml.DocumentElement.SelectNodes("sql:module", nsmgr);
+                if (null == moduleNodes) continue;
+
                 foreach (XmlNode moduleNode in moduleNodes)
                 {
                     var moduleName = moduleNode.Attributes["moduleName"].InnerText;
-                    var dbName = moduleNode.Attributes["dbName"].InnerText;
+                    var namespaceAttr = moduleNode.Attributes["namespace"];
+                    var namespaceText = namespaceAttr == null ? null : namespaceAttr.InnerText;
 
-                    moduleMap[moduleName] = dbName;
+                    var moduleKey = string.IsNullOrEmpty(namespaceText)
+                        ? moduleName.ToLower() : string.Concat(namespaceText, SqlMapping.ModuleKeySeparator, moduleName).ToLower();
+
+                    SqlModule sqlModule = null;
+                    if (false == sqlModules.ContainsKey(moduleKey))
+                        sqlModules.Add(moduleKey, new SqlModule(){ModuleName = moduleName, Namespace = namespaceText});
+
+                    sqlModule = sqlModules[moduleKey];
+                    var dbNameAttr = moduleNode.Attributes["dbName"];
+                    if (null != dbNameAttr)
+                        sqlModule.DbName = dbNameAttr.InnerText;
+
+                    if (false == sqlModules.ContainsKey(moduleKey))
+                        sqlModules.Add(moduleKey, sqlModule);
 
                     var sqlMapElementes = moduleNode.SelectNodes("sql:sqlWrap", nsmgr);
-
-                    foreach (XmlNode element in sqlMapElementes)
+                    if (null != sqlMapElementes)
                     {
-                        var sqlWrap = ConvertToSql(element, moduleName, dbName);
-                        sqlWraps.Add(sqlWrap);
+                        foreach (XmlNode element in sqlMapElementes)
+                        {
+                            var sqlWrap = ConvertToSql(element, sqlModule);
+                            sqlWraps.Add(sqlWrap);
+                            sqlModule.AddSqlWrap(sqlWrap);
+                        }
                     }
                 }
             }
 
-            SqlMapping.AppendModules(moduleMap);
-            SqlMapping.AppendSqlWraps(sqlWraps);
+            SqlMapping.AppendSqlModules(sqlModules);
         }
 
-        private static SqlWrap ConvertToSql(XmlNode element, string moduleName, string moduleDBName)
+        private static SqlWrap ConvertToSql(XmlNode element, SqlModule sqlModule)
         {
             DataSettings dataSettings = ObjectIOCFactory.GetSingleton<DataSettings>();
             var sqlWrap = new SqlWrap();
-            sqlWrap.SqlName = string.Format("{0}.{1}", moduleName, element.Attributes["sqlName"].InnerText);
+            sqlWrap.SqlName = element.Attributes["sqlName"].InnerText;
             sqlWrap.SqlText = element.InnerText;
 
             var node = element.Attributes.GetNamedItem("dbName");
@@ -263,7 +283,7 @@ namespace M2SA.AppGenome.Data.SqlMap
             }
             else
             {
-                sqlWrap.DbName = moduleDBName;
+                sqlWrap.DbName = sqlModule.DbName;
             }
 
             node = element.Attributes.GetNamedItem("commandType");

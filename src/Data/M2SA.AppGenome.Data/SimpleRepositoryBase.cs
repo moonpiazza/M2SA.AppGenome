@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Data;
+using M2SA.AppGenome.Data.SqlMap;
 using M2SA.AppGenome.Reflection;
 
 namespace M2SA.AppGenome.Data
@@ -14,14 +15,14 @@ namespace M2SA.AppGenome.Data
     public abstract class SimpleRepositoryBase<T, TId> : IRepository<T, TId>
         where T : class, IEntity<TId>, new()
     {
-        string repositoryName = null;
+        string moduleName = null;
 
         /// <summary>
         /// 
         /// </summary>
         public SimpleRepositoryBase()
         {
-            this.repositoryName = this.GetType().Name;
+            this.moduleName = this.GetType().FullName;
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace M2SA.AppGenome.Data
         /// <returns></returns>
         protected string FormatSqlName(string sqlName)
         {
-            return string.Format("{0}.{1}", repositoryName, sqlName);
+            return string.Concat(this.moduleName, SqlMapping.SqKeySeparator[0], sqlName);
         }
 
         /// <summary>

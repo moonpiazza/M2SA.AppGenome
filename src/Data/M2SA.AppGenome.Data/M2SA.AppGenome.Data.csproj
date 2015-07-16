@@ -55,6 +55,7 @@
     <Compile Include="DbParamsExtension.cs" />
     <Compile Include="MySql\MySqlHelper.cs" />
     <Compile Include="SqlMap\IfPreprocessor.cs" />
+    <Compile Include="SqlMap\SqlModule.cs" />
     <Compile Include="SqlWrapException.cs" />
     <Compile Include="IDatabaseProvider.cs" />
     <Compile Include="MySql\MySqlProvider.cs" />

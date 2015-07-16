@@ -178,7 +178,7 @@ namespace M2SA.AppGenome.Reflection
         /// </summary>
         private void Init()
         {
-            if (this.mEmittedPropertyAccessor == null) return;
+            if (this.mEmittedPropertyAccessor != null) return;
 
             this.InitTypes();
 

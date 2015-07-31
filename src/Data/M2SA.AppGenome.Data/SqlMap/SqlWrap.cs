@@ -13,6 +13,11 @@ namespace M2SA.AppGenome.Data.SqlMap
     public class SqlWrap
     {
         /// <summary>
+        /// Sql业务模块的名称
+        /// </summary>
+        public string ModuleName { get; set; }
+
+        /// <summary>
         /// 数据库链接在配置中的名称
         /// </summary>
         public string DbName { get; set; }
@@ -21,6 +26,17 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// SQL标识
         /// </summary>
         public string SqlName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string FullName
+        {
+            get
+            {
+                return string.Concat(this.ModuleName, SqlMapping.SqKeySeparator, this.SqlName);
+            }
+        }
 
         /// <summary>
         /// SQL文本
@@ -65,8 +81,10 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 
         /// </summary>
-        public SqlWrap()
+        /// <param name="sqlModule"></param>
+        public SqlWrap(SqlModule sqlModule)
         {
+            this.ModuleName = sqlModule.FullName;
             this.CommandTimeout = 30;
             this.SupportDbType = DatabaseType.MySql;
             this.CommandType = CommandType.Text;

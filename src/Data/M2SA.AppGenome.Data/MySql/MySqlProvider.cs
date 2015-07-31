@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Data;
@@ -8,6 +9,7 @@ using M2SA.AppGenome.Data.SqlMap;
 using M2SA.AppGenome.Reflection;
 using MySql.Data.MySqlClient;
 using MySqlHelper = M2SA.AppGenome.Data.MySql.MySqlHelper;
+using M2SA.AppGenome.Logging;
 
 namespace M2SA.AppGenome.Data.MySql
 {
@@ -44,8 +46,19 @@ namespace M2SA.AppGenome.Data.MySql
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = this.TransformSql(sql.SqlText, parameterValues);
-            return MySqlHelper.ExecuteNonQuery(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = MySqlHelper.ExecuteNonQuery(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -58,8 +71,19 @@ namespace M2SA.AppGenome.Data.MySql
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = this.TransformSql(sql.SqlText, parameterValues);
-            return MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -72,10 +96,20 @@ namespace M2SA.AppGenome.Data.MySql
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
             var result = MySqlHelper.ExecuteScalar(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
             return result;
         }
 
@@ -89,9 +123,20 @@ namespace M2SA.AppGenome.Data.MySql
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
-            return MySqlHelper.ExecuteReader(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = MySqlHelper.ExecuteReader(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -106,6 +151,10 @@ namespace M2SA.AppGenome.Data.MySql
             ArgumentAssertion.IsNotNull(sql, "sql");
             ArgumentAssertion.IsNotNull(pagination, "pagination");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = GetPaginationSql(sql, pagination);
 
             sqlText = this.TransformSql(sqlText, parameterValues);
@@ -113,6 +162,13 @@ namespace M2SA.AppGenome.Data.MySql
             var dataSet = MySqlHelper.ExecuteDataSet(this.ConnectionString, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
             pagination.TotalCount = totalCount;
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+
             return dataSet.Tables[1];
         }
 

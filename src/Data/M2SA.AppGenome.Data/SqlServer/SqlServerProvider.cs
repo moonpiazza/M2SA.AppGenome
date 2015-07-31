@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using M2SA.AppGenome.Data.SqlMap;
+using M2SA.AppGenome.Logging;
 using M2SA.AppGenome.Reflection;
 
 namespace M2SA.AppGenome.Data.SqlServer
@@ -43,12 +45,23 @@ namespace M2SA.AppGenome.Data.SqlServer
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
             if (CommandType.Text == commandType)
                 sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
-            return SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = SqlServerHelper.ExecuteNonQuery(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -61,12 +74,23 @@ namespace M2SA.AppGenome.Data.SqlServer
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
             if (CommandType.Text == commandType)
                 sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
-            return SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = SqlServerHelper.ExecuteDataSet(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -79,6 +103,10 @@ namespace M2SA.AppGenome.Data.SqlServer
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
             if (CommandType.Text == commandType)
@@ -86,6 +114,12 @@ namespace M2SA.AppGenome.Data.SqlServer
 
             var result = SqlServerHelper.ExecuteScalar(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             if (result == DBNull.Value) result = null;
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
             return result;
         }
 
@@ -99,12 +133,23 @@ namespace M2SA.AppGenome.Data.SqlServer
         {
             ArgumentAssertion.IsNotNull(sql, "sql");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = sql.SqlText;
             var commandType = sql.CommandType;
             if (CommandType.Text == commandType)
                 sqlText = this.TransformSql(sql.SqlText, parameterValues);
 
-            return SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+            var result = SqlServerHelper.ExecuteReader(this.ConnectionString, commandType, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+            return result;
         }
 
         /// <summary>
@@ -119,15 +164,24 @@ namespace M2SA.AppGenome.Data.SqlServer
             ArgumentAssertion.IsNotNull(sql, "sql");
             ArgumentAssertion.IsNotNull(pagination, "pagination");
 
+            Stopwatch stopwatch = null;
+            var sqlProcessor = ObjectIOCFactory.GetSingleton<DataSettings>().SqlProcessor;
+            if (sqlProcessor.EnableTrace) stopwatch = Stopwatch.StartNew();
+
             var sqlText = GetPaginationSql(sql, pagination);
 
             sqlText = this.TransformSql(sqlText, parameterValues);
 
-            Console.WriteLine("{0}:{1}", sql.SqlName, sqlText);
-
             var dataSet = SqlServerHelper.ExecuteDataSet(this.ConnectionString, CommandType.Text, sqlText, sql.CommandTimeout, ConvertToDbParams(parameterValues));
             var totalCount = dataSet.Tables[0].Rows[0][0].Convert<int>();
             pagination.TotalCount = totalCount;
+
+            if (sqlProcessor.EnableTrace)
+            {
+                stopwatch.Stop();
+                sqlProcessor.Log(LogLevel.Trace, string.Format("[{0}]ExecuteSql({1})\r\n\t{2}", stopwatch.Elapsed, sql.FullName, sqlText), null);
+            }
+
             return dataSet.Tables[1];
         }
 

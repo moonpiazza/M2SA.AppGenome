@@ -15,22 +15,27 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <summary>
         /// 
         /// </summary>
-        public readonly static string ModuleKeySeparator = ".";
+        public static readonly string ModuleKeySeparator = ".";
 
         /// <summary>
         /// 
         /// </summary>
-        public readonly static string SqKeySeparator = "^";
+        public static readonly string SqKeySeparator = ":";
 
         /// <summary>
         /// 
         /// </summary>
-        public readonly static string SqlKeyForDbSeparator = ":";
+        public static readonly string SqlKeyForDbSeparator = "|";
 
         /// <summary>
         /// 默认的数据库类型
         /// </summary>
         public static readonly DatabaseType DefaultDbType = DatabaseType.MySql;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static bool IsLoadedSqlMap = false;
 
         /// <summary>
         /// 存储数据库的映射字典（数据库级别）
@@ -59,15 +64,16 @@ namespace M2SA.AppGenome.Data.SqlMap
         {
             try
             {
-                if (null == DbMap)
+                if (false == IsLoadedSqlMap)
                 {
                     lock (Sync)
                     {
-                        if (DbMap == null)
+                        if (false == IsLoadedSqlMap)
                         {
                             DbMap = new Dictionary<string, DatabaseConfig>(8);
                             SqlMap = new Dictionary<string, SqlModule>(32);
                             SqlMappingLoader.LoadSqlMapping();
+                            IsLoadedSqlMap = true;
                         }
                     }
                 }
@@ -87,10 +93,10 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <param name="databases"></param>
         public static void AppendDatabases(IList<DatabaseConfig> databases)
         {
-            Initialize();
-
             if (null == databases || databases.Count == 0)
                 return;
+
+            if (null == DbMap) Initialize();
             foreach (var item in databases)
             {
                 AppendDatabaseConfig(item);
@@ -112,10 +118,10 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <param name="sqlModules"></param>
         public static void AppendSqlModules(IDictionary<string, SqlModule> sqlModules)
         {
-            Initialize();
-
             if (null == sqlModules || sqlModules.Count == 0)
                 return;
+
+            if (null == DbMap) Initialize();
             foreach (var item in sqlModules)
             {
                 AppendSqlModule(item.Key, item.Value);
@@ -149,9 +155,8 @@ namespace M2SA.AppGenome.Data.SqlMap
         /// <returns></returns>
         public static bool ExistDatabase(string dbName)
         {
-            Initialize();
-
             ArgumentAssertion.IsNotNull(dbName, "dbName");
+            if (null == DbMap) Initialize();
 
             var dbKey = dbName.ToLower();
             return DbMap.ContainsKey(dbKey);
@@ -188,15 +193,25 @@ namespace M2SA.AppGenome.Data.SqlMap
 
             SqlWrap sqlWrap = null;
 
-            var keyParts = sqlName.ToLower().Split(SqlMapping.SqKeySeparator[0]);
-            if (keyParts.Length > 1)
+            if (sqlName.Contains(SqlMapping.SqKeySeparator))
             {
+                var keyParts = sqlName.ToLower().Split(SqlMapping.SqKeySeparator[0]);
                 var sqlMap = FindSqlModule(keyParts[0]);
                 if (null != sqlMap)
                 {
-                    sqlWrap = FindSqlWrap(keyParts[1], sqlMap);
+                    sqlWrap = FindSqlWrap(string.Join(SqlMapping.ModuleKeySeparator, keyParts, 1, keyParts.Length-1), sqlMap);
                 }
             }
+            else if (sqlName.Contains(SqlMapping.ModuleKeySeparator)) //兼容老版本直接调用SqlHelper的逻辑
+            {
+                var keyParts = sqlName.ToLower().Split(SqlMapping.ModuleKeySeparator[0]);
+                var sqlMap = FindSqlModule(string.Join(SqlMapping.ModuleKeySeparator, keyParts, 0, keyParts.Length-1));
+                if (null != sqlMap)
+                {
+                    sqlWrap = FindSqlWrap(keyParts[keyParts.Length-1], sqlMap);
+                }
+            }
+            
 
             if (null == sqlWrap)
                 throw new ArgumentOutOfRangeException("sqlName", sqlName, string.Format("没有定义SqlWrap - {0}", sqlName));            

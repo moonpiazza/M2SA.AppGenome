@@ -424,12 +424,10 @@ namespace M2SA.AppGenome.Data
 
         private static SqlWrapException BuildSqlWrapException(Exception ex, SqlWrap sqlWrap, IDictionary<string, object> parameterValues)
         {
-            var sqlException = new SqlWrapException(ex, sqlWrap.SqlName, parameterValues);
-            
-            DataSettings dataSettings = ObjectIOCFactory.GetSingleton<DataSettings>();
-            dataSettings.SqlProcessor.Log(LogLevel.Error, ex.Message, ex);
-            
-            return sqlException;
+            if (ex is SqlWrapException) 
+                return (SqlWrapException) ex;
+            else
+                return new SqlWrapException(ex, sqlWrap.FullName, parameterValues);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "partitionValues")]
@@ -438,7 +436,7 @@ namespace M2SA.AppGenome.Data
             var dbConfig = SqlMapping.GetDatabase(sqlWrap.DbName);
             if ((dbConfig.DBType & sqlWrap.SupportDbType) == 0)
             {
-                throw new ArgumentOutOfRangeException(string.Format("SqlWrap[{0}] 不支持类型为{1}的数据库[{2}]", sqlWrap.SqlName, dbConfig.DBType, sqlWrap.DbName));
+                throw new ArgumentOutOfRangeException(string.Format("SqlWrap[{0}] 不支持类型为{1}的数据库[{2}]", sqlWrap.FullName, dbConfig.DBType, sqlWrap.DbName));
             }
 
             var dbProvider = DatabaseProviderFactory.GetDatabaseProvider(dbConfig);

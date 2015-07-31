@@ -272,7 +272,7 @@ namespace M2SA.AppGenome.Data.SqlMap
         private static SqlWrap ConvertToSql(XmlNode element, SqlModule sqlModule)
         {
             DataSettings dataSettings = ObjectIOCFactory.GetSingleton<DataSettings>();
-            var sqlWrap = new SqlWrap();
+            var sqlWrap = new SqlWrap(sqlModule);
             sqlWrap.SqlName = element.Attributes["sqlName"].InnerText;
             sqlWrap.SqlText = element.InnerText;
 

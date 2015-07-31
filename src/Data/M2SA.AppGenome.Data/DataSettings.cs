@@ -44,21 +44,24 @@ namespace M2SA.AppGenome.Data
 
         /// <summary>
         /// 
+        /// 
         /// </summary>
-        public bool EnableLogger { get; set; }
+        public bool EnableTrace { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         public string LogCategory { get; set; }
+        
 
         /// <summary>
         /// 
         /// </summary>
         public SqlProcessor()
         {
-            this.CommandTimeout = 30;
-            this.EnableLogger = false;
+            this.CommandTimeout = 30; 
+            this.EnableTrace = false;
+            this.LogCategory = "sql";
         }
 
         /// <summary>
@@ -70,7 +73,7 @@ namespace M2SA.AppGenome.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public void Log(LogLevel level, object msg, Exception exception)
         {
-            if (false == this.EnableLogger) return;
+            if (false == this.EnableTrace) return;
             try
             {
                 LogManager.GetLogger(this.LogCategory).WriteMessage(level, msg, exception);

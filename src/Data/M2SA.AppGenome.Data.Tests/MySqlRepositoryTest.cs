@@ -20,7 +20,7 @@ namespace M2SA.AppGenome.Data.Tests
             var dbConfig = new DatabaseConfig
             {
                 ConfigName = "TestDB",
-                ConnectionString = "server=127.0.0.1;port=3306;user id=root;password=db2test;database=testdb;",
+                ConnectionString = "server=127.0.0.1;port=30603;user id=root;password=db2test;database=testdb;",
                 DBType = DatabaseType.MySql,
                 ProviderName = "MySqlProvider"
             };

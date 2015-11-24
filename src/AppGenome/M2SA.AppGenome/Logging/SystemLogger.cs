@@ -41,7 +41,10 @@ namespace M2SA.AppGenome.Logging
             if (level >= LogLevel.Warn)
                 Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.ForegroundColor = color;
-            Console.WriteLine(format, args);
+            if (args.Length > 0)
+                Console.WriteLine(format, args);
+            else
+                Console.WriteLine(format);
             Console.ResetColor();
         }
 

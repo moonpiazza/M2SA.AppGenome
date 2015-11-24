@@ -14,7 +14,7 @@ namespace M2SA.AppGenome.Data.SqlMap
     /// </summary>
     public class IfPreprocessor : IKeywordProcessor
     {
-        static readonly Regex InKeyRegex = new Regex(@"\s+#if\s*\(\s*@(?<param>[A-Za-z_]\w+)\s*\)\s+\{(?<statement>[^}]+)\}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static readonly Regex InKeyRegex = new Regex(@"\s+#if\s*\(\s*@(?<param>[A-Za-z_]\w+)\s*\)\s*\{(?<statement>[^}]+)\}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
         /// 

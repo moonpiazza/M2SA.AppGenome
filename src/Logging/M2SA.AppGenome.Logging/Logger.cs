@@ -556,7 +556,7 @@ namespace M2SA.AppGenome.Logging
                 }
             }
 
-            if (null != httpRequest) entry.URI = httpRequest.FilePath;
+            if (null != httpRequest) entry.URI = string.Format("{0}:{1}", httpRequest.HttpMethod, httpRequest.FilePath);
 
             if ((this.LevelLimit.SysInfoLimit & entry.LogLevel) != entry.LogLevel)
             {

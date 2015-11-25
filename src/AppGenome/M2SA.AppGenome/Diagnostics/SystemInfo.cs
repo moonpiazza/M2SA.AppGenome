@@ -77,16 +77,25 @@ namespace M2SA.AppGenome.Diagnostics
 
         static SystemInfo AppendSysInfo(SystemInfo sysInfo, string targetIP, string processName)
         {
-            sysInfo.TotalCPU = PerfmonCounterManager.GetSampleItemValue("% Processor Time", "_Total", "Processor", targetIP);
-            sysInfo.TotalMemory = PerfmonCounterManager.GetCounterItemValue("Committed Bytes", string.Empty, "Memory", targetIP);
-            if (string.IsNullOrEmpty(processName) == false)
+            try
             {
-                sysInfo.ProcessName = processName;
-                sysInfo.ProcessCPU = PerfmonCounterManager.GetSampleItemValue("% Processor Time", sysInfo.ProcessName, "Process", targetIP);
-                sysInfo.ProcessMemory = PerfmonCounterManager.GetCounterItemValue("Private Bytes", sysInfo.ProcessName, "Process", targetIP);
-                sysInfo.ProcessThreadCount = PerfmonCounterManager.GetCounterItemValue("Thread Count", sysInfo.ProcessName, "Process", targetIP);
-            }
+                sysInfo.TotalMemory = PerfmonCounterManager.GetCounterItemValue("Committed Bytes", string.Empty, "Memory", targetIP);
+                sysInfo.TotalCPU = PerfmonCounterManager.GetSampleItemValue("% Processor Time", "_Total", "Processor", targetIP);                
+                if (string.IsNullOrEmpty(processName) == false)
+                {
+                    sysInfo.ProcessName = processName;
+                    sysInfo.ProcessMemory = PerfmonCounterManager.GetCounterItemValue("Private Bytes", sysInfo.ProcessName, "Process", targetIP);
+                    sysInfo.ProcessCPU = PerfmonCounterManager.GetSampleItemValue("% Processor Time", sysInfo.ProcessName, "Process", targetIP);                    
+                    sysInfo.ProcessThreadCount = PerfmonCounterManager.GetCounterItemValue("Thread Count", sysInfo.ProcessName, "Process", targetIP);
+                }
 
+            }
+            catch (Exception ex)
+            {
+                sysInfo.TotalCPU = -1.0f;
+                sysInfo.ProcessCPU = -1.0f;
+            }
+            
             return sysInfo;
         }
 

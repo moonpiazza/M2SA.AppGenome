@@ -8,6 +8,7 @@ namespace M2SA.AppGenome.Data
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     public class EntityBase<TId> : IEntity<TId>
     {
         private TId id = default(TId);
